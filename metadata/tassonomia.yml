@@ -21,6 +21,14 @@ fisica:
       - attrito
       - piano_inclinato
       - sistemi_vincolati
+  fluidostatica:
+    label: "Fluidostatica"
+    argomenti:
+      - pressione_idrostatica
+      - principio_pascal
+      - torchio_idraulico
+      - principio_archimede
+      - galleggiamento
   lavoro_energia:
     label: "Lavoro ed energia"
     argomenti:
@@ -176,4 +184,3 @@ difficolta:
   3: "Esercizio da verifica ordinaria"
   4: "Esercizio impegnativo, richiede scelta di strategia"
   5: "Esercizio eccellente, avanzato, olimpiadico o di selezione"
-
