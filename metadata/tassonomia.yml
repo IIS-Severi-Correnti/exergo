@@ -49,6 +49,8 @@ fisica:
       - temperatura_equilibrio
       - passaggi_stato
       - gas_perfetti
+      - trasformazioni_termodinamiche
+      - macchine_termiche
   onde:
     label: "Onde"
     argomenti:
