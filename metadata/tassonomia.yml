@@ -29,6 +29,7 @@ fisica:
       - torchio_idraulico
       - principio_archimede
       - galleggiamento
+      - vasi_comunicanti
   lavoro_energia:
     label: "Lavoro ed energia"
     argomenti:
