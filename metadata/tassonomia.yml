@@ -85,7 +85,10 @@ fisica:
     argomenti:
       - campo_magnetico
       - forza_lorentz
+      - oersted
       - induzione
+      - faraday_lenz
+      - fili_percorsi_corrente
   fisica_moderna:
     label: "Fisica moderna"
     argomenti:
