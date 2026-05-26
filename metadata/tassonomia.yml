@@ -69,6 +69,7 @@ fisica:
     label: "Elettrostatica"
     argomenti:
       - carica_elettrica
+      - conduttori_isolanti
       - legge_coulomb
       - campo_elettrico
       - potenziale_elettrico
