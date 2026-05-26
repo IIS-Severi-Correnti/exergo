@@ -54,6 +54,8 @@ fisica:
     argomenti:
       - onde_meccaniche
       - suono
+      - effetto_doppler
+      - onde_su_corde
       - interferenza
       - diffrazione
   ottica:
