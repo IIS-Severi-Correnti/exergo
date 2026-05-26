@@ -76,6 +76,7 @@ fisica:
   circuiti_elettrici:
     label: "Circuiti elettrici"
     argomenti:
+      - circuiti_base
       - corrente
       - resistenza
       - legge_ohm
