@@ -125,6 +125,21 @@ errore_da_correggere
 python scripts/genera_indice.py
 ```
 
+## Estrarre candidati da archivi Overleaf
+
+Gli ZIP originali delle verifiche non vanno pubblicati automaticamente. Per
+lavorare in locale si puo usare:
+
+```bash
+python scripts/estrai_candidati_zip.py \
+  --fisica "C:\percorso\Verifiche Fisica LaTeX.zip" \
+  --matematica "C:\percorso\Verifiche Matematica LaTeX.zip"
+```
+
+Lo script crea file in `import_lavorazione/`, cartella ignorata da Git. I file
+estratti sono solo candidati: prima di spostarli in `esercizi/` vanno
+revisionati, anonimizzati, classificati e dotati di metadati completi.
+
 ## Cercare esercizi
 
 Esempi:
