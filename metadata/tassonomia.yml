@@ -1,0 +1,179 @@
+fisica:
+  grandezze_misure:
+    label: "Grandezze e misure"
+    argomenti:
+      - misure
+      - incertezze
+      - cifre_significative
+      - notazione_scientifica
+  cinematica:
+    label: "Cinematica"
+    argomenti:
+      - moto_rettilineo_uniforme
+      - moto_rettilineo_uniformemente_accelerato
+      - grafici_moto
+      - moto_circolare
+  dinamica:
+    label: "Dinamica"
+    argomenti:
+      - leggi_newton
+      - forza_peso
+      - attrito
+      - piano_inclinato
+      - sistemi_vincolati
+  lavoro_energia:
+    label: "Lavoro ed energia"
+    argomenti:
+      - lavoro
+      - energia_cinetica
+      - energia_potenziale
+      - conservazione_energia
+      - potenza
+  termologia:
+    label: "Termologia e calorimetria"
+    argomenti:
+      - temperatura
+      - dilatazione_lineare
+      - dilatazione_superficiale
+      - dilatazione_volumica
+      - calore_specifico
+      - temperatura_equilibrio
+      - passaggi_stato
+      - gas_perfetti
+  onde:
+    label: "Onde"
+    argomenti:
+      - onde_meccaniche
+      - suono
+      - interferenza
+      - diffrazione
+  ottica:
+    label: "Ottica"
+    argomenti:
+      - riflessione
+      - rifrazione
+      - lenti
+      - specchi
+  elettrostatica:
+    label: "Elettrostatica"
+    argomenti:
+      - carica_elettrica
+      - legge_coulomb
+      - campo_elettrico
+      - potenziale_elettrico
+  circuiti_elettrici:
+    label: "Circuiti elettrici"
+    argomenti:
+      - corrente
+      - resistenza
+      - legge_ohm
+      - circuiti_serie_parallelo
+  magnetismo:
+    label: "Magnetismo"
+    argomenti:
+      - campo_magnetico
+      - forza_lorentz
+      - induzione
+  fisica_moderna:
+    label: "Fisica moderna"
+    argomenti:
+      - relativita
+      - quanti
+      - nucleo
+
+matematica:
+  algebra:
+    label: "Algebra"
+    argomenti:
+      - monomi
+      - polinomi
+      - prodotti_notevoli
+      - scomposizioni
+      - frazioni_algebriche
+  equazioni_disequazioni:
+    label: "Equazioni e disequazioni"
+    argomenti:
+      - equazioni_lineari
+      - equazioni_secondo_grado
+      - disequazioni_lineari
+      - disequazioni_secondo_grado
+      - sistemi
+  geometria_euclidea:
+    label: "Geometria euclidea"
+    argomenti:
+      - triangoli
+      - parallelogrammi
+      - circonferenza
+      - similitudine
+      - teoremi_classici
+  geometria_analitica:
+    label: "Geometria analitica"
+    argomenti:
+      - retta
+      - parabola
+      - circonferenza
+      - ellisse
+      - iperbole
+      - coniche
+  funzioni:
+    label: "Funzioni"
+    argomenti:
+      - dominio
+      - zeri_segno
+      - trasformazioni
+      - funzioni_inverse
+  esponenziali_logaritmi:
+    label: "Esponenziali e logaritmi"
+    argomenti:
+      - potenze
+      - esponenziali
+      - logaritmi
+      - equazioni_esponenziali
+      - equazioni_logaritmiche
+  trigonometria:
+    label: "Trigonometria"
+    argomenti:
+      - funzioni_goniometriche
+      - identita
+      - equazioni_goniometriche
+      - triangoli
+  analisi:
+    label: "Analisi"
+    argomenti:
+      - limiti
+      - derivate
+      - studio_funzione
+      - integrali
+  probabilita:
+    label: "Probabilita"
+    argomenti:
+      - eventi
+      - probabilita_condizionata
+      - variabili_aleatorie
+  statistica:
+    label: "Statistica"
+    argomenti:
+      - media_mediana_moda
+      - varianza
+      - grafici_statistici
+
+tipi_esercizio:
+  - problema_numerico
+  - dimostrazione
+  - quesito_teorico
+  - scelta_multipla
+  - vero_falso
+  - completamento
+  - grafico
+  - modellizzazione
+  - laboratorio
+  - stima_ordine_grandezza
+  - errore_da_correggere
+
+difficolta:
+  1: "Esercizio meccanico, applicazione diretta"
+  2: "Esercizio standard con un passaggio ragionato"
+  3: "Esercizio da verifica ordinaria"
+  4: "Esercizio impegnativo, richiede scelta di strategia"
+  5: "Esercizio eccellente, avanzato, olimpiadico o di selezione"
+

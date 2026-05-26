@@ -1,0 +1,29 @@
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{environ}
+\usepackage{xcolor}
+
+\geometry{a4paper, margin=2.5cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\newif\ifsoluzioni
+\soluzionifalse
+
+\newcounter{eserciziocounter}
+\newenvironment{esercizio}
+  {\refstepcounter{eserciziocounter}\par\medskip\noindent\textbf{Esercizio \theeserciziocounter.}\par}
+  {\par\medskip}
+
+\NewEnviron{soluzione}{%
+  \ifsoluzioni
+    \par\smallskip\noindent\textcolor{blue!60!black}{\textbf{Soluzione.}}\par
+    \BODY
+    \par\medskip
+  \fi
+}
+
