@@ -104,6 +104,11 @@ Rigenerare l'indice:
 python scripts/genera_indice.py
 ```
 
-Controllare che non ci siano errori su metadati mancanti, ID duplicati o
-difficolta non valida.
+Validare l'archivio:
 
+```bash
+python scripts/valida_archivio.py
+```
+
+Controllare che non ci siano errori su metadati mancanti, ID duplicati,
+difficolta non valida, tipi fuori tassonomia o soluzioni ancora da completare.

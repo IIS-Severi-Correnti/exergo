@@ -1,0 +1,30 @@
+name: Validate archive
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Check Python syntax
+        run: python -m py_compile scripts/*.py
+
+      - name: Regenerate exercise index
+        run: python scripts/genera_indice.py
+
+      - name: Ensure generated index is committed
+        run: git diff --exit-code metadata/indice_esercizi.csv
+
+      - name: Validate exercise archive
+        run: python scripts/valida_archivio.py

@@ -125,6 +125,22 @@ errore_da_correggere
 python scripts/genera_indice.py
 ```
 
+## Validare l'archivio
+
+Prima di proporre modifiche, rigenerare l'indice e controllare l'archivio:
+
+```bash
+python scripts/genera_indice.py
+python scripts/valida_archivio.py
+```
+
+Il validatore controlla metadati obbligatori, ID duplicati, coerenza con la
+tassonomia, difficolta, tipo di esercizio, ambienti LaTeX principali e
+placeholder di soluzioni non completate.
+
+Su GitHub gli stessi controlli vengono eseguiti automaticamente a ogni push e
+pull request.
+
 ## Estrarre candidati da archivi Overleaf
 
 Gli ZIP originali delle verifiche non vanno pubblicati automaticamente. Per
