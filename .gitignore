@@ -28,6 +28,9 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 
+# Local LaTeX validation workspace
+.latex_check/
+
 # Virtual environments
 .venv/
 venv/
@@ -40,4 +43,3 @@ desktop.ini
 
 # Local import/review workspace for private source archives
 import_lavorazione/
-

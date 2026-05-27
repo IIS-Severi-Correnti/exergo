@@ -112,3 +112,9 @@ python scripts/valida_archivio.py
 
 Controllare che non ci siano errori su metadati mancanti, ID duplicati,
 difficolta non valida, tipi fuori tassonomia o soluzioni ancora da completare.
+
+Se LaTeX e installato, compilare anche le verifiche:
+
+```bash
+python scripts/compila_verifiche.py
+```

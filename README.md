@@ -189,6 +189,23 @@ python scripts/genera_verifica.py \
 
 Per mostrare le soluzioni usare `--soluzioni true`.
 
+## Compilare le verifiche
+
+Per controllare che le verifiche generate e le soluzioni compilino
+correttamente serve un'installazione LaTeX con `latexmk` oppure `pdflatex`.
+
+```bash
+python scripts/compila_verifiche.py
+```
+
+Lo script compila i file `.tex` in `verifiche_generate/` e crea anche un
+documento temporaneo con tutti gli esercizi e le soluzioni attive. Per
+mantenere PDF, log e file ausiliari:
+
+```bash
+python scripts/compila_verifiche.py --keep-artifacts
+```
+
 ## Privacy
 
 Prima di pubblicare materiali derivati da verifiche reali, eliminare:

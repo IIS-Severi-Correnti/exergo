@@ -28,3 +28,16 @@ jobs:
 
       - name: Validate exercise archive
         run: python scripts/valida_archivio.py
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            latexmk \
+            texlive-lang-italian \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-latex-recommended
+
+      - name: Compile generated LaTeX files
+        run: python scripts/compila_verifiche.py
