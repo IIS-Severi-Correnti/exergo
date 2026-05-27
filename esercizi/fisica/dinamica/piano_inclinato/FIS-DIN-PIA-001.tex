@@ -7,7 +7,7 @@
 % Classe: Terza liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: a_salita = -5,9 m/s^2; t_stop = 0,68 s; s = 1,35 m; t_tot = 1,51 s
 % Tempo_stimato: 14 min
 % Competenze: scelta del sistema di riferimento, bilancio delle forze, cinematica
 % Prerequisiti: piano inclinato, attrito dinamico, moto uniformemente accelerato
@@ -29,6 +29,77 @@ che il blocco torni al punto di partenza.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Scegliamo come verso positivo quello verso monte lungo il piano inclinato.
 
+Durante la salita, sia la componente del peso lungo il piano sia l'attrito sono
+diretti verso valle. Quindi:
+\[
+a_\text{salita}
+=-g\sin\theta-\mu_k g\cos\theta.
+\]
+
+Sostituendo i dati:
+\[
+a_\text{salita}
+=-9{,}8\sin 30^\circ
+-0{,}12\cdot 9{,}8\cos 30^\circ
+\simeq -5{,}9\,\mathrm{m/s^2}.
+\]
+
+Il tempo necessario per fermarsi si ricava da:
+\[
+v=v_0+a_\text{salita}t.
+\]
+Ponendo \(v=0\):
+\[
+t_\text{stop}=\frac{-v_0}{a_\text{salita}}
+=\frac{-4{,}0}{-5{,}9}
+\simeq 0{,}68\,\mathrm{s}.
+\]
+
+Lo spazio percorso verso monte e:
+\[
+s=v_0t_\text{stop}
+\frac{1}{2}a_\text{salita}t_\text{stop}^2.
+\]
+\[
+s\simeq 4{,}0\cdot 0{,}68
+\frac{1}{2}(-5{,}9)(0{,}68)^2
+\simeq 1{,}35\,\mathrm{m}.
+\]
+
+Nella discesa il blocco parte da fermo dal punto piu alto. La componente del
+peso e verso valle, mentre l'attrito e verso monte. Mantenendo positivo il
+verso verso monte:
+\[
+a_\text{discesa}
+=-g\sin\theta+\mu_k g\cos\theta.
+\]
+
+\[
+a_\text{discesa}
+=-9{,}8\sin 30^\circ
+0{,}12\cdot 9{,}8\cos 30^\circ
+\simeq -3{,}9\,\mathrm{m/s^2}.
+\]
+
+Per tornare al punto di partenza deve percorrere \(1{,}35\,\mathrm{m}\) verso
+valle. In modulo:
+\[
+s=\frac{1}{2}|a_\text{discesa}|t_\text{discesa}^2.
+\]
+
+\[
+t_\text{discesa}
+=\sqrt{\frac{2s}{|a_\text{discesa}|}}
+=\sqrt{\frac{2\cdot 1{,}35}{3{,}9}}
+\simeq 0{,}83\,\mathrm{s}.
+\]
+
+Il tempo complessivo e:
+\[
+t_\text{tot}=t_\text{stop}+t_\text{discesa}
+\simeq 0{,}68+0{,}83
+\simeq 1{,}51\,\mathrm{s}.
+\]
+\end{soluzione}

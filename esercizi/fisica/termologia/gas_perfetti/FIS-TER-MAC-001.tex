@@ -7,7 +7,7 @@
 % Classe: Quarta liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: T_calda = 300 K; T_fredda = 265 K
 % Tempo_stimato: 10 min
 % Competenze: modellizzazione, uso del rendimento di Carnot, calcolo algebrico
 % Prerequisiti: macchine termiche, rendimento, ciclo di Carnot, temperatura assoluta
@@ -25,6 +25,45 @@ Calcola le temperature delle due sorgenti.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Il rendimento della macchina reale e:
+\[
+\eta=8{,}4\%=0{,}084.
+\]
+Questo valore e il \(72\%\) del rendimento della macchina di Carnot:
+\[
+\eta=0{,}72\,\eta_C.
+\]
+Quindi:
+\[
+\eta_C=\frac{0{,}084}{0{,}72}\simeq 0{,}117.
+\]
 
+Per una macchina di Carnot:
+\[
+\eta_C=1-\frac{T_f}{T_c}
+=\frac{T_c-T_f}{T_c},
+\]
+dove \(T_c\) e la temperatura della sorgente calda e \(T_f\) quella della
+sorgente fredda. La differenza tra le temperature e
+\[
+T_c-T_f=35\,\mathrm{K}.
+\]
+
+Allora:
+\[
+0{,}117=\frac{35}{T_c}
+\qquad\Rightarrow\qquad
+T_c\simeq 300\,\mathrm{K}.
+\]
+La temperatura della sorgente fredda e:
+\[
+T_f=T_c-35\,\mathrm{K}=265\,\mathrm{K}.
+\]
+
+In gradi Celsius sono circa:
+\[
+T_c\simeq 27\,^\circ\mathrm{C},
+\qquad
+T_f\simeq -8\,^\circ\mathrm{C}.
+\]
+\end{soluzione}

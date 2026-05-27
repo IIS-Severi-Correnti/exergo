@@ -7,7 +7,7 @@
 % Classe: Quarta liceo scientifico
 % Difficolta: 3
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: v_s = v_suono / 2; non dipende dalla frequenza
 % Tempo_stimato: 8 min
 % Competenze: modellizzazione, ragionamento su rapporti, interpretazione fisica
 % Prerequisiti: effetto Doppler, frequenza, velocita del suono
@@ -25,6 +25,37 @@ Il risultato dipende dalla frequenza considerata?
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Per una sorgente sonora che si avvicina a osservatori fermi, la frequenza
+osservata davanti alla sorgente e:
+\[
+f'=f\frac{v}{v-v_s},
+\]
+dove \(v\) e la velocita del suono e \(v_s\) la velocita della sorgente.
 
+Vogliamo che la frequenza raddoppi:
+\[
+f'=2f.
+\]
+Quindi:
+\[
+2f=f\frac{v}{v-v_s}.
+\]
+Semplificando \(f\):
+\[
+2=\frac{v}{v-v_s}.
+\]
+
+\[
+2(v-v_s)=v
+\qquad\Rightarrow\qquad
+v_s=\frac{v}{2}.
+\]
+
+Se si assume \(v=343\,\mathrm{m/s}\), allora:
+\[
+v_s\simeq 1{,}7\cdot 10^2\,\mathrm{m/s}.
+\]
+
+Il risultato non dipende dalla frequenza emessa, perche \(f\) si semplifica nel
+rapporto tra frequenza osservata e frequenza emessa.
+\end{soluzione}

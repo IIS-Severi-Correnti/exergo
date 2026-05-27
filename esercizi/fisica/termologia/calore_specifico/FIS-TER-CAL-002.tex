@@ -7,7 +7,7 @@
 % Classe: Seconda liceo scientifico
 % Difficolta: 3
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: circa 37 ^\circ C
 % Tempo_stimato: 8 min
 % Competenze: bilancio energetico, calore specifico, conversione del tempo
 % Prerequisiti: calore specifico, energia, potenza
@@ -26,6 +26,30 @@ Calcola la temperatura dell'acqua dopo 1 ora di funzionamento.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Il calore utile fornito all'acqua in un secondo e l'80\% del calore ricevuto:
+\[
+P_\text{utile}=0{,}80\cdot 1{,}8\cdot 10^4\,\mathrm{J/s}
+=1{,}44\cdot 10^4\,\mathrm{W}.
+\]
 
+In un'ora, cioe in \(3600\,\mathrm{s}\), l'energia trasferita all'acqua e:
+\[
+Q=P_\text{utile}t
+=1{,}44\cdot 10^4\cdot 3600
+=5{,}18\cdot 10^7\,\mathrm{J}.
+\]
+
+Usando \(Q=mc\Delta T\), con
+\(c_\text{acqua}\simeq 4186\,\mathrm{J/(kg\,K)}\):
+\[
+\Delta T=\frac{Q}{mc}
+=\frac{5{,}18\cdot 10^7}{495\cdot 4186}
+\simeq 25\,^\circ\mathrm{C}.
+\]
+
+La temperatura finale e quindi:
+\[
+T_f=12\,^\circ\mathrm{C}+25\,^\circ\mathrm{C}
+\simeq 37\,^\circ\mathrm{C}.
+\]
+\end{soluzione}

@@ -7,7 +7,7 @@
 % Classe: Terza liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: F_tot = (12,2; -3,0) N; t = 1,69 s; v = 17,7 m/s
 % Tempo_stimato: 12 min
 % Competenze: scomposizione vettoriale, dinamica, cinematica lungo una direzione
 % Prerequisiti: secondo principio della dinamica, vettori, moto uniformemente accelerato
@@ -36,6 +36,78 @@ infine la velocita del corpo al termine del tragitto.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+La prima forza ha componenti:
+\[
+\vec F_1=
+\begin{pmatrix}
+7{,}0\\[4pt]
+0
+\end{pmatrix}
+\mathrm{N}.
+\]
 
+La seconda forza e diretta a \(-30^\circ\), quindi:
+\[
+F_{2x}=6{,}0\cos(-30^\circ)\simeq 5{,}20\,\mathrm{N},
+\]
+\[
+F_{2y}=6{,}0\sin(-30^\circ)=-3{,}0\,\mathrm{N}.
+\]
+
+La forza totale e:
+\[
+\vec F_\text{tot}=
+\begin{pmatrix}
+7{,}0+5{,}20\\[4pt]
+0-3{,}0
+\end{pmatrix}
+=
+\begin{pmatrix}
+12{,}2\\[4pt]
+-3{,}0
+\end{pmatrix}
+\mathrm{N}.
+\]
+
+Il modulo della risultante e:
+\[
+|\vec F_\text{tot}|
+=\sqrt{(12{,}2)^2+(-3{,}0)^2}
+\simeq 12{,}6\,\mathrm{N}.
+\]
+
+L'accelerazione vettoriale e:
+\[
+\vec a=\frac{\vec F_\text{tot}}{m}
+=
+\begin{pmatrix}
+10{,}2\\[4pt]
+-2{,}5
+\end{pmatrix}
+\mathrm{m/s^2}.
+\]
+Il suo modulo e:
+\[
+a=\frac{|\vec F_\text{tot}|}{m}
+=\frac{12{,}6}{1{,}2}
+\simeq 10{,}5\,\mathrm{m/s^2}.
+\]
+
+Poiche il corpo parte da fermo, il moto avviene lungo la direzione della
+risultante. Lungo tale direzione:
+\[
+s=\frac{1}{2}at^2.
+\]
+Con \(s=15\,\mathrm{m}\):
+\[
+t=\sqrt{\frac{2s}{a}}
+=\sqrt{\frac{30}{10{,}5}}
+\simeq 1{,}69\,\mathrm{s}.
+\]
+
+La velocita finale lungo la direzione della risultante e:
+\[
+v=at=10{,}5\cdot 1{,}69
+\simeq 17{,}7\,\mathrm{m/s}.
+\]
+\end{soluzione}

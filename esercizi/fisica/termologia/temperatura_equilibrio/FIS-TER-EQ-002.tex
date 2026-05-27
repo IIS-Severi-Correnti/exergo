@@ -7,7 +7,7 @@
 % Classe: Seconda liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: circa 17 ^\circ C
 % Tempo_stimato: 12 min
 % Competenze: bilancio termico, calore latente, scelta del modello fisico
 % Prerequisiti: calore specifico, calore latente di fusione, equilibrio termico
@@ -26,6 +26,47 @@ l'ambiente, determina la temperatura di equilibrio.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Verifichiamo prima se il ghiaccio fonde tutto. Il calore che l'acqua liquida
+puo cedere raffreddandosi fino a \(0\,^\circ\mathrm{C}\) e:
+\[
+Q_\text{acqua}=m c \Delta T
+=1{,}0\cdot 4186\cdot 28
+\simeq 1{,}17\cdot 10^5\,\mathrm{J}.
+\]
 
+Il ghiaccio deve prima scaldarsi da \(-20\,^\circ\mathrm{C}\) a
+\(0\,^\circ\mathrm{C}\):
+\[
+Q_1=m_\text{g}c_\text{ghiaccio}\Delta T
+=0{,}100\cdot 2100\cdot 20
+=4{,}2\cdot 10^3\,\mathrm{J}.
+\]
+Poi deve fondere:
+\[
+Q_2=m_\text{g}L_f
+=0{,}100\cdot 3{,}34\cdot 10^5
+=3{,}34\cdot 10^4\,\mathrm{J}.
+\]
+
+Il calore necessario per portare il ghiaccio a \(0\,^\circ\mathrm{C}\) e
+fonderlo e:
+\[
+Q_1+Q_2=3{,}76\cdot 10^4\,\mathrm{J},
+\]
+minore del calore che l'acqua puo cedere arrivando a
+\(0\,^\circ\mathrm{C}\). Dunque il ghiaccio fonde completamente e la
+temperatura finale e maggiore di \(0\,^\circ\mathrm{C}\).
+
+Il calore rimanente riscalda la massa totale d'acqua, pari a
+\(1{,}1\,\mathrm{kg}\):
+\[
+Q_\text{rim}=1{,}17\cdot 10^5-3{,}76\cdot 10^4
+\simeq 7{,}96\cdot 10^4\,\mathrm{J}.
+\]
+
+\[
+T_f=\frac{Q_\text{rim}}{(1{,}1)c_\text{acqua}}
+=\frac{7{,}96\cdot 10^4}{1{,}1\cdot 4186}
+\simeq 17\,^\circ\mathrm{C}.
+\]
+\end{soluzione}

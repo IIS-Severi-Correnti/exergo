@@ -7,7 +7,7 @@
 % Classe: Quarta liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: T_B = 187 K; V_C = 2,60 L; trasformazione non ciclica
 % Tempo_stimato: 12 min
 % Competenze: modellizzazione, uso dell'equazione di stato, lettura del piano pressione-volume
 % Prerequisiti: gas perfetti, trasformazione isobara, trasformazione isoterma
@@ -33,6 +33,43 @@ pressione viene dimezzata, raggiungendo lo stato \(C\).
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Il volume iniziale e:
+\[
+V_A=2{,}00\cdot 10^{-3}\,\mathrm{m^3}=2{,}00\,\mathrm{L}.
+\]
+La compressione isobara riduce il volume di \(0{,}70\,\mathrm{L}\), quindi:
+\[
+V_B=2{,}00\,\mathrm{L}-0{,}70\,\mathrm{L}
+=1{,}30\,\mathrm{L}.
+\]
 
+Nel grafico pressione-volume il tratto \(A\to B\) e un segmento orizzontale
+verso sinistra, perche la pressione resta costante e il volume diminuisce. Il
+tratto \(B\to C\) e un'isoterma: poiche la pressione si dimezza, il volume
+aumenta.
+
+La trasformazione complessiva non e ciclica, perche lo stato finale \(C\) non
+coincide con lo stato iniziale \(A\).
+
+Durante la trasformazione isobara vale:
+\[
+\frac{V_A}{T_A}=\frac{V_B}{T_B}.
+\]
+La temperatura iniziale in kelvin e:
+\[
+T_A=15+273=288\,\mathrm{K}.
+\]
+Quindi:
+\[
+T_B=T_A\frac{V_B}{V_A}
+=288\,\mathrm{K}\cdot \frac{1{,}30}{2{,}00}
+\simeq 187\,\mathrm{K}.
+\]
+
+Nel tratto isoterma \(B\to C\), \(pV=\text{costante}\). Se la pressione viene
+dimezzata, il volume raddoppia:
+\[
+V_C=2V_B=2{,}60\,\mathrm{L}
+=2{,}60\cdot 10^{-3}\,\mathrm{m^3}.
+\]
+\end{soluzione}

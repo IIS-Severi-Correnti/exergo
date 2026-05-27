@@ -7,7 +7,7 @@
 % Classe: Seconda liceo scientifico
 % Difficolta: 3
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: V circa 5,0 * 10^{-3} m^3; rho circa 1,7 * 10^4 kg/m^3
 % Tempo_stimato: 8 min
 % Competenze: modellizzazione, bilancio delle forze, uso delle unita di misura
 % Prerequisiti: forza peso, spinta di Archimede, densita
@@ -22,6 +22,36 @@ $770\,\mathrm{N}$. Determina il volume del corpo e la sua densita.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+La differenza tra il peso in aria e il peso apparente in mare e la spinta di
+Archimede:
+\[
+F_A=P-P_\text{app}
+=820\,\mathrm{N}-770\,\mathrm{N}
+=50\,\mathrm{N}.
+\]
 
+La spinta di Archimede vale:
+\[
+F_A=\rho_\text{mare}gV.
+\]
+Assumendo \(\rho_\text{mare}\simeq 1030\,\mathrm{kg/m^3}\):
+\[
+V=\frac{F_A}{\rho_\text{mare}g}
+=\frac{50}{1030\cdot 9{,}8}
+\simeq 5{,}0\cdot 10^{-3}\,\mathrm{m^3}.
+\]
+
+La massa del corpo si ricava dal peso in aria:
+\[
+m=\frac{P}{g}
+=\frac{820}{9{,}8}
+\simeq 84\,\mathrm{kg}.
+\]
+
+La densita del corpo e:
+\[
+\rho=\frac{m}{V}
+\simeq \frac{84}{5{,}0\cdot 10^{-3}}
+\simeq 1{,}7\cdot 10^4\,\mathrm{kg/m^3}.
+\]
+\end{soluzione}

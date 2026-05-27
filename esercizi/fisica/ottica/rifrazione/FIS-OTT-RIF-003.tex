@@ -7,7 +7,7 @@
 % Classe: Seconda liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: circa 1,2 mm
 % Tempo_stimato: 12 min
 % Competenze: applicazione della legge di Snell, geometria del raggio, modellizzazione
 % Prerequisiti: rifrazione, legge di Snell, trigonometria
@@ -27,6 +27,28 @@ del raggio incidente.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Prima calcoliamo l'angolo di rifrazione all'interno del vetro. Dalla legge di
+Snell, assumendo \(n_\text{aria}\simeq 1\):
+\[
+\sin r=\frac{\sin i}{n}
+=\frac{\sin 30{,}0^\circ}{1{,}52}.
+\]
 
+\[
+r\simeq 19{,}2^\circ.
+\]
+
+Per una lastra a facce parallele, il raggio emergente e parallelo al raggio
+incidente, ma risulta traslato lateralmente. Lo spostamento laterale e:
+\[
+d=s\frac{\sin(i-r)}{\cos r},
+\]
+dove \(s\) e lo spessore della lastra.
+
+Con \(s=6{,}00\,\mathrm{mm}\), \(i=30{,}0^\circ\) e
+\(r=19{,}2^\circ\):
+\[
+d=6{,}00\frac{\sin(30{,}0^\circ-19{,}2^\circ)}{\cos 19{,}2^\circ}
+\simeq 1{,}2\,\mathrm{mm}.
+\]
+\end{soluzione}

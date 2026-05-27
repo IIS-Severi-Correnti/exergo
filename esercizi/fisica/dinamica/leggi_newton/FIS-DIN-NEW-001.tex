@@ -7,7 +7,7 @@
 % Classe: Terza liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: a = (3,0; -4,0) m/s^2; t = 0,60 s; x = 1,02 m; v = (2,6; -1,2) m/s
 % Tempo_stimato: 12 min
 % Competenze: scomposizione vettoriale, modellizzazione, cinematica bidimensionale
 % Prerequisiti: secondo principio della dinamica, moto uniformemente accelerato, vettori
@@ -38,6 +38,87 @@ coordinata \(x\) e la velocita in quell'istante.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+La risultante delle forze e:
+\[
+\vec F_\text{tot}=
+\begin{pmatrix}
+1{,}8\\[4pt]
+-2{,}4
+\end{pmatrix}
+\mathrm{N}.
+\]
 
+Dal secondo principio della dinamica:
+\[
+\vec a=\frac{\vec F_\text{tot}}{m}
+=\frac{1}{0{,}60}
+\begin{pmatrix}
+1{,}8\\[4pt]
+-2{,}4
+\end{pmatrix}
+=
+\begin{pmatrix}
+3{,}0\\[4pt]
+-4{,}0
+\end{pmatrix}
+\mathrm{m/s^2}.
+\]
+
+Le equazioni orarie sono:
+\[
+x(t)=v_{0x}t+\frac{1}{2}a_xt^2
+=0{,}80t+1{,}5t^2,
+\]
+\[
+y(t)=v_{0y}t+\frac{1}{2}a_yt^2
+=1{,}20t-2{,}0t^2.
+\]
+
+Per trovare il secondo attraversamento dell'asse \(x\), imponiamo \(y=0\):
+\[
+1{,}20t-2{,}0t^2=0.
+\]
+\[
+t(1{,}20-2{,}0t)=0.
+\]
+La soluzione \(t=0\) e l'istante iniziale; quella successiva e:
+\[
+t=\frac{1{,}20}{2{,}0}=0{,}60\,\mathrm{s}.
+\]
+
+La coordinata \(x\) in quell'istante e:
+\[
+x(0{,}60)=0{,}80\cdot 0{,}60+1{,}5\cdot (0{,}60)^2
+=1{,}02\,\mathrm{m}.
+\]
+
+La velocita e:
+\[
+\vec v(t)=\vec v_0+\vec a t.
+\]
+Quindi:
+\[
+\vec v(0{,}60)=
+\begin{pmatrix}
+0{,}80\\[4pt]
+1{,}20
+\end{pmatrix}
++
+0{,}60
+\begin{pmatrix}
+3{,}0\\[4pt]
+-4{,}0
+\end{pmatrix}
+=
+\begin{pmatrix}
+2{,}6\\[4pt]
+-1{,}2
+\end{pmatrix}
+\mathrm{m/s}.
+\]
+
+Il modulo della velocita in quell'istante e:
+\[
+|\vec v|\simeq 2{,}9\,\mathrm{m/s}.
+\]
+\end{soluzione}

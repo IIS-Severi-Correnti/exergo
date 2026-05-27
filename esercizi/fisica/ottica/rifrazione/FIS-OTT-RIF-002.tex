@@ -7,7 +7,7 @@
 % Classe: Seconda liceo scientifico
 % Difficolta: 3
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: v circa 2,46 * 10^8 m/s
 % Tempo_stimato: 8 min
 % Competenze: applicazione della legge di Snell, calcolo dell'indice di rifrazione, modellizzazione
 % Prerequisiti: legge di Snell, indice di rifrazione, funzioni goniometriche
@@ -25,6 +25,24 @@ Calcola la velocita della luce nel mezzo trasparente.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Applichiamo la legge di Snell:
+\[
+n_1\sin\theta_i=n_2\sin\theta_r.
+\]
+Per l'aria possiamo assumere \(n_1\simeq 1\). Allora:
+\[
+n_2=\frac{\sin\theta_i}{\sin\theta_r}
+=\frac{\sin 63^\circ}{\sin 47^\circ}
+\simeq 1{,}22.
+\]
 
+La velocita della luce nel mezzo e:
+\[
+v=\frac{c}{n_2}.
+\]
+
+\[
+v=\frac{3{,}00\cdot 10^8}{1{,}22}
+\simeq 2{,}46\cdot 10^8\,\mathrm{m/s}.
+\]
+\end{soluzione}

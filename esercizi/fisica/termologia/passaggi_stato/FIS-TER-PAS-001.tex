@@ -7,7 +7,7 @@
 % Classe: Seconda liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: circa 4,5 g di acqua
 % Tempo_stimato: 12 min
 % Competenze: bilancio termico, calore latente, interpretazione dei passaggi di stato
 % Prerequisiti: calore specifico, calore latente, temperatura di ebollizione
@@ -25,6 +25,36 @@ Calcola la quantita di acqua spruzzata sull'oro.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+L'oro si trova alla temperatura di fusione e solidifica senza raffreddarsi.
+Il calore ceduto dall'oro e quindi il suo calore latente di solidificazione:
+\[
+Q_\text{oro}=m_\text{oro}L_f.
+\]
+Assumendo per l'oro \(L_f\simeq 6{,}45\cdot 10^4\,\mathrm{J/kg}\):
+\[
+Q_\text{oro}=0{,}180\cdot 6{,}45\cdot 10^4
+\simeq 1{,}16\cdot 10^4\,\mathrm{J}.
+\]
 
+L'acqua assorbe calore prima per riscaldarsi da
+\(23\,^\circ\mathrm{C}\) a \(100\,^\circ\mathrm{C}\), poi per vaporizzare:
+\[
+Q_\text{acqua}=m\left[c_\text{acqua}(100-23)+L_v\right].
+\]
+Con \(c_\text{acqua}\simeq 4186\,\mathrm{J/(kg\,K)}\) e
+\(L_v\simeq 2{,}26\cdot 10^6\,\mathrm{J/kg}\):
+\[
+Q_\text{acqua}=m\left[4186\cdot 77+2{,}26\cdot 10^6\right].
+\]
+
+Ponendo \(Q_\text{acqua}=Q_\text{oro}\):
+\[
+m=\frac{1{,}16\cdot 10^4}{4186\cdot 77+2{,}26\cdot 10^6}
+\simeq 4{,}5\cdot 10^{-3}\,\mathrm{kg}.
+\]
+
+La quantita di acqua spruzzata e quindi circa:
+\[
+m\simeq 4{,}5\,\mathrm{g}.
+\]
+\end{soluzione}

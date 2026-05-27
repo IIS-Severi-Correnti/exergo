@@ -7,7 +7,7 @@
 % Classe: Quinta liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: circa 7,6 * 10^{-9} V
 % Tempo_stimato: 12 min
 % Competenze: calcolo del flusso magnetico, applicazione della legge di Faraday, modellizzazione
 % Prerequisiti: flusso del campo magnetico, legge di Faraday-Lenz, area del cerchio
@@ -28,6 +28,45 @@ Calcola il modulo della circuitazione media del campo elettrico lungo la spira.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+La circuitazione del campo elettrico indotto e uguale alla forza elettromotrice
+indotta:
+\[
+\left|\oint \vec E\cdot d\vec l\right|
+=\left|\frac{\Delta\Phi_B}{\Delta t}\right|.
+\]
 
+L'area della spira e:
+\[
+A=\pi r^2=\pi(0{,}080)^2
+\simeq 2{,}01\cdot 10^{-2}\,\mathrm{m^2}.
+\]
+
+All'inizio la spira e perpendicolare al campo magnetico, quindi il suo vettore
+superficie e parallelo a \(\vec B\) e il flusso e:
+\[
+\Phi_i=BA.
+\]
+Dopo la rotazione di \(60^\circ\), il flusso diventa:
+\[
+\Phi_f=BA\cos 60^\circ=\frac{1}{2}BA.
+\]
+
+Il modulo della variazione di flusso e:
+\[
+|\Delta\Phi_B|=\left|\Phi_f-\Phi_i\right|
+=\frac{1}{2}BA.
+\]
+
+Quindi:
+\[
+\left|\oint \vec E\cdot d\vec l\right|
+=\frac{\frac{1}{2}BA}{\Delta t}
+=\frac{0{,}5\cdot 3{,}8\cdot 10^{-6}\cdot
+2{,}01\cdot 10^{-2}}{5{,}0}.
+\]
+
+\[
+\left|\oint \vec E\cdot d\vec l\right|
+\simeq 7{,}6\cdot 10^{-9}\,\mathrm{V}.
+\]
+\end{soluzione}

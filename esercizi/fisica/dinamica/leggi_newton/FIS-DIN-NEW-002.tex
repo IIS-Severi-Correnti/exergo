@@ -7,7 +7,7 @@
 % Classe: Terza liceo scientifico
 % Difficolta: 4
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: F_tot = (5,29; 8,83) N; a = (2,12; 3,53) m/s^2; s = (9,53; 15,9) m
 % Tempo_stimato: 12 min
 % Competenze: scomposizione vettoriale, secondo principio della dinamica, cinematica
 % Prerequisiti: trigonometria, vettori, moto uniformemente accelerato
@@ -36,6 +36,84 @@ forma vettoriale e come modulo complessivo.
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+Scomponiamo le due forze lungo gli assi cartesiani.
 
+Per la prima forza:
+\[
+F_{1x}=9{,}0\cos 30^\circ\simeq 7{,}79\,\mathrm{N},
+\qquad
+F_{1y}=9{,}0\sin 30^\circ=4{,}50\,\mathrm{N}.
+\]
+
+Per la seconda forza:
+\[
+F_{2x}=5{,}0\cos 120^\circ=-2{,}50\,\mathrm{N},
+\qquad
+F_{2y}=5{,}0\sin 120^\circ\simeq 4{,}33\,\mathrm{N}.
+\]
+
+La risultante e:
+\[
+\vec F_\text{tot}=
+\begin{pmatrix}
+7{,}79-2{,}50\\[4pt]
+4{,}50+4{,}33
+\end{pmatrix}
+=
+\begin{pmatrix}
+5{,}29\\[4pt]
+8{,}83
+\end{pmatrix}
+\mathrm{N}.
+\]
+
+Il modulo della risultante e:
+\[
+|\vec F_\text{tot}|
+=\sqrt{(5{,}29)^2+(8{,}83)^2}
+\simeq 10{,}3\,\mathrm{N}.
+\]
+
+L'accelerazione vale:
+\[
+\vec a=\frac{\vec F_\text{tot}}{m}
+=\frac{1}{2{,}5}
+\begin{pmatrix}
+5{,}29\\[4pt]
+8{,}83
+\end{pmatrix}
+=
+\begin{pmatrix}
+2{,}12\\[4pt]
+3{,}53
+\end{pmatrix}
+\mathrm{m/s^2}.
+\]
+
+Il corpo parte da fermo, quindi dopo \(t=3{,}0\,\mathrm{s}\):
+\[
+\vec s=\frac{1}{2}\vec a t^2.
+\]
+
+\[
+\vec s=
+\frac{1}{2}
+\begin{pmatrix}
+2{,}12\\[4pt]
+3{,}53
+\end{pmatrix}
+(3{,}0)^2
+=
+\begin{pmatrix}
+9{,}53\\[4pt]
+15{,}9
+\end{pmatrix}
+\mathrm{m}.
+\]
+
+Il modulo dello spostamento e:
+\[
+|\vec s|=\sqrt{(9{,}53)^2+(15{,}9)^2}
+\simeq 18{,}5\,\mathrm{m}.
+\]
+\end{soluzione}

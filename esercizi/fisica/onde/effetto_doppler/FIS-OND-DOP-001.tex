@@ -7,7 +7,7 @@
 % Classe: Quarta liceo scientifico
 % Difficolta: 3
 % Tipo: problema_numerico
-% Risultato: soluzione da aggiungere
+% Risultato: circa 34 m/s
 % Tempo_stimato: 8 min
 % Competenze: applicazione del modello fisico, interpretazione del segno, calcolo algebrico
 % Prerequisiti: frequenza, velocita del suono, effetto Doppler
@@ -26,6 +26,30 @@ Qual e la tua velocita?
 \end{esercizio}
 
 \begin{soluzione}
-% Soluzione da aggiungere.
-\end{soluzione}
+La sorgente e ferma, mentre l'osservatore si avvicina. In questo caso:
+\[
+f'=f\frac{v+v_o}{v},
+\]
+dove \(v\) e la velocita del suono e \(v_o\) la velocita dell'osservatore.
 
+La frequenza osservata e:
+\[
+f'=960\,\mathrm{Hz}+95\,\mathrm{Hz}
+=1055\,\mathrm{Hz}.
+\]
+
+Risolvendo rispetto a \(v_o\):
+\[
+\frac{f'}{f}=1+\frac{v_o}{v}
+\qquad\Rightarrow\qquad
+v_o=v\left(\frac{f'}{f}-1\right).
+\]
+
+\[
+v_o=343\left(\frac{1055}{960}-1\right)
+\simeq 34\,\mathrm{m/s}.
+\]
+
+La velocita e quindi circa \(34\,\mathrm{m/s}\), cioe circa
+\(122\,\mathrm{km/h}\).
+\end{soluzione}
