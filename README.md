@@ -167,6 +167,36 @@ python scripts/cerca_esercizi.py --argomento "Temperatura di equilibrio" --diffi
 python scripts/cerca_esercizi.py --disciplina Matematica --area "Geometria analitica" --tag ellisse
 ```
 
+## Pubblicare la GitHub Page
+
+Il repository include una GitHub Page statica generata automaticamente a partire
+dall'archivio degli esercizi.
+
+Per generarla in locale:
+
+```bash
+python scripts/genera_indice.py
+python scripts/valida_archivio.py
+python scripts/genera_sito.py --output _site
+```
+
+Il sito viene creato in `_site/`, cartella ignorata da Git. L'indice principale
+e in `_site/index.html`; ogni esercizio ha una pagina dedicata con testo,
+metadati, link al sorgente `.tex` e soluzione collassata di default.
+
+La pubblicazione su GitHub Pages e gestita da `.github/workflows/pages.yml`.
+A ogni push su `main` che modifica esercizi, metadati, script o workflow, la
+pipeline:
+
+1. rigenera `metadata/indice_esercizi.csv`;
+2. valida l'archivio;
+3. genera il sito statico;
+4. pubblica l'artifact su GitHub Pages.
+
+In questo modo gli esercizi aggiunti in futuro sotto `esercizi/` compariranno
+automaticamente nella pagina pubblica, purche abbiano metadati validi e passino
+la validazione.
+
 ## Generare una verifica
 
 Prima rigenerare l'indice:

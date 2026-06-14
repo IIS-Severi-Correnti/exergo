@@ -31,6 +31,9 @@ __pycache__/
 # Local LaTeX validation workspace
 .latex_check/
 
+# Local static site preview
+_site/
+
 # Virtual environments
 .venv/
 venv/
