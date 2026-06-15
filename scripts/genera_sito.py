@@ -182,9 +182,38 @@ def label_value(label: str, value: str) -> str:
     )
 
 
+def label_value_html(label: str, value_html: str) -> str:
+    if not value_html:
+        return ""
+    return (
+        '<div class="meta-item">'
+        f"<dt>{escape(label)}</dt>"
+        f"<dd>{value_html}</dd>"
+        "</div>"
+    )
+
+
 def badge(value: str, class_name: str = "") -> str:
     class_attr = f" {class_name}" if class_name else ""
     return f'<span class="badge{class_attr}">{escape(value)}</span>'
+
+
+def difficulty_stars(value: str) -> str:
+    try:
+        difficulty = int(value)
+    except ValueError:
+        return escape(value)
+
+    difficulty = max(0, min(5, difficulty))
+    filled = "".join('<span class="star star-filled" aria-hidden="true">&#9733;</span>' for _ in range(difficulty))
+    empty = "".join('<span class="star star-empty" aria-hidden="true">&#9734;</span>' for _ in range(5 - difficulty))
+    label = f"Difficolta {difficulty} su 5"
+    return (
+        f'<span class="difficulty-stars" role="img" aria-label="{escape_attr(label)}" title="{escape_attr(label)}">'
+        f"{filled}{empty}"
+        f'<span class="difficulty-score">{difficulty}/5</span>'
+        "</span>"
+    )
 
 
 def page_shell(title: str, body: str, *, depth: int = 0, script: str = "") -> str:
@@ -267,26 +296,35 @@ def render_index(exercises: list[Exercise]) -> str:
     </dl>
   </header>
 
-  <section class="toolbar" aria-label="Filtri esercizi">
-    <label class="search-control" for="search">
-      <span>Cerca</span>
-      <input id="search" name="search" type="search" autocomplete="off" placeholder="ID, titolo, argomento, tag">
-    </label>
-    {select_control("discipline", "Disciplina", discipline_values)}
-    {select_control("area", "Area", area_values)}
-    {select_control("topic", "Argomento", topic_values)}
-    {select_control("school-class", "Classe", class_values)}
-    {select_control("difficulty", "Difficolta", difficulty_values)}
-    {select_control("exercise-type", "Tipo", type_values)}
-    <button class="reset-button" type="button" id="reset-filters">Azzera</button>
-  </section>
+  <section class="archive-layout">
+    <aside class="toolbar" aria-label="Filtri esercizi">
+      <label class="search-control" for="search">
+        <span>Cerca</span>
+        <input id="search" name="search" type="search" autocomplete="off" placeholder="ID, titolo, argomento, tag">
+      </label>
+      {select_control("discipline", "Disciplina", discipline_values)}
+      {select_control("area", "Area", area_values)}
+      {select_control("topic", "Argomento", topic_values)}
+      {select_control("school-class", "Classe", class_values)}
+      {select_control("difficulty", "Difficolta", difficulty_values)}
+      {select_control("exercise-type", "Tipo", type_values)}
+      <button class="reset-button" type="button" id="reset-filters">Azzera</button>
+    </aside>
 
-  <div class="result-count" aria-live="polite">
-    <strong id="visible-count">{len(exercises)}</strong> esercizi visibili
-  </div>
-
-  <section class="exercise-list" id="exercise-list" aria-label="Elenco esercizi">
-    {cards}
+    <section class="catalog" aria-label="Elenco esercizi">
+      <div class="catalog-head">
+        <div>
+          <p class="eyebrow">Disponibili</p>
+          <h2>Catalogo</h2>
+        </div>
+        <div class="result-count" aria-live="polite">
+          <strong id="visible-count">{len(exercises)}</strong> esercizi
+        </div>
+      </div>
+      <div class="exercise-list" id="exercise-list">
+        {cards}
+      </div>
+    </section>
   </section>
 </main>
 <script id="exercise-data" type="application/json">{escape(data)}</script>
@@ -300,9 +338,9 @@ def render_index(exercises: list[Exercise]) -> str:
 
 def render_index_card(exercise: Exercise) -> str:
     tags = split_list(exercise.row["tag"])
-    tag_html = "".join(badge(tag) for tag in tags[:5])
-    if len(tags) > 5:
-        tag_html += badge(f"+{len(tags) - 5}")
+    tag_html = "".join(badge(tag) for tag in tags[:4])
+    if len(tags) > 4:
+        tag_html += badge(f"+{len(tags) - 4}")
 
     haystack = " ".join(
         [
@@ -319,6 +357,8 @@ def render_index_card(exercise: Exercise) -> str:
     )
     discipline_class = "physics" if exercise.row["disciplina"].casefold() == "fisica" else "math"
 
+    time_item = label_value("Tempo", exercise.row["tempo_stimato"])
+
     return f"""
 <article class="exercise-card {discipline_class}"
   data-search="{escape_attr(haystack)}"
@@ -328,19 +368,25 @@ def render_index_card(exercise: Exercise) -> str:
   data-school-class="{escape_attr(exercise.row["classe"])}"
   data-difficulty="{escape_attr(exercise.row["difficolta"])}"
   data-exercise-type="{escape_attr(exercise.row["tipo"])}">
-  <div class="card-topline">
-    <span>{escape(exercise.row["disciplina"])}</span>
-    <span>{escape(exercise.row["area"])}</span>
+  <div class="row-marker" aria-hidden="true">
+    <span>{escape(exercise.row["disciplina"][:3].upper())}</span>
   </div>
-  <h2><a href="{escape_attr(exercise.url)}">{escape(exercise.title)}</a></h2>
-  <p class="card-id">{escape(exercise.exercise_id)}</p>
+  <div class="exercise-main">
+    <div class="card-topline">
+      <span>{escape(exercise.row["disciplina"])}</span>
+      <span>{escape(exercise.row["area"])}</span>
+      <span>{escape(exercise.row["argomento"])}</span>
+    </div>
+    <h2><a href="{escape_attr(exercise.url)}">{escape(exercise.title)}</a></h2>
+    <p class="card-id">{escape(exercise.exercise_id)}</p>
+    <div class="tag-row" aria-label="Tag">{tag_html}</div>
+  </div>
   <dl class="card-meta">
-    {label_value("Argomento", exercise.row["argomento"])}
     {label_value("Classe", exercise.row["classe"])}
-    {label_value("Difficolta", exercise.row["difficolta"])}
     {label_value("Tipo", exercise.row["tipo"])}
+    {time_item}
+    {label_value_html("Difficolta", difficulty_stars(exercise.row["difficolta"]))}
   </dl>
-  <div class="tag-row" aria-label="Tag">{tag_html}</div>
 </article>
 """
 
@@ -359,7 +405,7 @@ def render_exercise_page(exercise: Exercise) -> str:
             label_value("Argomento", exercise.row["argomento"]),
             label_value("Sottoargomento", exercise.row["sottoargomento"]),
             label_value("Classe", exercise.row["classe"]),
-            label_value("Difficolta", exercise.row["difficolta"]),
+            label_value_html("Difficolta", difficulty_stars(exercise.row["difficolta"])),
             label_value("Tipo", exercise.row["tipo"]),
             label_value("Tempo stimato", exercise.row["tempo_stimato"]),
             label_value("Autore", exercise.row["autore"]),
@@ -434,17 +480,17 @@ def exercise_to_json(exercise: Exercise) -> dict[str, str]:
 STYLE_CSS = """
 :root {
   color-scheme: light;
-  --bg: #f6f7f4;
-  --surface: #ffffff;
-  --surface-alt: #eef3ef;
-  --ink: #22272e;
-  --muted: #667085;
-  --line: #d8ded8;
-  --accent: #007565;
-  --accent-strong: #00584c;
-  --rust: #9f4f21;
-  --gold: #c28b00;
-  --shadow: 0 16px 36px rgba(34, 39, 46, 0.08);
+  --ink: #172026;
+  --paper: #eef3f2;
+  --teal: #006d77;
+  --amber: #d99a2b;
+  --ink-rgb: 23 32 38;
+  --paper-rgb: 238 243 242;
+  --teal-rgb: 0 109 119;
+  --amber-rgb: 217 154 43;
+  --line: rgb(var(--ink-rgb) / 0.14);
+  --muted: rgb(var(--ink-rgb) / 0.62);
+  --shadow: 0 18px 46px rgb(var(--ink-rgb) / 0.09);
 }
 
 * {
@@ -452,31 +498,33 @@ STYLE_CSS = """
 }
 
 html {
-  background: var(--bg);
+  background: var(--paper);
 }
 
 body {
   margin: 0;
   color: var(--ink);
-  background: var(--bg);
+  background:
+    linear-gradient(180deg, rgb(var(--teal-rgb) / 0.10), rgb(var(--paper-rgb) / 0) 360px),
+    var(--paper);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.55;
 }
 
 a {
-  color: var(--accent-strong);
+  color: var(--teal);
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.18em;
 }
 
 a:hover {
-  color: var(--rust);
+  color: var(--amber);
 }
 
 .page {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1240px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 28px 0 48px;
+  padding: 30px 0 52px;
 }
 
 .site-header,
@@ -485,7 +533,7 @@ a:hover {
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
-  padding: 22px 0 24px;
+  padding: 28px 0 26px;
 }
 
 .exercise-header {
@@ -495,7 +543,7 @@ a:hover {
 
 .eyebrow {
   margin: 0 0 6px;
-  color: var(--accent-strong);
+  color: var(--teal);
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -527,11 +575,12 @@ h2 {
 
 .site-stats div {
   min-width: 88px;
-  padding: 12px 14px;
-  background: var(--surface);
+  padding: 13px 15px;
+  background: rgb(var(--paper-rgb) / 0.74);
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
 }
 
 .site-stats dt,
@@ -552,16 +601,25 @@ h2 {
   font-weight: 800;
 }
 
+.archive-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
 .toolbar {
   display: grid;
-  grid-template-columns: minmax(220px, 2fr) repeat(6, minmax(140px, 1fr)) auto;
-  gap: 10px;
-  align-items: end;
-  padding: 14px;
-  background: var(--surface);
+  position: sticky;
+  top: 16px;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 16px;
+  background: rgb(var(--paper-rgb) / 0.82);
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
 }
 
 .toolbar label {
@@ -581,7 +639,7 @@ input,
 select,
 button {
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   border: 1px solid var(--line);
   border-radius: 8px;
   font: inherit;
@@ -591,76 +649,155 @@ input,
 select {
   padding: 0 12px;
   color: var(--ink);
-  background: #ffffff;
+  background: rgb(var(--paper-rgb) / 0.92);
+}
+
+input:focus,
+select:focus,
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+  outline: 3px solid rgb(var(--amber-rgb) / 0.42);
+  outline-offset: 2px;
 }
 
 button {
   padding: 0 16px;
-  color: #ffffff;
-  background: var(--accent);
-  border-color: var(--accent);
+  color: var(--paper);
+  background: var(--teal);
+  border-color: var(--teal);
   font-weight: 800;
   cursor: pointer;
 }
 
 button:hover {
-  background: var(--accent-strong);
+  color: var(--ink);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+
+.catalog {
+  min-width: 0;
+}
+
+.catalog-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+  padding: 10px 2px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.catalog-head h2 {
+  font-size: 1.35rem;
 }
 
 .result-count {
-  margin: 18px 0 14px;
+  min-width: max-content;
   color: var(--muted);
+  font-weight: 700;
 }
 
 .result-count strong {
   color: var(--ink);
+  font-size: 1.35rem;
 }
 
 .exercise-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
+  gap: 8px;
 }
 
 .exercise-card {
-  display: flex;
-  min-height: 310px;
-  flex-direction: column;
-  gap: 12px;
-  padding: 18px;
-  background: var(--surface);
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) minmax(240px, 330px);
+  gap: 16px;
+  align-items: center;
+  min-height: 132px;
+  padding: 16px;
+  background: rgb(var(--paper-rgb) / 0.78);
   border: 1px solid var(--line);
-  border-top: 5px solid var(--accent);
+  border-left: 5px solid var(--teal);
   border-radius: 8px;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.exercise-card:hover {
+  background: rgb(var(--paper-rgb) / 0.96);
   box-shadow: var(--shadow);
+  transform: translateY(-1px);
 }
 
 .exercise-card.math {
-  border-top-color: var(--rust);
+  border-left-color: var(--amber);
+}
+
+.row-marker {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: var(--teal);
+  background: rgb(var(--teal-rgb) / 0.10);
+  border: 1px solid rgb(var(--teal-rgb) / 0.28);
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.exercise-card.math .row-marker {
+  color: var(--amber);
+  background: rgb(var(--amber-rgb) / 0.13);
+  border-color: rgb(var(--amber-rgb) / 0.35);
+}
+
+.exercise-main {
+  min-width: 0;
 }
 
 .exercise-card h2 {
-  font-size: 1.22rem;
+  margin-top: 5px;
+  font-size: clamp(1rem, 2vw, 1.2rem);
 }
 
 .exercise-card h2 a {
   color: var(--ink);
+  text-decoration: none;
+}
+
+.exercise-card h2 a:hover {
+  color: var(--teal);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
 }
 
 .card-topline {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px 10px;
   color: var(--muted);
-  font-size: 0.84rem;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
+.card-topline span + span::before {
+  content: "/";
+  margin-right: 10px;
+  color: rgb(var(--ink-rgb) / 0.34);
+}
+
 .card-id {
-  margin: -4px 0 0;
-  color: var(--accent-strong);
+  margin: 5px 0 0;
+  color: var(--teal);
   font-family: "SFMono-Regular", Consolas, monospace;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
 }
 
 .card-meta,
@@ -672,10 +809,14 @@ button:hover {
 
 .card-meta {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
 }
 
 .meta-grid {
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
   padding: 18px 0;
 }
 
@@ -691,20 +832,47 @@ button:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: auto;
+  margin-top: 10px;
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   min-height: 26px;
-  padding: 3px 8px;
-  color: #22302d;
-  background: var(--surface-alt);
+  padding: 3px 9px;
+  color: var(--ink);
+  background: rgb(var(--ink-rgb) / 0.05);
   border: 1px solid var(--line);
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 700;
+}
+
+.difficulty-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.star {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.star-filled {
+  color: var(--amber);
+}
+
+.star-empty {
+  color: rgb(var(--ink-rgb) / 0.22);
+}
+
+.difficulty-score {
+  margin-left: 5px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .page-nav {
@@ -719,17 +887,18 @@ button:hover {
   min-height: 38px;
   align-items: center;
   padding: 0 12px;
-  background: var(--surface);
+  background: rgb(var(--paper-rgb) / 0.78);
   border: 1px solid var(--line);
   border-radius: 8px;
   font-weight: 800;
+  text-decoration: none;
 }
 
 .content-section,
 .solution-panel {
   margin-top: 18px;
-  padding: 20px;
-  background: var(--surface);
+  padding: 22px;
+  background: rgb(var(--paper-rgb) / 0.82);
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
@@ -742,7 +911,7 @@ button:hover {
 
 .solution-panel summary {
   min-height: 34px;
-  color: var(--accent-strong);
+  color: var(--teal);
   font-size: 1.1rem;
   font-weight: 900;
   cursor: pointer;
@@ -755,14 +924,14 @@ button:hover {
 .expected-result {
   margin-bottom: 16px;
   padding: 14px;
-  background: #fff8e3;
-  border: 1px solid #ead18a;
+  background: rgb(var(--amber-rgb) / 0.14);
+  border: 1px solid rgb(var(--amber-rgb) / 0.38);
   border-radius: 8px;
 }
 
 .expected-result h2 {
   margin-bottom: 6px;
-  color: #755800;
+  color: var(--ink);
   font-size: 0.95rem;
 }
 
@@ -808,12 +977,28 @@ button:hover {
     flex-direction: column;
   }
 
+  .archive-layout {
+    grid-template-columns: 1fr;
+  }
+
   .toolbar {
+    position: static;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .search-control {
     grid-column: 1 / -1;
+  }
+
+  .exercise-card {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .card-meta {
+    grid-column: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-left: 0;
+    border-left: 0;
   }
 }
 
@@ -824,17 +1009,30 @@ button:hover {
   }
 
   .toolbar,
-  .site-stats,
-  .card-meta {
+  .site-stats {
     grid-template-columns: 1fr;
   }
 
-  .exercise-list {
-    grid-template-columns: 1fr;
+  .catalog-head {
+    align-items: start;
+    flex-direction: column;
   }
 
   .exercise-card {
-    min-height: 0;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .row-marker {
+    width: auto;
+    height: 32px;
+    justify-content: start;
+    padding: 0 10px;
+  }
+
+  .card-meta {
+    grid-column: auto;
+    grid-template-columns: 1fr;
   }
 }
 """
