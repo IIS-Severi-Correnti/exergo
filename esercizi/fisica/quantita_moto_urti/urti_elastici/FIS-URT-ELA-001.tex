@@ -1,0 +1,87 @@
+% ID: FIS-URT-ELA-001
+% Titolo: Due urti elastici successivi tra tre palle
+% Disciplina: Fisica
+% Area: Quantita di moto e urti
+% Argomento: Urti elastici
+% Sottoargomento: Urti frontali successivi in una dimensione
+% Classe: Terza liceo scientifico
+% Difficolta: 4
+% Tipo: problema_numerico
+% Risultato: m_C = 0,597 kg; v_B'' = -10,8 m/s
+% Tempo_stimato: 12 min
+% Competenze: conservazione della quantita di moto, conservazione dell'energia cinetica, modellizzazione di urti successivi
+% Prerequisiti: quantita di moto, energia cinetica, urto elastico unidimensionale
+% Tag: fisica, quantita_moto, urti_elastici, urti_successivi, conservazione_energia
+% Fonte: rielaborazione_da_traccia_fornita_dal_docente
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+
+\begin{esercizio}
+Una pallina di massa \(m_A=45{,}0\,\mathrm{g}\) si muove lungo una retta con
+velocita \(v_A=135\,\mathrm{km/h}\) e urta elasticamente una seconda palla di
+massa \(m_B=145\,\mathrm{g}\), inizialmente ferma. La seconda palla prosegue e
+urta elasticamente, sempre frontalmente, una terza palla inizialmente ferma.
+Dopo il secondo urto la terza palla si muove con velocita
+\(v_C'=25{,}0\,\mathrm{km/h}\).
+
+Determina:
+\begin{enumerate}
+\item la massa \(m_C\) della terza palla;
+\item la velocita della seconda palla immediatamente dopo il secondo urto.
+\end{enumerate}
+\end{esercizio}
+
+\begin{soluzione}
+Convertiamo anzitutto le velocita nel Sistema Internazionale:
+\[
+v_A=\frac{135}{3{,}6}=37{,}5\,\mathrm{m/s},
+\qquad
+v_C'=\frac{25{,}0}{3{,}6}=6{,}94\,\mathrm{m/s}.
+\]
+Le masse sono
+\[
+m_A=0{,}0450\,\mathrm{kg},
+\qquad
+m_B=0{,}145\,\mathrm{kg}.
+\]
+
+Nel primo urto elastico la palla \(B\) e inizialmente ferma. Per un urto
+elastico unidimensionale la sua velocita dopo l'urto e
+\[
+v_B'=\frac{2m_A}{m_A+m_B}v_A.
+\]
+Pertanto
+\[
+v_B'=\frac{2\cdot0{,}0450}{0{,}0450+0{,}145}\cdot37{,}5
+\simeq17{,}76\,\mathrm{m/s}.
+\]
+
+Questa e la velocita con cui \(B\) raggiunge la palla \(C\). Nel secondo urto,
+ancora elastico e con \(C\) inizialmente ferma,
+\[
+v_C'=\frac{2m_B}{m_B+m_C}v_B'.
+\]
+Ricaviamo \(m_C\):
+\[
+m_C=\frac{2m_Bv_B'}{v_C'}-m_B.
+\]
+Sostituendo i dati:
+\[
+m_C=\frac{2\cdot0{,}145\cdot17{,}76}{6{,}94}-0{,}145
+\simeq0{,}597\,\mathrm{kg}.
+\]
+
+Per ottenere la velocita di \(B\) dopo il secondo urto usiamo la proprieta
+dell'urto elastico unidimensionale secondo cui la velocita relativa di
+allontanamento e uguale alla velocita relativa di avvicinamento:
+\[
+v_C'-v_B''=v_B'-0.
+\]
+Da cui
+\[
+v_B''=v_C'-v_B'=6{,}94-17{,}76
+\simeq-10{,}8\,\mathrm{m/s}.
+\]
+Il segno negativo indica che la palla \(B\) inverte il verso di moto dopo il
+secondo urto.
+\end{soluzione}
