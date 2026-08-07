@@ -38,6 +38,13 @@ fisica:
       - energia_potenziale
       - conservazione_energia
       - potenza
+  quantita_moto_urti:
+    label: "Quantita di moto e urti"
+    argomenti:
+      - quantita_moto
+      - urti_elastici
+      - urti_anelastici
+      - centro_di_massa
   termologia:
     label: "Termologia e calorimetria"
     argomenti:

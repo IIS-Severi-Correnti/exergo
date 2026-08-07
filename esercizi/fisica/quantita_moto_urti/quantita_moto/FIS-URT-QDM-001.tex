@@ -1,0 +1,164 @@
+% ID: FIS-URT-QDM-001
+% Titolo: Lanci successivi su una piattaforma priva di attrito
+% Disciplina: Fisica
+% Area: Quantita di moto e urti
+% Argomento: Quantita di moto
+% Sottoargomento: Rinculo e confronto tra sequenze di lancio
+% Classe: Terza liceo scientifico
+% Difficolta: 4
+% Tipo: problema_numerico
+% Risultato: T_ABC = 45,5 s; T_CBA = 45,2 s; velocita finale = 0,143 m/s in entrambi i casi
+% Tempo_stimato: 15 min
+% Competenze: conservazione della quantita di moto, moto rettilineo uniforme a tratti, confronto tra strategie
+% Prerequisiti: quantita di moto, sistemi isolati, moto rettilineo uniforme
+% Tag: fisica, quantita_moto, rinculo, sistema_isolato, moto_a_tratti
+% Fonte: rielaborazione_da_traccia_fornita_dal_docente
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+
+\begin{esercizio}
+Un uomo di massa \(M=70\,\mathrm{kg}\) si trova inizialmente fermo al centro
+di una piattaforma circolare di ghiaccio di raggio \(r=5{,}00\,\mathrm{m}\),
+sulla quale puo scivolare senza attrito. Porta con se tre palle di masse
+\[
+m_A=1{,}00\,\mathrm{kg},\qquad
+m_B=2{,}00\,\mathrm{kg},\qquad
+m_C=3{,}00\,\mathrm{kg}.
+\]
+Le velocita indicate di seguito sono misurate rispetto alla piattaforma.
+
+Nel primo scenario l'uomo lancia, sempre nella stessa direzione, la palla
+\(A\) al tempo \(t=0\) con velocita \(3{,}00\,\mathrm{m/s}\), la palla \(B\)
+dopo \(10{,}0\,\mathrm{s}\) con velocita \(2{,}00\,\mathrm{m/s}\) e la palla
+\(C\) dopo altri \(10{,}0\,\mathrm{s}\) con velocita
+\(1{,}00\,\mathrm{m/s}\).
+
+Nel secondo scenario i lanci avvengono agli stessi istanti e con le stesse
+velocita, ma nell'ordine inverso \(C\)-\(B\)-\(A\).
+
+Determina:
+\begin{enumerate}
+\item in quale scenario l'uomo raggiunge prima il bordo della piattaforma;
+\item se la sua velocita finale al bordo dipende dall'ordine dei lanci.
+\end{enumerate}
+\end{esercizio}
+
+\begin{soluzione}
+Scegliamo positivo il verso dei lanci. L'uomo si muove quindi nel verso
+opposto. Poiche non agiscono forze esterne orizzontali, la quantita di moto
+totale rimane nulla.
+
+\textbf{Scenario \(A\)-\(B\)-\(C\).}
+
+Dopo il primo lancio l'uomo porta ancora con se \(B\) e \(C\), quindi
+\[
+m_Av_A+(M+m_B+m_C)u_1=0.
+\]
+Da cui
+\[
+u_1=-\frac{1\cdot3}{70+2+3}
+=-0{,}0400\,\mathrm{m/s}.
+\]
+Nei primi \(10{,}0\,\mathrm{s}\) percorre in modulo
+\[
+\Delta x_1=0{,}0400\cdot10{,}0=0{,}400\,\mathrm{m}.
+\]
+
+Dopo il lancio di \(B\), l'uomo porta ancora \(C\). Il bilancio della quantita
+di moto dell'intero sistema e
+\[
+m_Av_A+m_Bv_B+(M+m_C)u_2=0.
+\]
+Quindi
+\[
+u_2=-\frac{1\cdot3+2\cdot2}{70+3}
+=-\frac{7}{73}
+\simeq-0{,}0959\,\mathrm{m/s}.
+\]
+Nel secondo intervallo di \(10{,}0\,\mathrm{s}\):
+\[
+\Delta x_2\simeq0{,}959\,\mathrm{m}.
+\]
+Al tempo \(t=20{,}0\,\mathrm{s}\) l'uomo ha percorso
+\[
+x_{20}^{(1)}\simeq0{,}400+0{,}959=1{,}359\,\mathrm{m}.
+\]
+
+Dopo il terzo lancio tutte le palle sono separate dall'uomo. La sua velocita
+finale vale
+\[
+u_3=-\frac{m_Av_A+m_Bv_B+m_Cv_C}{M}
+=-\frac{3+4+3}{70}
+=-0{,}1429\,\mathrm{m/s}.
+\]
+La distanza residua dal bordo e
+\[
+5{,}00-1{,}359=3{,}641\,\mathrm{m},
+\]
+per cui
+\[
+\Delta t_3^{(1)}=\frac{3{,}641}{0{,}1429}
+\simeq25{,}49\,\mathrm{s}.
+\]
+Il tempo totale e quindi
+\[
+T_1\simeq45{,}49\,\mathrm{s}.
+\]
+
+\textbf{Scenario \(C\)-\(B\)-\(A\).}
+
+Dopo il lancio di \(C\), l'uomo porta ancora \(A\) e \(B\):
+\[
+w_1=-\frac{m_Cv_C}{M+m_A+m_B}
+=-\frac{3}{73}
+\simeq-0{,}0411\,\mathrm{m/s}.
+\]
+Nei primi \(10{,}0\,\mathrm{s}\):
+\[
+\Delta y_1\simeq0{,}411\,\mathrm{m}.
+\]
+
+Dopo il lancio di \(B\), l'uomo porta ancora \(A\):
+\[
+w_2=-\frac{m_Cv_C+m_Bv_B}{M+m_A}
+=-\frac{3+4}{71}
+\simeq-0{,}0986\,\mathrm{m/s}.
+\]
+Nel secondo intervallo percorre
+\[
+\Delta y_2\simeq0{,}986\,\mathrm{m},
+\]
+quindi al tempo \(t=20{,}0\,\mathrm{s}\):
+\[
+x_{20}^{(2)}\simeq1{,}397\,\mathrm{m}.
+\]
+
+Dopo l'ultimo lancio la quantita di moto totale delle tre palle e la stessa del
+primo scenario, percio
+\[
+w_3=-\frac{10}{70}
+=-0{,}1429\,\mathrm{m/s}.
+\]
+La distanza residua vale
+\[
+5{,}00-1{,}397=3{,}603\,\mathrm{m},
+\]
+e il tempo necessario a percorrerla e
+\[
+\Delta t_3^{(2)}=\frac{3{,}603}{0{,}1429}
+\simeq25{,}22\,\mathrm{s}.
+\]
+Quindi
+\[
+T_2\simeq45{,}22\,\mathrm{s}.
+\]
+
+Poiche \(T_2<T_1\), l'uomo raggiunge prima il bordo nello scenario
+\(C\)-\(B\)-\(A\). La velocita finale, invece, e la stessa nei due casi:
+\[
+|v_f|=0{,}1429\,\mathrm{m/s}\simeq0{,}143\,\mathrm{m/s}.
+\]
+L'ordine dei lanci modifica gli spostamenti accumulati nei primi due intervalli,
+ma non la quantita di moto totale trasferita alle palle quando tutti i lanci
+sono terminati.
+\end{soluzione}
