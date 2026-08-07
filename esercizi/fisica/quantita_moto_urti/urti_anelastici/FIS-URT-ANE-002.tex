@@ -1,0 +1,91 @@
+% ID: FIS-URT-ANE-002
+% Titolo: Inseguimento su piano inclinato e urto anelastico
+% Disciplina: Fisica
+% Area: Quantita di moto e urti
+% Argomento: Urti anelastici
+% Sottoargomento: Moto accelerato con attrito seguito da urto completamente anelastico
+% Classe: Terza liceo scientifico
+% Difficolta: 4
+% Tipo: problema_numerico
+% Risultato: t = 1,08 s; V = 2,56 m/s
+% Tempo_stimato: 13 min
+% Competenze: dinamica sul piano inclinato, cinematica relativa, conservazione della quantita di moto
+% Prerequisiti: attrito dinamico, piano inclinato, moto uniformemente accelerato, urto completamente anelastico
+% Tag: fisica, quantita_moto, urti_anelastici, piano_inclinato, attrito, inseguimento
+% Fonte: rielaborazione_da_traccia_fornita_dal_docente
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+
+\begin{esercizio}
+Su un piano inclinato di \(30^\circ\) si trovano due corpi \(A\) e \(B\),
+entrambi di massa \(m=2{,}00\,\mathrm{kg}\), inizialmente fermi e separati da
+una distanza \(d=1{,}00\,\mathrm{m}\) misurata lungo il piano. Il corpo \(A\)
+si trova piu in alto di \(B\).
+
+I coefficienti di attrito dinamico con il piano sono
+\(\mu_A=0{,}200\) e \(\mu_B=0{,}400\). I due corpi vengono lasciati scivolare
+simultaneamente. Poiche \(A\) accelera maggiormente, raggiunge \(B\) e lo urta
+in modo completamente anelastico.
+
+Determina:
+\begin{enumerate}
+\item il tempo trascorso prima dell'urto;
+\item la velocita comune dei due corpi immediatamente dopo l'urto.
+\end{enumerate}
+\end{esercizio}
+
+\begin{soluzione}
+Assumiamo positivo il verso diretto verso il basso lungo il piano. Per un corpo
+che scivola lungo un piano inclinato con attrito dinamico:
+\[
+a=g(\sin\theta-\mu\cos\theta).
+\]
+Con \(\theta=30^\circ\) si ottiene per \(A\):
+\[
+a_A=9{,}81\left(0{,}500-0{,}200\cdot0{,}866\right)
+\simeq3{,}21\,\mathrm{m/s^2}.
+\]
+Per \(B\):
+\[
+a_B=9{,}81\left(0{,}500-0{,}400\cdot0{,}866\right)
+\simeq1{,}51\,\mathrm{m/s^2}.
+\]
+
+Poniamo l'origine nella posizione iniziale di \(A\). Poiche entrambi partono da
+fermi:
+\[
+x_A(t)=\frac12a_At^2,
+\qquad
+x_B(t)=d+\frac12a_Bt^2.
+\]
+L'urto avviene quando \(x_A=x_B\):
+\[
+\frac12(a_A-a_B)t^2=d.
+\]
+Quindi
+\[
+t=\sqrt{\frac{2d}{a_A-a_B}}
+=\sqrt{\frac{2\cdot1{,}00}{3{,}21-1{,}51}}
+\simeq1{,}08\,\mathrm{s}.
+\]
+
+Subito prima dell'urto le velocita valgono
+\[
+v_A=a_At\simeq3{,}48\,\mathrm{m/s},
+\qquad
+v_B=a_Bt\simeq1{,}64\,\mathrm{m/s}.
+\]
+
+L'urto e completamente anelastico, quindi i due corpi proseguono insieme con
+velocita \(V\). Durante l'urto si conserva la quantita di moto lungo il piano:
+\[
+mv_A+mv_B=(2m)V.
+\]
+Poiche le masse sono uguali:
+\[
+V=\frac{v_A+v_B}{2}
+=\frac{3{,}48+1{,}64}{2}
+\simeq2{,}56\,\mathrm{m/s}.
+\]
+La velocita finale e diretta verso il basso lungo il piano inclinato.
+\end{soluzione}
