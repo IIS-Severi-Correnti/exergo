@@ -1,0 +1,91 @@
+% ID: FIS-URT-ANE-001
+% Titolo: Urto anelastico tra scatoloni collegati a una molla
+% Disciplina: Fisica
+% Area: Quantita di moto e urti
+% Argomento: Urti anelastici
+% Sottoargomento: Urto completamente anelastico con energia elastica
+% Classe: Terza liceo scientifico
+% Difficolta: 4
+% Tipo: problema_numerico
+% Risultato: x_max = 6,45 cm
+% Tempo_stimato: 12 min
+% Competenze: conservazione dell'energia meccanica, conservazione della quantita di moto, distinzione tra fasi del moto
+% Prerequisiti: energia potenziale elastica, quantita di moto, urto completamente anelastico
+% Tag: fisica, quantita_moto, urti_anelastici, molla, conservazione_energia
+% Fonte: rielaborazione_da_traccia_fornita_dal_docente
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+
+\begin{esercizio}
+Due scatoloni di masse \(m_A=0{,}15\,\mathrm{kg}\) e
+\(m_B=0{,}37\,\mathrm{kg}\) si trovano su un piano orizzontale privo di
+attrito. Lo scatolone \(A\) e collegato a un muro mediante una molla ideale.
+Quando la molla e alla lunghezza di equilibrio, \(A\) e a contatto con \(B\).
+
+Si comprime la molla di \(s=12\,\mathrm{cm}\), spostando \(A\) verso il muro,
+mentre \(B\) rimane fermo. Rilasciato \(A\), esso torna verso \(B\) e lo urta
+proprio quando la molla raggiunge la lunghezza di equilibrio. L'urto e
+completamente anelastico.
+
+Determina il massimo spostamento verso destra del sistema formato dai due
+scatoloni dopo l'urto.
+\end{esercizio}
+
+\begin{soluzione}
+Indichiamo con \(k\) la costante elastica della molla. Nella prima fase, dal
+rilascio fino all'urto, si conserva l'energia meccanica:
+\[
+\frac12ks^2=\frac12m_Av_A^2.
+\]
+Quindi
+\[
+v_A^2=\frac{k}{m_A}s^2.
+\]
+
+Durante l'urto, invece, l'energia cinetica non si conserva, perche l'urto e
+completamente anelastico. Si conserva la quantita di moto:
+\[
+m_Av_A=(m_A+m_B)V,
+\]
+dove \(V\) e la velocita comune subito dopo l'urto. Dunque
+\[
+V=\frac{m_A}{m_A+m_B}v_A.
+\]
+
+Dopo l'urto i due scatoloni si muovono insieme e la molla si allunga. Fino al
+punto di massimo allungamento non vi sono forze dissipative, quindi l'energia
+meccanica si conserva nuovamente:
+\[
+\frac12(m_A+m_B)V^2=\frac12kx_{\max}^2.
+\]
+Sostituendo l'espressione di \(V\):
+\[
+x_{\max}^2
+=\frac{m_A+m_B}{k}
+\left(\frac{m_A}{m_A+m_B}\right)^2v_A^2.
+\]
+Usando
+\[
+v_A^2=\frac{k}{m_A}s^2
+\]
+si ottiene
+\[
+x_{\max}^2=\frac{m_A}{m_A+m_B}s^2,
+\]
+e quindi
+\[
+x_{\max}=s\sqrt{\frac{m_A}{m_A+m_B}}.
+\]
+Numericamente:
+\[
+x_{\max}=0{,}12
+\sqrt{\frac{0{,}15}{0{,}15+0{,}37}}
+\simeq0{,}0645\,\mathrm{m}.
+\]
+Pertanto
+\[
+\boxed{x_{\max}\simeq6{,}45\,\mathrm{cm}}.
+\]
+Lo spostamento e misurato dalla posizione dell'urto, che coincide con la
+posizione di equilibrio della molla.
+\end{soluzione}
