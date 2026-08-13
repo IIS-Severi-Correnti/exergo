@@ -1,0 +1,108 @@
+% ID: FIS-TER-GAS-005
+% Titolo: Gas monoatomico in una bombola rigida
+% Disciplina: Fisica
+% Area: Termologia
+% Argomento: Gas perfetti
+% Sottoargomento: Trasformazione isocora, primo principio ed energia interna
+% Classe: Quarta liceo scientifico
+% Difficolta: 3
+% Tipo: problema_numerico
+% Risultato: Q = 252 J; Delta U = 252 J
+% Tempo_stimato: 10 min
+% Competenze: applicazione dell'equazione di stato, primo principio della termodinamica, energia interna di un gas monoatomico
+% Prerequisiti: gas perfetti, trasformazioni isocore, primo principio della termodinamica, energia interna
+% Tag: termologia, gas_perfetti, trasformazione_isocora, primo_principio, energia_interna, gas_monoatomico
+% Fonte: esercizio_proposto_utente
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+
+\begin{esercizio}
+In una bombola e contenuto un volume di
+\[
+V=6{,}00\cdot 10^{-2}\,\mathrm{m^3}
+\]
+di un gas perfetto monoatomico. In seguito a una trasformazione termodinamica,
+la pressione del gas aumenta di \(2800\,\mathrm{Pa}\).
+
+Determina:
+\begin{enumerate}
+    \item quanto calore ha assorbito il gas;
+    \item qual e la sua variazione di energia interna.
+\end{enumerate}
+\end{esercizio}
+
+\begin{soluzione}
+Poiche il gas e contenuto in una bombola rigida, il volume resta costante. La
+trasformazione e quindi isocora.
+
+Per un gas perfetto vale l'equazione di stato
+\[
+pV=nRT.
+\]
+Scrivendola per lo stato iniziale e per quello finale e sottraendo membro a
+membro, dato che \(V\) e costante, si ottiene
+\[
+(p_f-p_i)V=nR(T_f-T_i),
+\]
+cioe
+\[
+V\,\Delta p=nR\,\Delta T.
+\]
+
+Con i dati del problema:
+\[
+nR\,\Delta T=V\,\Delta p
+=(6{,}00\cdot10^{-2})(2800)=168\,\mathrm{J}.
+\]
+
+Per un gas perfetto monoatomico l'energia interna e
+\[
+U=\frac{3}{2}nRT,
+\]
+percio la sua variazione e
+\[
+\Delta U=\frac{3}{2}nR\,\Delta T.
+\]
+Usando la relazione ricavata sopra:
+\[
+\Delta U=\frac{3}{2}V\,\Delta p
+=\frac{3}{2}(168\,\mathrm{J})
+=252\,\mathrm{J}.
+\]
+Quindi
+\[
+\boxed{\Delta U=252\,\mathrm{J}}.
+\]
+
+Applichiamo ora il primo principio della termodinamica nella convenzione
+\[
+\Delta U=Q-L,
+\]
+dove \(L\) e il lavoro compiuto dal gas. In una trasformazione isocora
+\(\Delta V=0\), quindi
+\[
+L=0.
+\]
+Ne segue che
+\[
+Q=\Delta U,
+\]
+e dunque
+\[
+\boxed{Q=252\,\mathrm{J}}.
+\]
+Il segno positivo indica che il gas ha assorbito calore.
+
+\medskip
+\textbf{Approfondimento sul numero di moli.}
+Con i soli dati forniti dal problema non e possibile determinare numericamente
+il numero di moli \(n\). Infatti dalla trasformazione isocora si ricava
+\[
+n=\frac{V\,\Delta p}{R\,\Delta T},
+\]
+ma il valore di \(\Delta T\) non e noto. Equivalentemente, usando l'equazione
+di stato \(n=pV/(RT)\), sarebbero necessari la pressione assoluta e la
+temperatura di almeno uno dei due stati. Il problema e risolvibile senza
+conoscere \(n\) proprio perche il prodotto \(nR\,\Delta T\) puo essere
+sostituito con \(V\,\Delta p\).
+\end{soluzione}
