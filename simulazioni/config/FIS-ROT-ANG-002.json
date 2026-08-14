@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "engine": "rotational_platform",
+  "model": "textbook_reduced_system",
+  "parameters": {
+    "platform_mass_kg": 240,
+    "platform_radius_m": 1.5,
+    "participant_count": 8,
+    "participant_mass_kg": 50,
+    "participant_radius_m": 1.2,
+    "omega_initial_rad_s": 1.0,
+    "omega_target_rad_s": 1.2,
+    "omega_target_tolerance_rad_s": 0.01
+  },
+  "interaction": {
+    "allow_remove_participant": true,
+    "allow_reset": true,
+    "allow_pause": true,
+    "show_target": true
+  },
+  "display": {
+    "show_moment_of_inertia": true,
+    "show_angular_velocity": true,
+    "show_angular_momentum": true,
+    "show_equations": true
+  },
+  "didactics": {
+    "model_note_it": "Modello idealizzato: si conserva il momento angolare di riferimento del sistema ridotto formato dalla giostra e dagli studenti che vi restano. L'uscita reale di uno studente non è modellizzata.",
+    "participant_singular_it": "studente",
+    "participant_plural_it": "studenti",
+    "participant_count_label_it": "Studenti rimasti",
+    "remove_action_label_it": "Uno studente scende",
+    "learning_action_it": "fai scendere uno studente alla volta"
+  }
+}

@@ -25,6 +25,11 @@
     "show_equations": true
   },
   "didactics": {
-    "model_note_it": "Modello idealizzato: si conserva il momento angolare di riferimento del sistema ridotto formato dalla piattaforma e dalle persone che vi restano. Il salto reale non e modellizzato."
+    "model_note_it": "Modello idealizzato: si conserva il momento angolare di riferimento del sistema ridotto formato dalla piattaforma e dalle persone che vi restano. Il salto reale non è modellizzato.",
+    "participant_singular_it": "ragazza",
+    "participant_plural_it": "ragazze",
+    "participant_count_label_it": "Ragazze rimaste",
+    "remove_action_label_it": "Una ragazza salta",
+    "learning_action_it": "fai saltare una ragazza alla volta"
   }
 }

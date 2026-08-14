@@ -32,6 +32,16 @@ export function participantSlotAngle(index, initialParticipantCount) {
   return (index / initialParticipantCount) * 2 * Math.PI - Math.PI / 2;
 }
 
+export function resolveParticipantDidactics(didactics = {}) {
+  return Object.freeze({
+    singular: didactics.participant_singular_it ?? "persona",
+    plural: didactics.participant_plural_it ?? "persone",
+    countLabel: didactics.participant_count_label_it ?? "Persone rimaste",
+    removeAction: didactics.remove_action_label_it ?? "Una persona lascia la piattaforma",
+    learningAction: didactics.learning_action_it ?? "fai lasciare la piattaforma a una persona alla volta",
+  });
+}
+
 function formatNumber(value, maximumFractionDigits = 3) {
   return new Intl.NumberFormat("it-IT", {
     minimumFractionDigits: 0,
@@ -54,10 +64,11 @@ export function createSimulationView({ container, config }) {
   const descriptionId = `rotational-platform-description-${instanceCount}`;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const initialParticipantCount = config.parameters.participant_count;
+  const participantCopy = resolveParticipantDidactics(config.didactics);
 
   container.innerHTML = `
     <p class="simulation-instruction">
-      <strong>Prova tu:</strong> avvia la rotazione e fai saltare una ragazza alla volta.
+      <strong>Prova tu:</strong> avvia la rotazione e <span data-learning-action></span>.
       Osserva come cambiano il momento d'inerzia <var>I</var> e la velocità angolare <var>ω</var>
       mentre il momento angolare di riferimento resta costante nel modello dichiarato.
     </p>
@@ -67,7 +78,7 @@ export function createSimulationView({ container, config }) {
         <svg class="rotational-platform-svg" viewBox="0 0 400 400" role="img"
           aria-labelledby="${titleId} ${descriptionId}">
           <title id="${titleId}">Piattaforma circolare rotante vista dall'alto</title>
-          <desc id="${descriptionId}">Le persone rimaste sono distribuite sulla piattaforma nelle loro posizioni iniziali.</desc>
+          <desc id="${descriptionId}">I partecipanti rimasti occupano le loro posizioni iniziali sulla piattaforma.</desc>
           <circle class="platform-shadow" cx="200" cy="204" r="150"></circle>
           <circle class="platform-disk" cx="200" cy="200" r="150"></circle>
           <g data-platform-rotor>
@@ -85,11 +96,11 @@ export function createSimulationView({ container, config }) {
           <button type="button" data-simulation-action="play">Play</button>
           <button type="button" data-simulation-action="pause">Pausa</button>
           <button type="button" data-simulation-action="reset">Reset</button>
-          <button type="button" data-simulation-action="remove" class="simulation-remove-button">Una ragazza salta</button>
+          <button type="button" data-simulation-action="remove" class="simulation-remove-button"></button>
         </div>
 
         <dl class="simulation-values" aria-label="Grandezze fisiche">
-          <div><dt>Ragazze rimaste</dt><dd data-value="participant-count">--</dd></div>
+          <div><dt data-participant-count-label></dt><dd data-value="participant-count">--</dd></div>
           <div data-display="moment"><dt>Momento d'inerzia, I</dt><dd><span data-value="moment">--</span> kg m<sup>2</sup></dd></div>
           <div data-display="omega"><dt>Velocità angolare, ω</dt><dd><span data-value="omega">--</span> rad/s</dd></div>
           <div data-display="angular-momentum"><dt>Momento angolare, L</dt><dd><span data-value="angular-momentum">--</span> kg m<sup>2</sup>/s</dd></div>
@@ -119,6 +130,9 @@ export function createSimulationView({ container, config }) {
   const status = container.querySelector("[data-simulation-status]");
   const description = container.querySelector(`#${descriptionId}`);
   container.querySelector("[data-model-note]").textContent = config.didactics.model_note_it;
+  container.querySelector("[data-learning-action]").textContent = participantCopy.learningAction;
+  container.querySelector('[data-simulation-action="remove"]').textContent = participantCopy.removeAction;
+  container.querySelector("[data-participant-count-label]").textContent = participantCopy.countLabel;
   let renderedParticipantCount = null;
   let renderedEquationCount = null;
 
@@ -131,6 +145,16 @@ export function createSimulationView({ container, config }) {
   const participantDrawRadius =
     PLATFORM_DRAW_RADIUS * (config.parameters.participant_radius_m / config.parameters.platform_radius_m);
   const participantNodes = [];
+
+  function participantNoun(count) {
+    return count === 1 ? participantCopy.singular : participantCopy.plural;
+  }
+
+  function remainingSentence(count) {
+    return count === 1
+      ? `Resta 1 ${participantCopy.singular}`
+      : `Restano ${count} ${participantCopy.plural}`;
+  }
 
   function createInitialParticipantSlots() {
     for (let index = 0; index < initialParticipantCount; index += 1) {
@@ -174,7 +198,8 @@ export function createSimulationView({ container, config }) {
       if (renderedParticipantCount !== state.participant_count_current) {
         renderedParticipantCount = state.participant_count_current;
         updateVisibleParticipants(renderedParticipantCount);
-        description.textContent = `${renderedParticipantCount} persone restano nelle loro posizioni angolari iniziali sulla piattaforma.`;
+        const verb = renderedParticipantCount === 1 ? "resta" : "restano";
+        description.textContent = `${renderedParticipantCount} ${participantNoun(renderedParticipantCount)} ${verb} nelle proprie posizioni angolari iniziali sulla piattaforma.`;
       }
 
       container.querySelector('[data-value="participant-count"]').textContent = String(
@@ -212,9 +237,10 @@ export function createSimulationView({ container, config }) {
       const motionText = this.motionAllowed
         ? (state.is_running ? "Rotazione in corso" : "Simulazione in pausa")
         : "Animazione disattivata dalla preferenza di riduzione del movimento";
+      const remainingText = remainingSentence(state.participant_count_current);
       status.textContent = state.target_reached
-        ? `Obiettivo raggiunto. ${motionText}. Restano ${state.participant_count_current} persone.`
-        : `${motionText}. Restano ${state.participant_count_current} persone.`;
+        ? `Obiettivo raggiunto. ${motionText}. ${remainingText}.`
+        : `${motionText}. ${remainingText}.`;
       status.classList.toggle("target-reached", state.target_reached);
       container.dataset.participantCount = String(state.participant_count_current);
       container.dataset.targetReached = String(state.target_reached);
