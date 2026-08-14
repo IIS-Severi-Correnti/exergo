@@ -21,6 +21,14 @@ fisica:
       - attrito
       - piano_inclinato
       - sistemi_vincolati
+  dinamica_rotazionale:
+    label: "Dinamica rotazionale"
+    argomenti:
+      - momento_forza
+      - momento_inerzia
+      - momento_angolare
+      - conservazione_momento_angolare
+      - rotolamento
   fluidostatica:
     label: "Fluidostatica"
     argomenti:

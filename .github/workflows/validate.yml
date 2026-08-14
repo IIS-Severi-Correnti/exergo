@@ -20,6 +20,11 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
       - name: Check Python syntax
         run: python -m py_compile scripts/*.py
 
@@ -31,6 +36,12 @@ jobs:
 
       - name: Validate exercise archive
         run: python scripts/valida_archivio.py
+
+      - name: Run Python tests
+        run: python -m unittest discover -s tests -p "test_*.py"
+
+      - name: Run simulation engine tests
+        run: node --experimental-default-type=module --test tests/js/*.test.mjs
 
       - name: Install LaTeX
         run: |

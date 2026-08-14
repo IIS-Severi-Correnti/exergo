@@ -29,6 +29,7 @@ CSV_FIELDS = [
     "fonte",
     "autore",
     "licenza",
+    "simulazione",
     "path",
 ]
 
@@ -62,6 +63,7 @@ FIELD_MAP = {
     "Fonte": "fonte",
     "Autore": "autore",
     "Licenza": "licenza",
+    "Simulazione": "simulazione",
 }
 
 

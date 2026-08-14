@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "engine": "rotational_platform",
+  "model": "textbook_reduced_system",
+  "parameters": {
+    "platform_mass_kg": 200,
+    "platform_radius_m": 1.0,
+    "participant_count": 6,
+    "participant_mass_kg": 50,
+    "participant_radius_m": 0.85,
+    "omega_initial_rad_s": 1.8,
+    "omega_target_rad_s": 2.34,
+    "omega_target_tolerance_rad_s": 0.02
+  },
+  "interaction": {
+    "allow_remove_participant": true,
+    "allow_reset": true,
+    "allow_pause": true,
+    "show_target": true
+  },
+  "display": {
+    "show_moment_of_inertia": true,
+    "show_angular_velocity": true,
+    "show_angular_momentum": true,
+    "show_equations": true
+  },
+  "didactics": {
+    "model_note_it": "Modello idealizzato: si conserva il momento angolare di riferimento del sistema ridotto formato dalla piattaforma e dalle persone che vi restano. Il salto reale non e modellizzato."
+  }
+}
