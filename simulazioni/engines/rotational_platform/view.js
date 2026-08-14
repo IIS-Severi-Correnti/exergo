@@ -56,6 +56,12 @@ export function createSimulationView({ container, config }) {
   const initialParticipantCount = config.parameters.participant_count;
 
   container.innerHTML = `
+    <p class="simulation-instruction">
+      <strong>Prova tu:</strong> avvia la rotazione e fai saltare una ragazza alla volta.
+      Osserva come cambiano il momento d'inerzia <var>I</var> e la velocità angolare <var>ω</var>
+      mentre il momento angolare di riferimento resta costante nel modello dichiarato.
+    </p>
+
     <div class="simulation-layout">
       <div class="simulation-stage">
         <svg class="rotational-platform-svg" viewBox="0 0 400 400" role="img"
@@ -83,11 +89,11 @@ export function createSimulationView({ container, config }) {
         </div>
 
         <dl class="simulation-values" aria-label="Grandezze fisiche">
-          <div><dt>Persone, N</dt><dd data-value="participant-count">--</dd></div>
+          <div><dt>Ragazze rimaste</dt><dd data-value="participant-count">--</dd></div>
           <div data-display="moment"><dt>Momento d'inerzia, I</dt><dd><span data-value="moment">--</span> kg m<sup>2</sup></dd></div>
-          <div data-display="omega"><dt>Velocita angolare, ω</dt><dd><span data-value="omega">--</span> rad/s</dd></div>
+          <div data-display="omega"><dt>Velocità angolare, ω</dt><dd><span data-value="omega">--</span> rad/s</dd></div>
           <div data-display="angular-momentum"><dt>Momento angolare, L</dt><dd><span data-value="angular-momentum">--</span> kg m<sup>2</sup>/s</dd></div>
-          <div data-display="target"><dt>ω target e tolleranza</dt><dd><span data-value="target">--</span> ± <span data-value="target-tolerance">--</span> rad/s</dd></div>
+          <div data-display="target"><dt>ω obiettivo e tolleranza</dt><dd><span data-value="target">--</span> ± <span data-value="target-tolerance">--</span> rad/s</dd></div>
         </dl>
 
         <div class="simulation-equations" data-display="equations" aria-label="Equazioni del modello">
