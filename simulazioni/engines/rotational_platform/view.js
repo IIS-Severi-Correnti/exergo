@@ -19,6 +19,19 @@ function polarPosition(angleRad, radius) {
   };
 }
 
+export function participantSlotAngle(index, initialParticipantCount) {
+  if (!Number.isInteger(index) || index < 0) {
+    throw new RangeError("index deve essere un intero non negativo");
+  }
+  if (!Number.isInteger(initialParticipantCount) || initialParticipantCount <= 0) {
+    throw new RangeError("initialParticipantCount deve essere un intero positivo");
+  }
+  if (index >= initialParticipantCount) {
+    throw new RangeError("index fuori dagli slot iniziali");
+  }
+  return (index / initialParticipantCount) * 2 * Math.PI - Math.PI / 2;
+}
+
 function formatNumber(value, maximumFractionDigits = 3) {
   return new Intl.NumberFormat("it-IT", {
     minimumFractionDigits: 0,
@@ -40,6 +53,7 @@ export function createSimulationView({ container, config }) {
   const titleId = `rotational-platform-title-${instanceCount}`;
   const descriptionId = `rotational-platform-description-${instanceCount}`;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const initialParticipantCount = config.parameters.participant_count;
 
   container.innerHTML = `
     <div class="simulation-layout">
@@ -47,7 +61,7 @@ export function createSimulationView({ container, config }) {
         <svg class="rotational-platform-svg" viewBox="0 0 400 400" role="img"
           aria-labelledby="${titleId} ${descriptionId}">
           <title id="${titleId}">Piattaforma circolare rotante vista dall'alto</title>
-          <desc id="${descriptionId}">Le persone rimaste sono distribuite uniformemente sulla piattaforma.</desc>
+          <desc id="${descriptionId}">Le persone rimaste sono distribuite sulla piattaforma nelle loro posizioni iniziali.</desc>
           <circle class="platform-shadow" cx="200" cy="204" r="150"></circle>
           <circle class="platform-disk" cx="200" cy="200" r="150"></circle>
           <g data-platform-rotor>
@@ -110,21 +124,41 @@ export function createSimulationView({ container, config }) {
 
   const participantDrawRadius =
     PLATFORM_DRAW_RADIUS * (config.parameters.participant_radius_m / config.parameters.platform_radius_m);
+  const participantNodes = [];
 
-  function renderParticipants(count) {
-    participantsLayer.replaceChildren();
-    for (let index = 0; index < count; index += 1) {
-      const angle = (index / count) * 2 * Math.PI - Math.PI / 2;
+  function createInitialParticipantSlots() {
+    for (let index = 0; index < initialParticipantCount; index += 1) {
+      const angle = participantSlotAngle(index, initialParticipantCount);
       const position = polarPosition(angle, participantDrawRadius);
       const glyph = participantGlyph();
+      glyph.dataset.participantIndex = String(index);
       glyph.setAttribute("transform", `translate(${position.x} ${position.y})`);
       participantsLayer.append(glyph);
+      participantNodes.push(glyph);
     }
   }
+
+  function updateVisibleParticipants(count) {
+    for (let index = 0; index < participantNodes.length; index += 1) {
+      const glyph = participantNodes[index];
+      if (index < count) {
+        glyph.removeAttribute("display");
+      } else {
+        glyph.setAttribute("display", "none");
+      }
+    }
+  }
+
+  createInitialParticipantSlots();
 
   return Object.freeze({
     get motionAllowed() {
       return !reducedMotion.matches;
+    },
+
+    onMotionPreferenceChange(callback) {
+      reducedMotion.addEventListener("change", callback);
+      return () => reducedMotion.removeEventListener("change", callback);
     },
 
     render(state) {
@@ -133,8 +167,8 @@ export function createSimulationView({ container, config }) {
 
       if (renderedParticipantCount !== state.participant_count_current) {
         renderedParticipantCount = state.participant_count_current;
-        renderParticipants(renderedParticipantCount);
-        description.textContent = `${renderedParticipantCount} persone sono distribuite uniformemente sulla piattaforma.`;
+        updateVisibleParticipants(renderedParticipantCount);
+        description.textContent = `${renderedParticipantCount} persone restano nelle loro posizioni angolari iniziali sulla piattaforma.`;
       }
 
       container.querySelector('[data-value="participant-count"]').textContent = String(
@@ -169,13 +203,16 @@ export function createSimulationView({ container, config }) {
           formatNumber(state.omega_rad_s, 4);
       }
 
-      const motionText = state.is_running ? "Rotazione in corso" : "Simulazione in pausa";
+      const motionText = this.motionAllowed
+        ? (state.is_running ? "Rotazione in corso" : "Simulazione in pausa")
+        : "Animazione disattivata dalla preferenza di riduzione del movimento";
       status.textContent = state.target_reached
         ? `Obiettivo raggiunto. ${motionText}. Restano ${state.participant_count_current} persone.`
         : `${motionText}. Restano ${state.participant_count_current} persone.`;
       status.classList.toggle("target-reached", state.target_reached);
       container.dataset.participantCount = String(state.participant_count_current);
       container.dataset.targetReached = String(state.target_reached);
+      container.dataset.motionAllowed = String(this.motionAllowed);
     },
 
     animateParticipantDeparture(removedIndex, previousState) {
@@ -183,7 +220,10 @@ export function createSimulationView({ container, config }) {
       if (count <= 0) {
         return;
       }
-      const baseAngle = (removedIndex / count) * 2 * Math.PI - Math.PI / 2;
+      const baseAngle = participantSlotAngle(
+        removedIndex,
+        previousState.participant_count_initial,
+      );
       const absoluteAngle = baseAngle + previousState.angle_rad;
       const start = polarPosition(absoluteAngle, participantDrawRadius);
       const end = polarPosition(absoluteAngle, DEPARTURE_DRAW_RADIUS);
