@@ -31,12 +31,18 @@ export function bindSimulationControls(root, handlers, interaction) {
   }
 
   return Object.freeze({
-    update(state) {
+    update(state, { motionAllowed = true } = {}) {
       if (buttons.has("play")) {
-        buttons.get("play").disabled = state.is_running;
+        buttons.get("play").disabled = state.is_running || !motionAllowed;
+        buttons.get("play").title = motionAllowed
+          ? "Avvia la rotazione"
+          : "Animazione disattivata dalla preferenza di riduzione del movimento";
       }
       if (buttons.has("pause")) {
-        buttons.get("pause").disabled = !state.is_running;
+        buttons.get("pause").disabled = !state.is_running || !motionAllowed;
+        buttons.get("pause").title = motionAllowed
+          ? "Metti in pausa la rotazione"
+          : "Animazione disattivata dalla preferenza di riduzione del movimento";
       }
       if (buttons.has("remove")) {
         buttons.get("remove").disabled = state.participant_count_current === 0;
