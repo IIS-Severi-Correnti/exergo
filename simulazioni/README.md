@@ -154,12 +154,14 @@ specifici del caso pilota possono comparire solo nelle fixture di test.
 python scripts/genera_indice.py
 python scripts/valida_archivio.py
 python -m unittest discover -s tests -p "test_*.py"
-node --experimental-default-type=module --test tests/js/*.test.mjs
+node --test tests/js/*.test.mjs
 python scripts/genera_sito.py --output _site
 ~~~
 
 I test Python coprono config e generazione. I test Node usano soltanto il test
 runner integrato e verificano modello e stato senza browser, npm o dipendenze.
+Il piccolo simulazioni/package.json dichiara esclusivamente i moduli ES e non
+introduce pacchetti da installare.
 Il controllo browser facoltativo in tests/browser/simulation_smoke.html
 esercita inizializzazione, pulsanti, rimozione, obiettivo e reset sul sito
 generato.
