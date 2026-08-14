@@ -138,6 +138,26 @@
           "model_note_it": {
             "type": "string",
             "minLength": 1
+          },
+          "participant_singular_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "participant_plural_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "participant_count_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "remove_action_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "learning_action_it": {
+            "type": "string",
+            "minLength": 1
           }
         }
       }
