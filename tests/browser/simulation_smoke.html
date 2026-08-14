@@ -85,6 +85,9 @@
         const pause = simulation.querySelector('[data-simulation-action="pause"]');
         const remove = simulation.querySelector('[data-simulation-action="remove"]');
         const reset = simulation.querySelector('[data-simulation-action="reset"]');
+        const participantLayer = simulation.querySelector("[data-platform-participants]");
+        const initialParticipants = Array.from(participantLayer.children);
+        const initialTransforms = initialParticipants.map((node) => node.getAttribute("transform"));
 
         if (count.textContent !== "6") throw new Error("conteggio iniziale");
         play.click();
@@ -94,10 +97,34 @@
         if (count.textContent !== "4") throw new Error("rimozione");
         if (simulation.dataset.targetReached !== "true") throw new Error("obiettivo");
         if (!omega.textContent.startsWith("2,331")) throw new Error("omega");
+
+        const participantsAfterRemoval = Array.from(participantLayer.children);
+        if (participantsAfterRemoval.length !== 6) {
+          throw new Error("gli slot iniziali non sono stati preservati");
+        }
+        for (let index = 0; index < 4; index += 1) {
+          if (participantsAfterRemoval[index].getAttribute("transform") !== initialTransforms[index]) {
+            throw new Error("una persona rimasta ha cambiato posizione angolare");
+          }
+          if (participantsAfterRemoval[index].getAttribute("display") === "none") {
+            throw new Error("una persona rimasta e stata nascosta");
+          }
+        }
+        for (let index = 4; index < 6; index += 1) {
+          if (participantsAfterRemoval[index].getAttribute("display") !== "none") {
+            throw new Error("lo slot di una persona uscita e ancora visibile");
+          }
+        }
+
         reset.click();
         if (count.textContent !== "6") throw new Error("reset conteggio");
         if (simulation.dataset.targetReached !== "false") throw new Error("reset obiettivo");
-        finish("PASS", "inizializzazione, config alternativa, pulsanti, obiettivo e reset");
+        for (const participant of participantLayer.children) {
+          if (participant.getAttribute("display") === "none") {
+            throw new Error("reset visibilita partecipanti");
+          }
+        }
+        finish("PASS", "inizializzazione, config alternativa, slot stabili, pulsanti, obiettivo e reset");
       } catch (error) {
         finish("FAIL", error.message);
       }
