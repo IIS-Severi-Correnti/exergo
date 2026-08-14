@@ -53,12 +53,18 @@ export async function initializeSimulation(container) {
   function render() {
     const state = engine.getState();
     view.render(state);
-    controls?.update(state);
+    controls?.update(state, { motionAllowed: view.motionAllowed });
     return state;
   }
 
   function animationFrame(timestamp) {
     frameId = null;
+    if (!view.motionAllowed) {
+      engine.pause();
+      stopAnimationFrame();
+      render();
+      return;
+    }
     if (previousTimestamp === null) {
       previousTimestamp = timestamp;
     } else {
@@ -66,13 +72,19 @@ export async function initializeSimulation(container) {
       previousTimestamp = timestamp;
     }
     const state = render();
-    if (state.is_running && view.motionAllowed) {
+    if (state.is_running) {
       frameId = requestAnimationFrame(animationFrame);
     }
   }
 
   function startAnimationFrame() {
-    if (view.motionAllowed && frameId === null) {
+    if (!view.motionAllowed) {
+      engine.pause();
+      stopAnimationFrame();
+      render();
+      return;
+    }
+    if (frameId === null) {
       frameId = requestAnimationFrame(animationFrame);
     }
   }
@@ -81,6 +93,11 @@ export async function initializeSimulation(container) {
     container,
     {
       play() {
+        if (!view.motionAllowed) {
+          engine.pause();
+          render();
+          return;
+        }
         engine.play();
         render();
         startAnimationFrame();
@@ -107,6 +124,14 @@ export async function initializeSimulation(container) {
     },
     config.interaction,
   );
+
+  view.onMotionPreferenceChange?.(() => {
+    if (!view.motionAllowed) {
+      engine.pause();
+      stopAnimationFrame();
+    }
+    render();
+  });
 
   render();
   container.dataset.simulationReady = "true";
