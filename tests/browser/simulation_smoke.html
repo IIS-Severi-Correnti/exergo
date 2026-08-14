@@ -9,15 +9,26 @@
 <body>
   <main class="page">
     <p id="result">RUNNING</p>
+
     <section class="simulation-shell">
-      <h2>Simulazione</h2>
-      <div data-exergo-simulation
+      <h2>Simulazione pilota</h2>
+      <div id="pilot-simulation" data-exergo-simulation
         data-simulation-engine="rotational_platform"
         data-simulation-config="../../_site/assets/simulazioni/config/FIS-ROT-ANG-001.json">
         <p data-simulation-error hidden></p>
       </div>
     </section>
+
+    <section class="simulation-shell">
+      <h2>Simulazione di riuso</h2>
+      <div id="reuse-simulation" data-exergo-simulation
+        data-simulation-engine="rotational_platform"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-ROT-ANG-002.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
   </main>
+
   <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
   <script type="module">
     import { createSimulationEngine } from "../../_site/assets/simulazioni/engines/rotational_platform/engine.js";
@@ -51,9 +62,11 @@
       window.engineGeneralityCheck = "FAIL: " + error.message;
     }
   </script>
+
   <script>
     const result = document.querySelector("#result");
-    const simulation = document.querySelector("[data-exergo-simulation]");
+    const pilot = document.querySelector("#pilot-simulation");
+    const reuse = document.querySelector("#reuse-simulation");
 
     function finish(status, details) {
       result.textContent = status + ": " + details;
@@ -61,10 +74,59 @@
       document.title = status + " - Exergo simulation smoke test";
     }
 
+    function checkSimulation(simulation, expected) {
+      const count = simulation.querySelector('[data-value="participant-count"]');
+      const omega = simulation.querySelector('[data-value="omega"]');
+      const remove = simulation.querySelector('[data-simulation-action="remove"]');
+      const reset = simulation.querySelector('[data-simulation-action="reset"]');
+      const countLabel = simulation.querySelector('[data-participant-count-label]');
+      const learningAction = simulation.querySelector('[data-learning-action]');
+      const participantLayer = simulation.querySelector("[data-platform-participants]");
+      const initialParticipants = Array.from(participantLayer.children);
+      const initialTransforms = initialParticipants.map((node) => node.getAttribute("transform"));
+
+      if (count.textContent !== String(expected.initialCount)) throw new Error(expected.name + ": conteggio iniziale");
+      if (countLabel.textContent !== expected.countLabel) throw new Error(expected.name + ": etichetta conteggio");
+      if (remove.textContent !== expected.removeLabel) throw new Error(expected.name + ": etichetta azione");
+      if (!learningAction.textContent.includes(expected.learningKeyword)) throw new Error(expected.name + ": istruzione didattica");
+
+      for (let index = 0; index < expected.removals; index += 1) {
+        remove.click();
+      }
+
+      const remaining = expected.initialCount - expected.removals;
+      if (count.textContent !== String(remaining)) throw new Error(expected.name + ": rimozione");
+      if (simulation.dataset.targetReached !== "true") throw new Error(expected.name + ": obiettivo");
+      if (!omega.textContent.startsWith(expected.omegaPrefix)) throw new Error(expected.name + ": omega");
+
+      const participantsAfterRemoval = Array.from(participantLayer.children);
+      if (participantsAfterRemoval.length !== expected.initialCount) {
+        throw new Error(expected.name + ": slot iniziali non preservati");
+      }
+      for (let index = 0; index < remaining; index += 1) {
+        if (participantsAfterRemoval[index].getAttribute("transform") !== initialTransforms[index]) {
+          throw new Error(expected.name + ": partecipante rimasto spostato");
+        }
+        if (participantsAfterRemoval[index].getAttribute("display") === "none") {
+          throw new Error(expected.name + ": partecipante rimasto nascosto");
+        }
+      }
+      for (let index = remaining; index < expected.initialCount; index += 1) {
+        if (participantsAfterRemoval[index].getAttribute("display") !== "none") {
+          throw new Error(expected.name + ": slot uscito ancora visibile");
+        }
+      }
+
+      reset.click();
+      if (count.textContent !== String(expected.initialCount)) throw new Error(expected.name + ": reset conteggio");
+      if (simulation.dataset.targetReached !== "false") throw new Error(expected.name + ": reset obiettivo");
+    }
+
     const deadline = Date.now() + 5000;
     const checkReady = window.setInterval(() => {
       if (
-        simulation?.dataset.simulationReady !== "true" ||
+        pilot?.dataset.simulationReady !== "true" ||
+        reuse?.dataset.simulationReady !== "true" ||
         window.engineGeneralityCheck === undefined
       ) {
         if (Date.now() > deadline) {
@@ -79,52 +141,33 @@
         if (window.engineGeneralityCheck !== "PASS") {
           throw new Error("configurazione alternativa: " + window.engineGeneralityCheck);
         }
-        const count = simulation.querySelector('[data-value="participant-count"]');
-        const omega = simulation.querySelector('[data-value="omega"]');
-        const play = simulation.querySelector('[data-simulation-action="play"]');
-        const pause = simulation.querySelector('[data-simulation-action="pause"]');
-        const remove = simulation.querySelector('[data-simulation-action="remove"]');
-        const reset = simulation.querySelector('[data-simulation-action="reset"]');
-        const participantLayer = simulation.querySelector("[data-platform-participants]");
-        const initialParticipants = Array.from(participantLayer.children);
-        const initialTransforms = initialParticipants.map((node) => node.getAttribute("transform"));
 
-        if (count.textContent !== "6") throw new Error("conteggio iniziale");
+        const play = pilot.querySelector('[data-simulation-action="play"]');
+        const pause = pilot.querySelector('[data-simulation-action="pause"]');
         play.click();
         pause.click();
-        remove.click();
-        remove.click();
-        if (count.textContent !== "4") throw new Error("rimozione");
-        if (simulation.dataset.targetReached !== "true") throw new Error("obiettivo");
-        if (!omega.textContent.startsWith("2,331")) throw new Error("omega");
 
-        const participantsAfterRemoval = Array.from(participantLayer.children);
-        if (participantsAfterRemoval.length !== 6) {
-          throw new Error("gli slot iniziali non sono stati preservati");
-        }
-        for (let index = 0; index < 4; index += 1) {
-          if (participantsAfterRemoval[index].getAttribute("transform") !== initialTransforms[index]) {
-            throw new Error("una persona rimasta ha cambiato posizione angolare");
-          }
-          if (participantsAfterRemoval[index].getAttribute("display") === "none") {
-            throw new Error("una persona rimasta e stata nascosta");
-          }
-        }
-        for (let index = 4; index < 6; index += 1) {
-          if (participantsAfterRemoval[index].getAttribute("display") !== "none") {
-            throw new Error("lo slot di una persona uscita e ancora visibile");
-          }
-        }
+        checkSimulation(pilot, {
+          name: "pilota",
+          initialCount: 6,
+          removals: 2,
+          countLabel: "Ragazze rimaste",
+          removeLabel: "Una ragazza salta",
+          learningKeyword: "ragazza",
+          omegaPrefix: "2,331"
+        });
 
-        reset.click();
-        if (count.textContent !== "6") throw new Error("reset conteggio");
-        if (simulation.dataset.targetReached !== "false") throw new Error("reset obiettivo");
-        for (const participant of participantLayer.children) {
-          if (participant.getAttribute("display") === "none") {
-            throw new Error("reset visibilita partecipanti");
-          }
-        }
-        finish("PASS", "inizializzazione, config alternativa, slot stabili, pulsanti, obiettivo e reset");
+        checkSimulation(reuse, {
+          name: "riuso",
+          initialCount: 8,
+          removals: 2,
+          countLabel: "Studenti rimasti",
+          removeLabel: "Uno studente scende",
+          learningKeyword: "studente",
+          omegaPrefix: "1,205"
+        });
+
+        finish("PASS", "due config reali, copia didattica, slot stabili, obiettivi e reset");
       } catch (error) {
         finish("FAIL", error.message);
       }
