@@ -6,6 +6,7 @@ import {
   calculatePlatformMomentOfInertia,
   createSimulationEngine,
 } from "../../simulazioni/engines/rotational_platform/engine.js";
+import { participantSlotAngle } from "../../simulazioni/engines/rotational_platform/view.js";
 
 
 function closeTo(actual, expected, tolerance = 1e-10) {
@@ -105,4 +106,17 @@ test("gestisce rimozioni, limite a zero e reset esatto", () => {
   assert.equal(resetState.angle_rad, 0);
   assert.equal(resetState.is_running, false);
   closeTo(resetState.omega_rad_s, 1.8);
+});
+
+test("gli slot angolari restano ancorati alla configurazione iniziale", () => {
+  const initialCount = 6;
+  const initialAngles = Array.from(
+    { length: initialCount },
+    (_, index) => participantSlotAngle(index, initialCount),
+  );
+
+  closeTo(initialAngles[0], -Math.PI / 2);
+  closeTo(initialAngles[1] - initialAngles[0], Math.PI / 3);
+  closeTo(initialAngles[4], participantSlotAngle(4, 6));
+  assert.notEqual(participantSlotAngle(4, 6), (4 / 5) * 2 * Math.PI - Math.PI / 2);
 });
