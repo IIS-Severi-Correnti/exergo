@@ -79,7 +79,7 @@ jobs:
             --disable-gpu \
             --hide-scrollbars \
             --virtual-time-budget=2500 \
-            --window-size=1440,1200 \
+            --window-size=1440,1600 \
             --screenshot=browser-artifacts/simulation-desktop.png \
             http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-001/
 
@@ -89,7 +89,7 @@ jobs:
             --disable-gpu \
             --hide-scrollbars \
             --virtual-time-budget=2500 \
-            --window-size=430,1100 \
+            --window-size=430,3000 \
             --screenshot=browser-artifacts/simulation-mobile.png \
             http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-001/
 
