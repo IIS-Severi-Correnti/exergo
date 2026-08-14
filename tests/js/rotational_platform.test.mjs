@@ -6,7 +6,10 @@ import {
   calculatePlatformMomentOfInertia,
   createSimulationEngine,
 } from "../../simulazioni/engines/rotational_platform/engine.js";
-import { participantSlotAngle } from "../../simulazioni/engines/rotational_platform/view.js";
+import {
+  participantSlotAngle,
+  resolveParticipantDidactics,
+} from "../../simulazioni/engines/rotational_platform/view.js";
 
 
 function closeTo(actual, expected, tolerance = 1e-10) {
@@ -36,6 +39,17 @@ const pilotParameters = {
   omega_target_tolerance_rad_s: 0.02,
 };
 
+const secondExerciseParameters = {
+  platform_mass_kg: 240,
+  platform_radius_m: 1.5,
+  participant_count: 8,
+  participant_mass_kg: 50,
+  participant_radius_m: 1.2,
+  omega_initial_rad_s: 1.0,
+  omega_target_rad_s: 1.2,
+  omega_target_tolerance_rad_s: 0.01,
+};
+
 test("calcola i valori del caso pilota", () => {
   closeTo(calculatePlatformMomentOfInertia(pilotParameters), 100);
   closeTo(calculateParticipantMomentOfInertia(pilotParameters), 36.125);
@@ -50,6 +64,25 @@ test("calcola i valori del caso pilota", () => {
   const afterTwoLeave = engine.getState();
   closeTo(afterTwoLeave.total_moment_of_inertia_kg_m2, 244.5);
   closeTo(afterTwoLeave.omega_rad_s, 2.3319018404907974);
+  assert.equal(afterTwoLeave.target_reached, true);
+});
+
+test("riusa lo stesso motore per il secondo esercizio pubblicato", () => {
+  closeTo(calculatePlatformMomentOfInertia(secondExerciseParameters), 270);
+  closeTo(calculateParticipantMomentOfInertia(secondExerciseParameters), 72);
+
+  const engine = createSimulationEngine(configWith(secondExerciseParameters));
+  const initial = engine.getState();
+  closeTo(initial.total_moment_of_inertia_kg_m2, 846);
+  closeTo(initial.reference_angular_momentum_kg_m2_s, 846);
+  closeTo(initial.omega_rad_s, 1.0);
+
+  engine.removeParticipant();
+  engine.removeParticipant();
+  const afterTwoLeave = engine.getState();
+  assert.equal(afterTwoLeave.participant_count_current, 6);
+  closeTo(afterTwoLeave.total_moment_of_inertia_kg_m2, 702);
+  closeTo(afterTwoLeave.omega_rad_s, 846 / 702);
   assert.equal(afterTwoLeave.target_reached, true);
 });
 
@@ -119,4 +152,22 @@ test("gli slot angolari restano ancorati alla configurazione iniziale", () => {
   closeTo(initialAngles[1] - initialAngles[0], Math.PI / 3);
   closeTo(initialAngles[4], participantSlotAngle(4, 6));
   assert.notEqual(participantSlotAngle(4, 6), (4 / 5) * 2 * Math.PI - Math.PI / 2);
+});
+
+test("la copia didattica e configurabile senza cambiare il motore", () => {
+  const students = resolveParticipantDidactics({
+    participant_singular_it: "studente",
+    participant_plural_it: "studenti",
+    participant_count_label_it: "Studenti rimasti",
+    remove_action_label_it: "Uno studente scende",
+    learning_action_it: "fai scendere uno studente alla volta",
+  });
+  assert.equal(students.singular, "studente");
+  assert.equal(students.plural, "studenti");
+  assert.equal(students.countLabel, "Studenti rimasti");
+  assert.equal(students.removeAction, "Uno studente scende");
+
+  const defaults = resolveParticipantDidactics();
+  assert.equal(defaults.singular, "persona");
+  assert.equal(defaults.plural, "persone");
 });
