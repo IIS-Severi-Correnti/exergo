@@ -1,0 +1,86 @@
+% ID: FIS-ROT-ANG-002
+% Titolo: Otto studenti su una giostra rotante
+% Disciplina: Fisica
+% Area: Dinamica rotazionale
+% Argomento: Conservazione del momento angolare
+% Sottoargomento: Variazione del momento d'inerzia in un sistema ridotto
+% Classe: Quarta liceo scientifico
+% Difficolta: 3
+% Tipo: problema_numerico
+% Risultato: due studenti; omega_f circa 1,21 rad/s
+% Tempo_stimato: 10 min
+% Competenze: modellizzazione, conservazione del momento angolare, momento d'inerzia
+% Prerequisiti: moto circolare, momento d'inerzia, velocita angolare
+% Tag: fisica, dinamica_rotazionale, momento_angolare, momento_inerzia, sistema_ridotto, simulazione
+% Fonte: esercizio_originale_exergo
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+% Simulazione: rotational_platform
+
+\begin{esercizio}
+Una giostra circolare, modellizzata come un disco pieno, ha raggio
+\(1{,}50\,\mathrm{m}\) e massa \(240\,\mathrm{kg}\). Ruota senza attrito
+attorno al proprio asse con velocita angolare iniziale
+\[
+\omega_i=1{,}00\,\mathrm{rad/s}.
+\]
+Otto studenti di massa \(50{,}0\,\mathrm{kg}\) ciascuno si trovano,
+equidistanti, alla distanza \(1{,}20\,\mathrm{m}\) dall'asse.
+
+Nel modello didattico dell'esercizio si considera costante il momento angolare
+di riferimento del sistema ridotto formato dalla giostra e dagli studenti che
+vi restano. Ogni studente e modellizzato come una massa puntiforme. Quanti
+studenti devono scendere dalla giostra affinche la velocita angolare diventi
+circa \(1{,}20\,\mathrm{rad/s}\)?
+
+Nota sul modello: uno studente che lascia realmente la giostra puo portare con
+se momento angolare. L'ipotesi di conservazione applicata qui al sistema
+ridotto e una semplificazione didattica, non una descrizione completa della
+fase di uscita.
+\end{esercizio}
+
+\begin{soluzione}
+Il momento d'inerzia della giostra vale
+\[
+I_\text{giostra}=\frac{1}{2}MR^2
+=\frac{1}{2}\cdot240\cdot(1{,}50)^2
+=270\,\mathrm{kg\,m^2}.
+\]
+
+Ogni studente contribuisce con
+\[
+I_\text{studente}=mr^2
+=50{,}0\cdot(1{,}20)^2
+=72\,\mathrm{kg\,m^2}.
+\]
+
+Con otto studenti il momento d'inerzia iniziale e
+\[
+I_i=270+8\cdot72
+=846\,\mathrm{kg\,m^2},
+\]
+e il momento angolare di riferimento assunto dal modello e
+\[
+L_\text{rif}=I_i\omega_i
+=846\cdot1{,}00
+=846\,\mathrm{kg\,m^2/s}.
+\]
+
+Se scendono \(k\) studenti, ne restano \(8-k\) e
+\[
+\omega_f(k)=\frac{L_\text{rif}}
+{270+(8-k)\cdot72}.
+\]
+
+Con due studenti in meno ne restano sei:
+\[
+I_f=270+6\cdot72
+=702\,\mathrm{kg\,m^2},
+\]
+\[
+\omega_f=\frac{846}{702}
+\simeq1{,}205\,\mathrm{rad/s}.
+\]
+Il valore e circa \(1{,}20\,\mathrm{rad/s}\). Devono quindi scendere dalla
+giostra \textbf{due studenti}, nel modello didattico dichiarato dal testo.
+\end{soluzione}
