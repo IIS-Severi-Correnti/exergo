@@ -1,0 +1,88 @@
+% ID: FIS-ROT-ANG-001
+% Titolo: Sei ragazze su una piattaforma rotante
+% Disciplina: Fisica
+% Area: Dinamica rotazionale
+% Argomento: Conservazione del momento angolare
+% Sottoargomento: Variazione del momento d'inerzia in un sistema ridotto
+% Classe: Quarta liceo scientifico
+% Difficolta: 3
+% Tipo: problema_numerico
+% Risultato: due ragazze; omega_f circa 2,33 rad/s
+% Tempo_stimato: 10 min
+% Competenze: modellizzazione, conservazione del momento angolare, momento d'inerzia
+% Prerequisiti: moto circolare, momento d'inerzia, velocita angolare
+% Tag: fisica, dinamica_rotazionale, momento_angolare, momento_inerzia, sistema_ridotto
+% Fonte: esercizio_proposto_utente
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+% Simulazione: rotational_platform
+
+\begin{esercizio}
+Una piattaforma circolare di diametro \(2{,}00\,\mathrm{m}\) e massa
+\(200\,\mathrm{kg}\) ruota senza attrito attorno al proprio asse con velocita
+angolare iniziale
+\[
+\omega_i=1{,}80\,\mathrm{rad/s}.
+\]
+Sei ragazze di massa \(50{,}0\,\mathrm{kg}\) ciascuna si trovano, equidistanti,
+alla distanza \(0{,}850\,\mathrm{m}\) dall'asse.
+
+Nel modello didattico dell'esercizio si considera il momento angolare del
+sistema ridotto formato dalla piattaforma e dalle ragazze che vi restano come
+costante. La piattaforma e modellizzata come un disco pieno e ogni ragazza come
+una massa puntiforme. Quante ragazze devono lasciare la piattaforma affinche la
+velocita angolare diventi circa \(2{,}34\,\mathrm{rad/s}\)?
+
+Nota sul modello: una persona che lascia realmente la piattaforma puo
+portare con se momento angolare. L'ipotesi di conservazione applicata qui al
+sistema ridotto e una semplificazione didattica, non una descrizione completa
+della fase di salto.
+\end{esercizio}
+
+\begin{soluzione}
+Il raggio della piattaforma e \(R=1{,}00\,\mathrm{m}\). Il suo momento
+d'inerzia vale
+\[
+I_\text{piattaforma}=\frac{1}{2}MR^2
+=\frac{1}{2}\cdot 200\cdot(1{,}00)^2
+=100\,\mathrm{kg\,m^2}.
+\]
+
+Ogni ragazza contribuisce con
+\[
+I_\text{ragazza}=mr^2
+=50{,}0\cdot(0{,}850)^2
+=36{,}125\,\mathrm{kg\,m^2}.
+\]
+
+Con sei ragazze il momento d'inerzia iniziale e
+\[
+I_i=100+6\cdot36{,}125
+=316{,}75\,\mathrm{kg\,m^2},
+\]
+e il momento angolare di riferimento assunto dal modello e
+\[
+L_\text{rif}=I_i\omega_i
+=316{,}75\cdot1{,}80
+=570{,}15\,\mathrm{kg\,m^2/s}.
+\]
+
+Se lasciano la piattaforma \(k\) ragazze, ne restano \(6-k\) e
+\[
+\omega_f(k)=\frac{L_\text{rif}}
+{100+(6-k)\cdot36{,}125}.
+\]
+
+Con due ragazze in meno ne restano quattro:
+\[
+I_f=100+4\cdot36{,}125
+=244{,}5\,\mathrm{kg\,m^2},
+\]
+\[
+\omega_f=\frac{570{,}15}{244{,}5}
+\simeq2{,}332\,\mathrm{rad/s}.
+\]
+Il valore e circa \(2{,}33\)--\(2{,}34\,\mathrm{rad/s}\), secondo gli
+arrotondamenti. Devono quindi lasciare la piattaforma \textbf{due ragazze},
+nel modello didattico dichiarato dal testo.
+\end{soluzione}

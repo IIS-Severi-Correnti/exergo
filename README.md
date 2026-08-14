@@ -15,6 +15,7 @@ esterne.
 metadata/              Tassonomia e indice CSV degli esercizi
 templates/             Preamboli e modelli LaTeX
 esercizi/              Esercizi singoli divisi per disciplina e argomento
+simulazioni/            Motori interattivi riusabili e configurazioni JSON
 verifiche_generate/    Verifiche create dagli script
 archivio_originale/    Materiale sorgente da ripulire e anonimizzare
 scripts/               Script Python per indice, ricerca e generazione
@@ -85,6 +86,24 @@ Campi obbligatori:
 ```text
 ID, Titolo, Disciplina, Area, Argomento, Classe, Difficolta, Tipo, Tag
 ```
+
+Simulazione e un campo facoltativo. Indica il motore da associare
+all'esercizio; i parametri numerici restano nel JSON separato sotto
+simulazioni/config/. Gli esercizi privi del campo continuano a funzionare senza
+JavaScript aggiuntivo.
+
+Per un esercizio interattivo si aggiunge, per esempio:
+
+```tex
+% Simulazione: rotational_platform
+```
+
+## Simulazioni interattive
+
+L'architettura segue il flusso esercizio, configurazione, motore fisico e vista
+interattiva. Un motore rappresenta un modello fisico riusabile, non un singolo
+esercizio. La guida completa per riutilizzare un motore o aggiungerne uno nuovo
+e in [simulazioni/README.md](simulazioni/README.md).
 
 ## Difficolta
 

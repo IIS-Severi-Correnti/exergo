@@ -7,6 +7,11 @@ import re
 import sys
 import unicodedata
 
+try:
+    from simulation_config import SimulationConfigError, load_simulation_config
+except ModuleNotFoundError:  # Supporta anche l'import come modulo nei test.
+    from scripts.simulation_config import SimulationConfigError, load_simulation_config
+
 
 ROOT = Path(__file__).resolve().parents[1]
 EXERCISES_DIR = ROOT / "esercizi"
@@ -265,6 +270,14 @@ def main() -> int:
         metadata = read_metadata(path)
         errors.extend(validate_metadata(path, metadata, taxonomy, seen_ids))
         errors.extend(validate_tex_structure(text, path))
+
+        simulation_engine = metadata.get("Simulazione", "")
+        exercise_id = metadata.get("ID", "")
+        if simulation_engine and exercise_id:
+            try:
+                load_simulation_config(exercise_id, simulation_engine, root=ROOT)
+            except SimulationConfigError as exc:
+                errors.append(f"{path.relative_to(ROOT)}: {exc}")
 
     if errors:
         print("Archivio non valido:")

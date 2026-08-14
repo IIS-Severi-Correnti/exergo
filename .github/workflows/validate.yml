@@ -20,6 +20,11 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
       - name: Check Python syntax
         run: python -m py_compile scripts/*.py
 
@@ -31,6 +36,69 @@ jobs:
 
       - name: Validate exercise archive
         run: python scripts/valida_archivio.py
+
+      - name: Run Python tests
+        run: python -m unittest discover -s tests -p "test_*.py"
+
+      - name: Run simulation engine tests
+        run: node --test tests/js/*.test.mjs
+
+      - name: Build static site for browser smoke test
+        run: python scripts/genera_sito.py --output _site
+
+      - name: Run simulation browser smoke test
+        run: |
+          set -euo pipefail
+          command -v google-chrome
+          mkdir -p browser-artifacts
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/exergo-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:8765/tests/browser/simulation_smoke.html > /dev/null; then
+              break
+            fi
+            sleep 0.25
+          done
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --virtual-time-budget=7000 \
+            --dump-dom \
+            http://127.0.0.1:8765/tests/browser/simulation_smoke.html \
+            > browser-artifacts/smoke-dom.html
+
+          grep -q 'data-status="PASS"' browser-artifacts/smoke-dom.html
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=1440,1600 \
+            --screenshot=browser-artifacts/simulation-desktop.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-001/
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=430,3000 \
+            --screenshot=browser-artifacts/simulation-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-001/
+
+      - name: Upload simulation browser artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulation-browser-review
+          path: browser-artifacts/
+          if-no-files-found: error
 
       - name: Install LaTeX
         run: |

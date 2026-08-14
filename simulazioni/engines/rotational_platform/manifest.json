@@ -1,0 +1,154 @@
+{
+  "manifest_version": 1,
+  "engine": "rotational_platform",
+  "label": "Piattaforma rotante",
+  "entry_points": {
+    "engine": "engine.js",
+    "view": "view.js"
+  },
+  "supported_schema_versions": [
+    1
+  ],
+  "supported_models": [
+    "textbook_reduced_system"
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schema_version",
+      "engine",
+      "model",
+      "parameters",
+      "interaction",
+      "display",
+      "didactics"
+    ],
+    "properties": {
+      "schema_version": {
+        "type": "integer"
+      },
+      "engine": {
+        "type": "string"
+      },
+      "model": {
+        "type": "string"
+      },
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "platform_mass_kg",
+          "platform_radius_m",
+          "participant_count",
+          "participant_mass_kg",
+          "participant_radius_m",
+          "omega_initial_rad_s",
+          "omega_target_rad_s",
+          "omega_target_tolerance_rad_s"
+        ],
+        "properties": {
+          "platform_mass_kg": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "platform_radius_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "participant_count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "participant_mass_kg": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "participant_radius_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "omega_initial_rad_s": {
+            "type": "number"
+          },
+          "omega_target_rad_s": {
+            "type": "number"
+          },
+          "omega_target_tolerance_rad_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        }
+      },
+      "interaction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "allow_remove_participant",
+          "allow_reset",
+          "allow_pause",
+          "show_target"
+        ],
+        "properties": {
+          "allow_remove_participant": {
+            "type": "boolean"
+          },
+          "allow_reset": {
+            "type": "boolean"
+          },
+          "allow_pause": {
+            "type": "boolean"
+          },
+          "show_target": {
+            "type": "boolean"
+          }
+        }
+      },
+      "display": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "show_moment_of_inertia",
+          "show_angular_velocity",
+          "show_angular_momentum",
+          "show_equations"
+        ],
+        "properties": {
+          "show_moment_of_inertia": {
+            "type": "boolean"
+          },
+          "show_angular_velocity": {
+            "type": "boolean"
+          },
+          "show_angular_momentum": {
+            "type": "boolean"
+          },
+          "show_equations": {
+            "type": "boolean"
+          }
+        }
+      },
+      "didactics": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "model_note_it"
+        ],
+        "properties": {
+          "model_note_it": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "constraints": [
+    {
+      "left": "parameters.participant_radius_m",
+      "operator": "<=",
+      "right": "parameters.platform_radius_m",
+      "message": "participant_radius_m deve essere minore o uguale a platform_radius_m"
+    }
+  ]
+}

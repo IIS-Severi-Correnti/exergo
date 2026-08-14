@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo simulation smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell">
+      <h2>Simulazione</h2>
+      <div data-exergo-simulation
+        data-simulation-engine="rotational_platform"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-ROT-ANG-001.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script type="module">
+    import { createSimulationEngine } from "../../_site/assets/simulazioni/engines/rotational_platform/engine.js";
+
+    try {
+      const engine = createSimulationEngine({
+        schema_version: 1,
+        engine: "rotational_platform",
+        model: "textbook_reduced_system",
+        parameters: {
+          platform_mass_kg: 500,
+          platform_radius_m: 2,
+          participant_count: 10,
+          participant_mass_kg: 65,
+          participant_radius_m: 1.6,
+          omega_initial_rad_s: 0.8,
+          omega_target_rad_s: 0.98,
+          omega_target_tolerance_rad_s: 0.01
+        }
+      });
+      engine.removeParticipant();
+      engine.removeParticipant();
+      engine.removeParticipant();
+      const state = engine.getState();
+      const valid =
+        state.participant_count_current === 7 &&
+        Math.abs(state.total_moment_of_inertia_kg_m2 - 2164.8) < 1e-9 &&
+        Math.abs(state.omega_rad_s - 2131.2 / 2164.8) < 1e-9;
+      window.engineGeneralityCheck = valid ? "PASS" : "FAIL";
+    } catch (error) {
+      window.engineGeneralityCheck = "FAIL: " + error.message;
+    }
+  </script>
+  <script>
+    const result = document.querySelector("#result");
+    const simulation = document.querySelector("[data-exergo-simulation]");
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo simulation smoke test";
+    }
+
+    const deadline = Date.now() + 5000;
+    const checkReady = window.setInterval(() => {
+      if (
+        simulation?.dataset.simulationReady !== "true" ||
+        window.engineGeneralityCheck === undefined
+      ) {
+        if (Date.now() > deadline) {
+          window.clearInterval(checkReady);
+          finish("FAIL", "inizializzazione scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(checkReady);
+      try {
+        if (window.engineGeneralityCheck !== "PASS") {
+          throw new Error("configurazione alternativa: " + window.engineGeneralityCheck);
+        }
+        const count = simulation.querySelector('[data-value="participant-count"]');
+        const omega = simulation.querySelector('[data-value="omega"]');
+        const play = simulation.querySelector('[data-simulation-action="play"]');
+        const pause = simulation.querySelector('[data-simulation-action="pause"]');
+        const remove = simulation.querySelector('[data-simulation-action="remove"]');
+        const reset = simulation.querySelector('[data-simulation-action="reset"]');
+        const participantLayer = simulation.querySelector("[data-platform-participants]");
+        const initialParticipants = Array.from(participantLayer.children);
+        const initialTransforms = initialParticipants.map((node) => node.getAttribute("transform"));
+
+        if (count.textContent !== "6") throw new Error("conteggio iniziale");
+        play.click();
+        pause.click();
+        remove.click();
+        remove.click();
+        if (count.textContent !== "4") throw new Error("rimozione");
+        if (simulation.dataset.targetReached !== "true") throw new Error("obiettivo");
+        if (!omega.textContent.startsWith("2,331")) throw new Error("omega");
+
+        const participantsAfterRemoval = Array.from(participantLayer.children);
+        if (participantsAfterRemoval.length !== 6) {
+          throw new Error("gli slot iniziali non sono stati preservati");
+        }
+        for (let index = 0; index < 4; index += 1) {
+          if (participantsAfterRemoval[index].getAttribute("transform") !== initialTransforms[index]) {
+            throw new Error("una persona rimasta ha cambiato posizione angolare");
+          }
+          if (participantsAfterRemoval[index].getAttribute("display") === "none") {
+            throw new Error("una persona rimasta e stata nascosta");
+          }
+        }
+        for (let index = 4; index < 6; index += 1) {
+          if (participantsAfterRemoval[index].getAttribute("display") !== "none") {
+            throw new Error("lo slot di una persona uscita e ancora visibile");
+          }
+        }
+
+        reset.click();
+        if (count.textContent !== "6") throw new Error("reset conteggio");
+        if (simulation.dataset.targetReached !== "false") throw new Error("reset obiettivo");
+        for (const participant of participantLayer.children) {
+          if (participant.getAttribute("display") === "none") {
+            throw new Error("reset visibilita partecipanti");
+          }
+        }
+        finish("PASS", "inizializzazione, config alternativa, slot stabili, pulsanti, obiettivo e reset");
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>

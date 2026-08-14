@@ -10,6 +10,12 @@ import re
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
+
+try:
+    from simulation_config import load_simulation_config
+except ModuleNotFoundError:  # Supporta anche l'import come modulo nei test.
+    from scripts.simulation_config import load_simulation_config
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +28,8 @@ class Exercise:
     row: dict[str, str]
     statement: str
     solution: str
+    simulation_config: dict[str, Any] | None = None
+    simulation_manifest: dict[str, Any] | None = None
 
     @property
     def exercise_id(self) -> str:
@@ -85,11 +93,20 @@ def read_exercises() -> list[Exercise]:
         for row in csv.DictReader(csv_file):
             tex_path = ROOT / row["path"]
             text = tex_path.read_text(encoding="utf-8")
+            simulation_config = None
+            simulation_manifest = None
+            simulation_engine = row.get("simulazione", "")
+            if simulation_engine:
+                simulation_config, simulation_manifest = load_simulation_config(
+                    row["id"], simulation_engine, root=ROOT
+                )
             exercises.append(
                 Exercise(
                     row=row,
                     statement=extract_environment(text, "esercizio", tex_path),
                     solution=extract_environment(text, "soluzione", tex_path),
+                    simulation_config=simulation_config,
+                    simulation_manifest=simulation_manifest,
                 )
             )
 
@@ -216,8 +233,21 @@ def difficulty_stars(value: str) -> str:
     )
 
 
-def page_shell(title: str, body: str, *, depth: int = 0, script: str = "") -> str:
+def page_shell(
+    title: str,
+    body: str,
+    *,
+    depth: int = 0,
+    script: str = "",
+    extra_stylesheets: tuple[str, ...] = (),
+) -> str:
     prefix = "../" * depth
+    extra_style_links = "\n".join(
+        f'  <link rel="stylesheet" href="{prefix}{escape_attr(stylesheet)}">'
+        for stylesheet in extra_stylesheets
+    )
+    if extra_style_links:
+        extra_style_links += "\n"
     return f"""<!doctype html>
 <html lang="it">
 <head>
@@ -226,7 +256,7 @@ def page_shell(title: str, body: str, *, depth: int = 0, script: str = "") -> st
   <meta name="color-scheme" content="light">
   <title>{escape(title)} | Exergo</title>
   <link rel="stylesheet" href="{prefix}assets/style.css">
-  <script>
+{extra_style_links}  <script>
     window.MathJax = {{
       tex: {{
         inlineMath: [["\\\\(", "\\\\)"], ["$", "$"]],
@@ -423,6 +453,16 @@ def render_exercise_page(exercise: Exercise) -> str:
             "</div>"
         )
 
+    simulation = render_simulation(exercise)
+    simulation_script = ""
+    simulation_styles: tuple[str, ...] = ()
+    if exercise.simulation_config is not None:
+        simulation_script = (
+            '<script type="module" '
+            'src="../../assets/simulazioni/core/runtime.js"></script>'
+        )
+        simulation_styles = ("assets/simulazioni/core/simulation.css",)
+
     body = f"""
 <main class="page exercise-page">
   <nav class="page-nav" aria-label="Navigazione">
@@ -447,7 +487,7 @@ def render_exercise_page(exercise: Exercise) -> str:
     </div>
   </section>
 
-  <details class="solution-panel">
+{simulation}  <details class="solution-panel">
     <summary>Soluzione</summary>
     {result}
     <div class="latex-content">
@@ -456,7 +496,38 @@ def render_exercise_page(exercise: Exercise) -> str:
   </details>
 </main>
 """
-    return page_shell(exercise.title, body, depth=2)
+    return page_shell(
+        exercise.title,
+        body,
+        depth=2,
+        script=simulation_script,
+        extra_stylesheets=simulation_styles,
+    )
+
+
+def render_simulation(exercise: Exercise) -> str:
+    if exercise.simulation_config is None:
+        return ""
+
+    engine_name = exercise.row["simulazione"]
+    config_url = f"../../assets/simulazioni/config/{exercise.exercise_id}.json"
+    note = exercise.simulation_config["didactics"]["model_note_it"]
+    return f"""  <section class="simulation-shell" aria-labelledby="simulation-heading">
+    <h2 id="simulation-heading">Simulazione</h2>
+    <div data-exergo-simulation
+      data-simulation-engine="{escape_attr(engine_name)}"
+      data-simulation-config="{escape_attr(config_url)}">
+      <p>Caricamento della simulazione interattiva...</p>
+      <p class="simulation-error" data-simulation-error role="alert" hidden></p>
+      <noscript>
+        <p class="simulation-noscript">
+          La simulazione richiede JavaScript, ma testo e soluzione restano disponibili.
+          Ipotesi del modello: {escape(note)}
+        </p>
+      </noscript>
+    </div>
+  </section>
+"""
 
 
 def exercise_to_json(exercise: Exercise) -> dict[str, str]:
@@ -472,6 +543,7 @@ def exercise_to_json(exercise: Exercise) -> dict[str, str]:
         "tipo": exercise.row["tipo"],
         "tempo_stimato": exercise.row["tempo_stimato"],
         "tag": exercise.row["tag"],
+        "simulazione": exercise.row.get("simulazione", ""),
         "url": exercise.url,
         "sorgente": exercise.source_url,
     }
@@ -1121,6 +1193,7 @@ def write_site(exercises: list[Exercise], output_dir: Path) -> None:
         encoding="utf-8",
     )
     shutil.copyfile(INDEX_CSV, output_dir / "data" / "indice_esercizi.csv")
+    copy_simulation_assets(exercises, output_dir)
 
     for exercise in exercises:
         exercise_dir = output_dir / exercise.url
@@ -1131,6 +1204,43 @@ def write_site(exercises: list[Exercise], output_dir: Path) -> None:
         source_dest = output_dir / exercise.source_url
         source_dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source_path, source_dest)
+
+
+def copy_simulation_assets(exercises: list[Exercise], output_dir: Path) -> None:
+    simulated_exercises = [
+        exercise for exercise in exercises if exercise.simulation_config is not None
+    ]
+    if not simulated_exercises:
+        return
+
+    source_root = ROOT / "simulazioni"
+    target_root = output_dir / "assets" / "simulazioni"
+    core_files = ("runtime.js", "controls.js", "registry.js", "simulation.css")
+    (target_root / "core").mkdir(parents=True, exist_ok=True)
+    for filename in core_files:
+        shutil.copyfile(source_root / "core" / filename, target_root / "core" / filename)
+
+    copied_engines: set[str] = set()
+    for exercise in simulated_exercises:
+        engine_name = exercise.row["simulazione"]
+        manifest = exercise.simulation_manifest
+        if engine_name not in copied_engines and manifest is not None:
+            engine_source = source_root / "engines" / engine_name
+            engine_target = target_root / "engines" / engine_name
+            engine_target.mkdir(parents=True, exist_ok=True)
+            for entry_filename in manifest["entry_points"].values():
+                shutil.copyfile(
+                    engine_source / entry_filename,
+                    engine_target / entry_filename,
+                )
+            copied_engines.add(engine_name)
+
+        config_target = target_root / "config" / f"{exercise.exercise_id}.json"
+        config_target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(
+            source_root / "config" / f"{exercise.exercise_id}.json",
+            config_target,
+        )
 
 
 def parse_args() -> argparse.Namespace:

@@ -9,6 +9,7 @@ on:
       - "esercizi/**"
       - "metadata/**"
       - "scripts/**"
+      - "simulazioni/**"
   workflow_dispatch:
 
 permissions:
