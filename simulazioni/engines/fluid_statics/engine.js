@@ -362,7 +362,7 @@ function createCommunicatingVesselsRuntime(parameters) {
     derive(progress) {
       const imbalanceFraction = 1 - progress;
       const levelOffsets = Object.freeze(
-        pattern.map((value) => value * imbalanceFraction),
+        pattern.map((value) => (imbalanceFraction === 0 ? 0 : value * imbalanceFraction)),
       );
       const minimumOffset = Math.min(...levelOffsets);
       const maximumOffset = Math.max(...levelOffsets);
