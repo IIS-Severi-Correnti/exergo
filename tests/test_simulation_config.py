@@ -18,6 +18,8 @@ from scripts.simulation_config import (
 ROOT = Path(__file__).resolve().parents[1]
 ENGINE_NAME = "rotational_platform"
 EXERCISE_ID = "FIS-ROT-ANG-001"
+GAS_ENGINE_NAME = "ideal_gas_process"
+GAS_EXERCISE_ID = "FIS-TER-GAS-003"
 
 
 class SimulationConfigTests(unittest.TestCase):
@@ -154,6 +156,101 @@ class SimulationConfigTests(unittest.TestCase):
                 load_simulation_config(
                     EXERCISE_ID,
                     ENGINE_NAME,
+                    root=temporary_root,
+                )
+
+
+class IdealGasSimulationConfigTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.manifest = load_engine_manifest(GAS_ENGINE_NAME, root=ROOT)
+        cls.config = json.loads(
+            (
+                ROOT
+                / "simulazioni"
+                / "config"
+                / f"{GAS_EXERCISE_ID}.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def errors_for(self, config: dict) -> list[str]:
+        return validate_config_data(
+            config,
+            self.manifest,
+            expected_engine=GAS_ENGINE_NAME,
+        )
+
+    def test_manifest_and_pilot_configuration_are_valid(self) -> None:
+        config, manifest = load_simulation_config(
+            GAS_EXERCISE_ID,
+            GAS_ENGINE_NAME,
+            root=ROOT,
+        )
+        self.assertEqual(config["model"], "reversible_isothermal")
+        self.assertEqual(manifest["engine"], GAS_ENGINE_NAME)
+        self.assertEqual(self.errors_for(deepcopy(self.config)), [])
+
+    def test_schema_is_strict_at_every_configuration_level(self) -> None:
+        config = deepcopy(self.config)
+        config["parameters"]["temperature_C"] = 26.85
+        config["interaction"]["physical_time_s"] = 5
+        config["display"]["show_particles"] = True
+        config["didactics"]["answer_J"] = 418.8
+        errors = self.errors_for(config)
+        for unknown_key in (
+            "temperature_C",
+            "physical_time_s",
+            "show_particles",
+            "answer_J",
+        ):
+            with self.subTest(key=unknown_key):
+                self.assertTrue(
+                    any(unknown_key in error and "sconosciuta" in error for error in errors)
+                )
+
+    def test_positive_values_and_expansion_constraint(self) -> None:
+        config = deepcopy(self.config)
+        config["parameters"]["amount_mol"] = 0
+        config["parameters"]["temperature_K"] = -1
+        config["parameters"]["volume_final_m3"] = config["parameters"][
+            "volume_initial_m3"
+        ]
+        config["interaction"]["playback_duration_s"] = 0
+        errors = self.errors_for(config)
+        self.assertTrue(any("amount_mol" in error and "> 0" in error for error in errors))
+        self.assertTrue(any("temperature_K" in error and "> 0" in error for error in errors))
+        self.assertTrue(any("volume_final_m3" in error and "maggiore" in error for error in errors))
+        self.assertTrue(
+            any("playback_duration_s" in error and "> 0" in error for error in errors)
+        )
+
+    def test_invalid_configuration_error_is_readable(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            temporary_root = Path(temporary_directory)
+            target_engine = (
+                temporary_root / "simulazioni" / "engines" / GAS_ENGINE_NAME
+            )
+            target_engine.parent.mkdir(parents=True)
+            shutil.copytree(
+                ROOT / "simulazioni" / "engines" / GAS_ENGINE_NAME,
+                target_engine,
+            )
+            config_directory = temporary_root / "simulazioni" / "config"
+            config_directory.mkdir()
+            invalid = deepcopy(self.config)
+            invalid["parameters"]["volume_final_m3"] = 0.1
+            (config_directory / f"{GAS_EXERCISE_ID}.json").write_text(
+                json.dumps(invalid),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(
+                SimulationConfigError,
+                r"(?s)configurazione non valida.*volume_final_m3",
+            ):
+                load_simulation_config(
+                    GAS_EXERCISE_ID,
+                    GAS_ENGINE_NAME,
                     root=temporary_root,
                 )
 

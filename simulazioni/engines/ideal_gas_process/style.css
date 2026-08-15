@@ -1,0 +1,229 @@
+.ideal-gas-visuals {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.72fr) minmax(360px, 1.28fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.ideal-gas-figure {
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  background: rgb(var(--teal-rgb) / 0.055);
+  border: 1px solid rgb(var(--teal-rgb) / 0.22);
+  border-radius: 8px;
+}
+
+.ideal-gas-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ideal-gas-figure figcaption {
+  margin: 6px 4px 2px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.gas-cylinder {
+  fill: rgb(var(--paper-rgb) / 0.72);
+  stroke: var(--ink);
+  stroke-width: 6;
+  stroke-linejoin: round;
+}
+
+.gas-fill {
+  fill: rgb(var(--teal-rgb) / 0.18);
+  stroke: none;
+}
+
+.gas-piston {
+  fill: var(--amber);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.gas-piston-rod {
+  stroke: var(--ink);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.gas-piston-handle {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.gas-heat-arrow,
+.gas-heat-arrow-head {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gas-heat-label,
+.gas-temperature-label,
+.pv-axis-label,
+.pv-tick-label,
+.pv-work-label {
+  fill: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.gas-heat-label {
+  fill: #8a5a08;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.gas-temperature-label {
+  fill: var(--teal);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.pv-axis {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.pv-axis-arrow {
+  fill: var(--ink);
+}
+
+.pv-axis-label {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.pv-tick-label {
+  fill: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pv-isotherm {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.pv-work-area {
+  fill: rgb(var(--amber-rgb) / 0.32);
+  stroke: none;
+}
+
+.pv-state-point {
+  fill: var(--amber);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.pv-guide {
+  stroke: rgb(var(--ink-rgb) / 0.38);
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+}
+
+.pv-work-label {
+  fill: #79530f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.ideal-gas-panel {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(320px, 1.15fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.ideal-gas-scrubber,
+.ideal-gas-panel .simulation-controls {
+  grid-column: 1;
+}
+
+.ideal-gas-values,
+.ideal-gas-panel .simulation-equations,
+.ideal-gas-panel .simulation-status,
+.ideal-gas-panel .simulation-model-note,
+.ideal-gas-panel .simulation-error {
+  grid-column: 2;
+}
+
+.ideal-gas-scrubber {
+  padding: 12px;
+  background: rgb(var(--paper-rgb) / 0.84);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.ideal-gas-scrubber label,
+.ideal-gas-slider-scale {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ideal-gas-scrubber label {
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+.ideal-gas-scrubber output {
+  color: var(--teal);
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.ideal-gas-scrubber input[type="range"] {
+  min-height: 34px;
+  padding: 0;
+  accent-color: var(--teal);
+  cursor: ew-resize;
+}
+
+.ideal-gas-scrubber input[type="range"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ideal-gas-slider-scale {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+@media (max-width: 920px) {
+  .ideal-gas-visuals,
+  .ideal-gas-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .ideal-gas-scrubber,
+  .ideal-gas-panel .simulation-controls,
+  .ideal-gas-values,
+  .ideal-gas-panel .simulation-equations,
+  .ideal-gas-panel .simulation-status,
+  .ideal-gas-panel .simulation-model-note,
+  .ideal-gas-panel .simulation-error {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .ideal-gas-figure {
+    padding: 6px;
+  }
+
+  .ideal-gas-slider-scale {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
