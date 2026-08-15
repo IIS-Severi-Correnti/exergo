@@ -119,10 +119,6 @@ export function createSimulationEngine(config) {
   const u2 = parameters.velocity_2_initial_m_s;
   const v1 = finalVelocities.velocity_1_final_m_s;
   const v2 = finalVelocities.velocity_2_final_m_s;
-  const momentumBefore = normalizedMomentum(m1, u1, m2, u2);
-  const momentumAfter = normalizedMomentum(m1, v1, m2, v2);
-  const energyBefore = normalizedKineticEnergy(m1, u1, m2, u2);
-  const energyAfter = normalizedKineticEnergy(m1, v1, m2, v2);
 
   let progress = 0;
   let running = false;
@@ -133,6 +129,14 @@ export function createSimulationEngine(config) {
     const afterCollision = progress >= 0.5;
     const currentTableV1 = afterCollision ? v1 : u1;
     const currentTableV2 = afterCollision ? v2 : u2;
+    const initialV1 = shiftVelocity(u1, referenceFrame, vCenterOfMass);
+    const initialV2 = shiftVelocity(u2, referenceFrame, vCenterOfMass);
+    const finalV1 = shiftVelocity(v1, referenceFrame, vCenterOfMass);
+    const finalV2 = shiftVelocity(v2, referenceFrame, vCenterOfMass);
+    const momentumBefore = normalizedMomentum(m1, initialV1, m2, initialV2);
+    const momentumAfter = normalizedMomentum(m1, finalV1, m2, finalV2);
+    const energyBefore = normalizedKineticEnergy(m1, initialV1, m2, initialV2);
+    const energyAfter = normalizedKineticEnergy(m1, finalV1, m2, finalV2);
 
     return Object.freeze({
       model: config.model,
@@ -144,15 +148,20 @@ export function createSimulationEngine(config) {
       reference_frame: referenceFrame,
       mass_1_ratio: m1,
       mass_2_ratio: m2,
-      velocity_center_of_mass_m_s: vCenterOfMass,
+      velocity_center_of_mass_table_m_s: vCenterOfMass,
+      velocity_center_of_mass_m_s: shiftVelocity(
+        vCenterOfMass,
+        referenceFrame,
+        vCenterOfMass,
+      ),
       velocity_1_initial_table_m_s: u1,
       velocity_2_initial_table_m_s: u2,
       velocity_1_final_table_m_s: v1,
       velocity_2_final_table_m_s: v2,
-      velocity_1_initial_m_s: shiftVelocity(u1, referenceFrame, vCenterOfMass),
-      velocity_2_initial_m_s: shiftVelocity(u2, referenceFrame, vCenterOfMass),
-      velocity_1_final_m_s: shiftVelocity(v1, referenceFrame, vCenterOfMass),
-      velocity_2_final_m_s: shiftVelocity(v2, referenceFrame, vCenterOfMass),
+      velocity_1_initial_m_s: initialV1,
+      velocity_2_initial_m_s: initialV2,
+      velocity_1_final_m_s: finalV1,
+      velocity_2_final_m_s: finalV2,
       velocity_1_current_m_s: shiftVelocity(
         currentTableV1,
         referenceFrame,
