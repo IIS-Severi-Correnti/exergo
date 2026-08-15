@@ -1,0 +1,200 @@
+.collision-frame-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0 0 1rem;
+}
+
+.collision-frame-label {
+  font-weight: 650;
+}
+
+.collision-frame-controls button {
+  width: auto;
+  min-width: 10rem;
+  min-height: 2.4rem;
+  flex: 0 0 auto;
+}
+
+.collision-figure {
+  margin: 0;
+}
+
+.collision-svg {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  border: 1px solid var(--border, #d9dde5);
+  border-radius: 0.8rem;
+  background: var(--surface, #fff);
+}
+
+.collision-track {
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.72;
+}
+
+.collision-center-mark {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  opacity: 0.4;
+}
+
+.collision-center-label,
+.collision-object-caption {
+  fill: currentColor;
+  font-size: 13px;
+}
+
+.collision-ball {
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+
+.collision-ball-1 {
+  fill: #dbeafe;
+}
+
+.collision-ball-2 {
+  fill: #fde68a;
+}
+
+.collision-ball-label {
+  fill: #111827;
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.collision-velocity-arrow {
+  stroke: #b91c1c;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.collision-velocity-arrow + * {
+  pointer-events: none;
+}
+
+.collision-svg marker path {
+  fill: #b91c1c;
+}
+
+.collision-at-impact .collision-ball {
+  stroke-width: 4;
+}
+
+.collision-panel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.collision-scrubber label {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-weight: 650;
+}
+
+.collision-scrubber input[type="range"] {
+  width: 100%;
+}
+
+.collision-slider-scale {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  font-size: 0.86rem;
+  opacity: 0.72;
+}
+
+.collision-slider-scale span:nth-child(2) {
+  text-align: center;
+}
+
+.collision-slider-scale span:last-child {
+  text-align: right;
+}
+
+.collision-current-state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+}
+
+.collision-current-state [data-frame-label] {
+  opacity: 0.72;
+}
+
+.collision-values {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.collision-before-after {
+  overflow-x: auto;
+}
+
+.collision-before-after table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 420px;
+}
+
+.collision-before-after th,
+.collision-before-after td {
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--border, #d9dde5);
+  text-align: left;
+}
+
+.collision-before-after thead th {
+  font-size: 0.9rem;
+  opacity: 0.72;
+}
+
+.collision-invariants {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border, #d9dde5);
+  border-radius: 0.7rem;
+}
+
+.collision-invariants p {
+  margin: 0.25rem 0;
+}
+
+@media (max-width: 640px) {
+  .collision-frame-controls {
+    align-items: stretch;
+  }
+
+  .collision-frame-label {
+    flex-basis: 100%;
+  }
+
+  .collision-frame-controls button {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 9rem;
+  }
+
+  .collision-values {
+    grid-template-columns: 1fr;
+  }
+
+  .collision-svg {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collision-ball,
+  .collision-velocity-arrow {
+    transition: none !important;
+  }
+}

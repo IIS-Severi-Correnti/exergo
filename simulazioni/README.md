@@ -16,10 +16,11 @@ Exercise (.tex)
 ~~~
 
 Un **simulation engine** rappresenta un modello fisico riusabile. Riceve dati
-in unita SI, calcola lo stato e non accede al DOM. Una **config** descrive invece
-un particolare esercizio: parametri, modello adottato, interazioni consentite,
-grandezze da visualizzare e copia didattica. Varianti numeriche dello stesso
-modello non richiedono modifiche al motore.
+in unita SI, oppure rapporti adimensionali quando il testo non fornisce una
+scala assoluta necessaria, calcola lo stato e non accede al DOM. Una **config**
+descrive invece un particolare esercizio: parametri, modello adottato,
+interazioni consentite, grandezze da visualizzare e copia didattica. Varianti
+numeriche dello stesso modello non richiedono modifiche al motore.
 
 La struttura v1 e:
 
@@ -36,7 +37,12 @@ simulazioni/
 |   |   |-- view.js         vista SVG e aggiornamento accessibile
 |   |   |-- style.css       stile specifico del motore
 |   |   -- manifest.json    entry point, modelli e schema della config
-|   -- ideal_gas_process/
+|   |-- ideal_gas_process/
+|   |   |-- engine.js
+|   |   |-- view.js
+|   |   |-- style.css
+|   |   -- manifest.json
+|   -- one_dimensional_collision/
 |       |-- engine.js
 |       |-- view.js
 |       |-- style.css
@@ -51,16 +57,16 @@ richiesti dagli esercizi presenti.
 
 Lo stile strutturale condiviso vive in core/simulation.css; colori, geometrie e
 selettori di dominio vivono invece nello style.css del rispettivo motore. La
-validazione lato build vive in
-scripts/simulation_config.py. Il primo e un asset comune a tutte le view; il
-secondo appartiene alla pipeline Python e non al runtime browser. La separazione
-tra runtime, modello, rendering e configurazione resta invariata.
+validazione lato build vive in scripts/simulation_config.py. Il primo e un asset
+comune a tutte le view; il secondo appartiene alla pipeline Python e non al
+runtime browser. La separazione tra runtime, modello, rendering e
+configurazione resta invariata.
 
 ## Contratto multi-engine
 
 Il core tratta nomi di azione, payload e descrittori dei controlli come dati
 opachi. Non contiene condizioni sul nome del motore e non conosce partecipanti,
-pistoni o altre entita del dominio.
+pistoni, palle o altre entita del dominio.
 
 Ogni `engine.js` espone:
 
@@ -84,18 +90,19 @@ restituito implementa `render(state)` e puo inoltre fornire:
 l'azione senza interpretarla e applica soltanto descrittori DOM generici. Per
 esempio, l'uscita di una persona e la sua animazione sono interamente nel motore
 e nella view rotazionali; lo scrubbing del volume e interamente nel motore e
-nella view del gas.
+nella view del gas; il cambio tra sistema del tavolo e sistema del centro di
+massa appartiene interamente al motore e alla view degli urti.
 
 ## Associare una simulazione a un esercizio
 
-Nel blocco iniziale di metadati del file .tex aggiungere:
+Nel blocco iniziale di metadati del file .tex aggiungere, per esempio:
 
 ~~~tex
 % Simulazione: rotational_platform
 ~~~
 
 Il campo e facoltativo e contiene il nome del motore, non i valori numerici.
-Creare poi simulazioni/config/EXERCISE-ID.json. Il nome del file deve
+Creare poi `simulazioni/config/EXERCISE-ID.json`. Il nome del file deve
 corrispondere esattamente all'ID dell'esercizio.
 
 ## Riutilizzare un motore esistente
@@ -118,12 +125,22 @@ Non copiare il JavaScript per creare una variante numerica. Se una nuova config
 non basta, chiedersi prima se serve un nuovo **modello** nello stesso motore o
 un fenomeno fisico realmente diverso che giustifichi un nuovo motore.
 
-Il secondo motore pubblicato e `ideal_gas_process`. La versione 1 supporta solo
+`ideal_gas_process` supporta nella versione 1 il modello
 `reversible_isothermal`: rappresenta una successione di stati di equilibrio a
 temperatura costante, con `pV=nRT`, `Delta U=0` e `Q=L`. Il progresso del
 playback e un parametro didattico, non tempo fisico; dinamica del pistone,
 attriti, inerzia, scambi termici finiti e irreversibilita restano fuori dal
 modello. Isobare, isocore, adiabatiche e cicli non sono implementati.
+
+`one_dimensional_collision` introduce il modello `elastic_1d`: un urto
+frontale, istantaneo ed elastico in una dimensione. Conserva quantita di moto ed
+energia cinetica e permette di osservare lo stesso evento nel sistema del
+tavolo e nel sistema del centro di massa. Se un esercizio specifica soltanto un
+rapporto tra masse, la configurazione usa rapporti adimensionali invece di
+inventare masse assolute. Le posizioni nella vista sono schematiche e il
+progresso del playback ordina didatticamente prima, urto e dopo: non e un tempo
+fisico. Urti anelastici, urti obliqui, deformazione durante il contatto e urti
+successivi a tre o piu corpi non fanno parte del modello v1.
 
 ## Creare una configurazione
 
@@ -153,16 +170,20 @@ Il manifest del motore elenca chiavi, tipi, vincoli, versioni e modelli
 supportati. Chiavi sconosciute sono errori: un refuso come `participant_mass_k`
 non viene ignorato.
 
-### Unita
+### Unita e rapporti
 
-I dati interni usano esclusivamente unita SI e nomi espliciti:
+I dati dimensionali interni usano unita SI e nomi espliciti:
 
-- masse in chilogrammi: suffisso `_kg`;
+- masse assolute, quando necessarie, in chilogrammi: suffisso `_kg`;
 - lunghezze in metri: suffisso `_m`;
+- velocita lineari in metri al secondo: suffisso `_m_s`;
 - velocita angolari in radianti al secondo: suffisso `_rad_s`;
 - tolleranze con la stessa unita della grandezza confrontata.
 
-Non sono previste conversioni implicite. Il numero di partecipanti e un intero.
+Non sono previste conversioni implicite. Quando la fisica dipende soltanto dal
+rapporto tra masse e il testo non fornisce una scala assoluta, un motore puo
+usare parametri esplicitamente adimensionali con suffisso `_ratio`, come
+`mass_1_ratio` e `mass_2_ratio` in `elastic_1d`.
 
 ### Versione dello schema
 
@@ -194,22 +215,24 @@ lifecycle; il motore non deve manipolare HTML.
 ## Modelli fisici e trasparenza
 
 Ogni configurazione deve dichiarare il modello e una nota sulle sue ipotesi.
-Il prototipo usa `textbook_reduced_system`: conserva un momento angolare di
-riferimento per il sistema ridotto formato da piattaforma e persone rimaste.
-Non descrive l'impulso e il momento angolare portato via durante un salto o
-un'uscita reale.
+Il prototipo rotazionale usa `textbook_reduced_system`: conserva un momento
+angolare di riferimento per il sistema ridotto formato da piattaforma e persone
+rimaste. Non descrive l'impulso e il momento angolare portato via durante un
+salto o un'uscita reale.
 
 Una futura variante, per esempio `full_angular_momentum`, va aggiunta come
 implementazione distinta nel registro dei modelli del motore e nel manifest.
-Non va nascosta dietro lo stesso nome ne introdotta riscrivendo la view.
+Non va nascosta dietro lo stesso nome ne introdotta riscrivendo la view. Lo
+stesso criterio vale per un futuro `inelastic_1d`: non deve essere simulato
+alterando silenziosamente le equazioni di `elastic_1d`.
 
 ## Regola contro l'hardcoding
 
 Masse, raggi, conteggi, velocita, target e testi specifici di un esercizio
 appartengono al JSON. In `engine.js` sono ammessi soltanto costanti matematiche o
 coefficienti del modello fisico, come `1/2` per il momento d'inerzia di un disco
-pieno. Numeri specifici dei casi pubblicati possono comparire solo nelle fixture
-di test.
+pieno o i coefficienti delle formule dell'urto elastico. Numeri specifici dei
+casi pubblicati possono comparire solo nelle fixture di test.
 
 ## Validare e testare
 
@@ -226,8 +249,8 @@ runner integrato e verificano modello, stato e contratto della vista senza npm o
 dipendenze. Il piccolo `simulazioni/package.json` dichiara esclusivamente i
 moduli ES e non introduce pacchetti da installare.
 
-La CI esegue inoltre `tests/browser/simulation_smoke.html` con Chrome headless:
-inizializza entrambi i motori nello stesso runtime, verifica le due
-configurazioni rotazionali e il processo isotermo, poi ripete lo smoke con
-reduced motion forzato. Salva screenshot desktop/mobile del gas e una verifica
-visuale di entrambi gli esercizi rotazionali come artifact di revisione.
+La CI esegue inoltre smoke test con Chrome headless per i motori pubblicati,
+verifica il comportamento con `prefers-reduced-motion`, controlla il layout
+mobile e salva screenshot desktop/mobile come artifact di revisione. Per il
+motore degli urti, lo smoke verifica anche cambio di sistema di riferimento,
+invarianti del modello elastico, scrubbing prima/urto/dopo e reset.

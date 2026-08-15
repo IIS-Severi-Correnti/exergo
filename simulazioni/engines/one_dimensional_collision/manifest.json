@@ -1,0 +1,168 @@
+{
+  "manifest_version": 1,
+  "engine": "one_dimensional_collision",
+  "label": "Urto unidimensionale",
+  "entry_points": {
+    "engine": "engine.js",
+    "view": "view.js",
+    "style": "style.css"
+  },
+  "supported_schema_versions": [
+    1
+  ],
+  "supported_models": [
+    "elastic_1d"
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schema_version",
+      "engine",
+      "model",
+      "parameters",
+      "interaction",
+      "display",
+      "didactics"
+    ],
+    "properties": {
+      "schema_version": {
+        "type": "integer",
+        "const": 1
+      },
+      "engine": {
+        "type": "string",
+        "const": "one_dimensional_collision"
+      },
+      "model": {
+        "type": "string",
+        "enum": [
+          "elastic_1d"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mass_1_ratio",
+          "mass_2_ratio",
+          "velocity_1_initial_m_s",
+          "velocity_2_initial_m_s"
+        ],
+        "properties": {
+          "mass_1_ratio": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "mass_2_ratio": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "velocity_1_initial_m_s": {
+            "type": "number"
+          },
+          "velocity_2_initial_m_s": {
+            "type": "number"
+          }
+        }
+      },
+      "interaction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "allow_play",
+          "allow_pause",
+          "allow_reset",
+          "allow_scrub",
+          "allow_reference_frame_change",
+          "playback_duration_s"
+        ],
+        "properties": {
+          "allow_play": {
+            "type": "boolean"
+          },
+          "allow_pause": {
+            "type": "boolean"
+          },
+          "allow_reset": {
+            "type": "boolean"
+          },
+          "allow_scrub": {
+            "type": "boolean"
+          },
+          "allow_reference_frame_change": {
+            "type": "boolean"
+          },
+          "playback_duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        }
+      },
+      "display": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reference_frame_default",
+          "show_velocity_vectors",
+          "show_invariants",
+          "show_equations"
+        ],
+        "properties": {
+          "reference_frame_default": {
+            "type": "string",
+            "enum": [
+              "table",
+              "center_of_mass"
+            ]
+          },
+          "show_velocity_vectors": {
+            "type": "boolean"
+          },
+          "show_invariants": {
+            "type": "boolean"
+          },
+          "show_equations": {
+            "type": "boolean"
+          }
+        }
+      },
+      "didactics": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "model_note_it",
+          "learning_action_it",
+          "object_1_label_it",
+          "object_2_label_it"
+        ],
+        "properties": {
+          "model_note_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "learning_action_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object_1_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object_2_label_it": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "constraints": [
+    {
+      "left": "parameters.velocity_1_initial_m_s",
+      "operator": ">",
+      "right": "parameters.velocity_2_initial_m_s",
+      "message": "velocity_1_initial_m_s deve essere maggiore di velocity_2_initial_m_s per rappresentare un urto di avvicinamento"
+    }
+  ]
+}

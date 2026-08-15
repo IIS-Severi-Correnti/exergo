@@ -19,6 +19,11 @@ registerSimulationEngine("ideal_gas_process", {
   loadView: () => import("../engines/ideal_gas_process/view.js"),
 });
 
+registerSimulationEngine("one_dimensional_collision", {
+  loadEngine: () => import("../engines/one_dimensional_collision/engine.js"),
+  loadView: () => import("../engines/one_dimensional_collision/view.js"),
+});
+
 export async function loadSimulationEngine(name) {
   const loaders = registry.get(name);
   if (!loaders) {
