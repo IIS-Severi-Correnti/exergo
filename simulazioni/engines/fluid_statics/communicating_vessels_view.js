@@ -72,7 +72,7 @@ export function createSimulationView({ container, config }) {
     <figure class="fluid-statics-figure communicating-vessels-figure">
       <svg class="fluid-statics-svg communicating-vessels-svg" viewBox="0 0 760 350" role="img"
         aria-labelledby="${figureTitleId} ${figureDescriptionId}">
-        <title id="${figureTitleId}">Quattro vasi comunicanti di forma diversa</title>
+        <title id="${figureTitleId}">${branchCount} vasi comunicanti di forma diversa</title>
         <desc id="${figureDescriptionId}">Con livelli diversi le pressioni idrostatiche alla base differiscono; nello stato di equilibrio i livelli e le pressioni alla stessa quota coincidono.</desc>
         <line class="communicating-vessels-reference" x1="62" y1="170" x2="698" y2="170"></line>
         ${branchMarkup.join("")}
