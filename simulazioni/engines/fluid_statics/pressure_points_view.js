@@ -178,7 +178,7 @@ export function createSimulationView({ container, config }) {
   function setGroupY(group, y) {
     group.querySelector("circle").setAttribute("cy", String(y));
     const label = group.querySelector("text");
-    label.setAttribute("y", String(y + 5));
+    label.setAttribute("y", String(y - 14));
   }
 
   setGroupY(upperGroup, upperY);
