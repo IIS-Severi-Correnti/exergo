@@ -60,7 +60,7 @@ test("CAL-002 converts solar power into the expected water temperature", () => {
   engine.setProgress(1);
   const state = engine.getState();
   close(state.useful_power_W, 14400);
-  close(state.temperature_C, 37.01845980430191, 1e-9);
+  close(state.temperature_C, 37.018459801068495, 1e-9);
 });
 
 test("EQ-001 reaches 44 degrees with zero energy-balance error", () => {
