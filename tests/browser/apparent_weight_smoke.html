@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo apparent weight smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/fluid_statics/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell">
+      <h2>Peso apparente</h2>
+      <div id="apparent" data-exergo-simulation
+        data-simulation-engine="fluid_statics"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-FLU-ARC-002.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector("#result");
+    const simulation = document.querySelector("#apparent");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo apparent weight smoke test";
+    }
+
+    function close(actual, expected, tolerance = 1e-8) {
+      if (Math.abs(actual - expected) > tolerance) {
+        throw new Error(actual + " != " + expected);
+      }
+    }
+
+    const deadline = Date.now() + 6000;
+    const timer = window.setInterval(() => {
+      if (simulation?.dataset.simulationReady !== "true") {
+        if (Date.now() > deadline) {
+          window.clearInterval(timer);
+          finish("FAIL", "inizializzazione scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(timer);
+      try {
+        const slider = simulation.querySelector('[data-simulation-action="set_progress"]');
+        const play = simulation.querySelector('[data-simulation-action="play"]');
+        const pause = simulation.querySelector('[data-simulation-action="pause"]');
+        const reset = simulation.querySelector('[data-simulation-action="reset"]');
+        const buoyancyArrow = simulation.querySelector('[data-force-buoyancy]');
+        const learning = simulation.querySelector('[data-learning-action]');
+
+        if (!learning.textContent.includes("820 N") || !learning.textContent.includes("770 N")) {
+          throw new Error("istruzione didattica non collega le due letture");
+        }
+        close(Number(simulation.dataset.submergedFraction), 0);
+        close(Number(simulation.dataset.weightN), 820);
+        close(Number(simulation.dataset.buoyancyN), 0);
+        close(Number(simulation.dataset.apparentWeightN), 820);
+        close(Number(simulation.dataset.balanceResidualN), 0);
+        if (buoyancyArrow.style.display !== "none") {
+          throw new Error("spinta visibile a immersione nulla");
+        }
+        if (play.disabled !== reducedMotion) {
+          throw new Error("semantica Play/reduced-motion errata");
+        }
+        if (!pause.disabled) {
+          throw new Error("Pausa dovrebbe essere inizialmente disabilitata");
+        }
+
+        slider.value = "500";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(simulation.dataset.submergedFraction), 0.5);
+        close(Number(simulation.dataset.buoyancyN), 25);
+        close(Number(simulation.dataset.apparentWeightN), 795);
+        if (buoyancyArrow.style.display === "none") {
+          throw new Error("spinta nascosta a immersione positiva");
+        }
+
+        slider.value = "1000";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(simulation.dataset.buoyancyN), 50);
+        close(Number(simulation.dataset.apparentWeightN), 770);
+        close(Number(simulation.dataset.volumeM3), 50 / (1030 * 9.8));
+        close(Number(simulation.dataset.massKg), 820 / 9.8);
+        close(Number(simulation.dataset.bodyDensityKgM3), 16892, 1e-6);
+        if (!simulation.querySelector('[data-simulation-status]').textContent.includes("Immersione completa")) {
+          throw new Error("feedback finale mancante");
+        }
+
+        reset.click();
+        close(Number(simulation.dataset.submergedFraction), 0);
+        close(Number(simulation.dataset.apparentWeightN), 820);
+        if (slider.value !== "0") {
+          throw new Error("reset slider non riuscito");
+        }
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error(
+            "overflow orizzontale " + document.documentElement.scrollWidth +
+            "px su viewport " + window.innerWidth + "px"
+          );
+        }
+
+        finish(
+          "PASS",
+          "peso apparente 820->770 N, spinta 50 N, volume/densita, reset, reduced motion=" + reducedMotion
+        );
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>
