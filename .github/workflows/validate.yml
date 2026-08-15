@@ -213,6 +213,7 @@ jobs:
             http://127.0.0.1:8765/_site/esercizi/fis-urt-com-001/
 
       - name: Upload simulation browser artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: simulation-browser-review
