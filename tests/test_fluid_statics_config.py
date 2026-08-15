@@ -13,6 +13,7 @@ ENGINE_NAME = "fluid_statics"
 HYDRO_ID = "FIS-FLU-PID-001"
 FLOATING_ID = "FIS-FLU-ARC-001"
 FLOATING_REUSE_ID = "FIS-FLU-ARC-003"
+APPARENT_WEIGHT_ID = "FIS-FLU-ARC-002"
 
 
 class FluidStaticsMultiModelConfigTests(unittest.TestCase):
@@ -32,15 +33,20 @@ class FluidStaticsMultiModelConfigTests(unittest.TestCase):
             expected_engine=ENGINE_NAME,
         )
 
-    def test_manifest_accepts_both_models_and_real_configs(self) -> None:
+    def test_manifest_accepts_all_models_and_real_configs(self) -> None:
         self.assertEqual(
             self.manifest["supported_models"],
-            ["hydrostatic_column", "floating_body"],
+            [
+                "hydrostatic_column",
+                "floating_body",
+                "buoyancy_apparent_weight",
+            ],
         )
         for exercise_id, model in (
             (HYDRO_ID, "hydrostatic_column"),
             (FLOATING_ID, "floating_body"),
             (FLOATING_REUSE_ID, "floating_body"),
+            (APPARENT_WEIGHT_ID, "buoyancy_apparent_weight"),
         ):
             with self.subTest(exercise=exercise_id):
                 config, _ = load_simulation_config(
