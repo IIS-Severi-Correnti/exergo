@@ -51,18 +51,18 @@ dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
-| 2 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
-| 3 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
-| 4 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
-| 5 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
-| 6 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
-| 7 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
-| 8 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
-| 9 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
-| 10 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
-| 11 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
-| 12 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
+| 1 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
+| 2 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
+| 3 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
+| 4 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
+| 5 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
+| 6 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
+| 7 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
+| 8 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
+| 9 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
+| 10 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
+| 11 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
+| 12 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
 | 13 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
 | 14 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
 | 15 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
@@ -168,13 +168,13 @@ Con `communicating_vessels` la parte strettamente idrostatica del catalogo corre
 
 ### Fase A — massima copertura
 
-1. completare `fluid_statics`;
-2. `dc_circuit`;
-3. `calorimetry`;
-4. estendere `ideal_gas_process`;
-5. `ray_optics`;
-6. `wave_1d`;
-7. `newtonian_particle`.
+1. `dc_circuit`;
+2. `calorimetry`;
+3. estendere `ideal_gas_process`;
+4. `ray_optics`;
+5. `wave_1d`;
+6. `newtonian_particle`;
+7. completare `fluid_statics` con `orifice_outflow`.
 
 ### Fase B — elettromagnetismo
 
