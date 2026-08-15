@@ -27,6 +27,7 @@ jobs:
         run: |
           python scripts/apply_communicating_vessels_milestone.py
           python scripts/genera_indice.py
+          git checkout -- .github/workflows/validate.yml
 
       - name: Commit patched files
         run: |
@@ -46,7 +47,6 @@ jobs:
             tests/test_fluid_statics_config.py \
             tests/test_site_generation.py \
             tests/browser/communicating_vessels_smoke.html \
-            .github/workflows/validate.yml \
             metadata/indice_esercizi.csv \
             metadata/simulation_coverage.csv \
             docs/SIMULATION_ROADMAP.md
