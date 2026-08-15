@@ -20,8 +20,8 @@ L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 9 | Simulazione già collegata nell'indice e coperta dalla CI |
-| `planned` | 40 | Copribile direttamente da un engine/modello pianificato |
+| `implemented` | 10 | Simulazione già collegata nell'indice e coperta dalla CI |
+| `planned` | 39 | Copribile direttamente da un engine/modello pianificato |
 | `extension` | 5 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
@@ -33,7 +33,7 @@ Gli engine attivi sono:
 - `rotational_platform` — 2 esercizi, modello `textbook_reduced_system`;
 - `ideal_gas_process` — 2 esercizi, modello `reversible_isothermal`;
 - `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
-- `fluid_statics` — 4 esercizi, modelli `hydrostatic_column` e `floating_body`.
+- `fluid_statics` — 5 esercizi, modelli `hydrostatic_column`, `floating_body` e `buoyancy_apparent_weight`.
 
 `fluid_statics` è il primo engine Exergo che dimostra esplicitamente **riuso sia tra configurazioni sia tra modelli fisici distinti nello stesso dominio**.
 
@@ -47,11 +47,11 @@ priority_score = incremental_exercises * didactic_value / implementation_complex
 
 dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5. Il punteggio serve a scegliere dove investire, ma non sostituisce la revisione fisica o architetturale.
 
-## Backlog ordinato dopo `floating_body`
+## Backlog ordinato dopo `buoyancy_apparent_weight`
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `fluid_statics` | estensione engine attivo | 5 | 5 | 3 | 8.33 | Peso apparente, Pascal, punti a diversa profondità, vasi comunicanti, getti |
+| 1 | `fluid_statics` | estensione engine attivo | 4 | 5 | 3 | 6.67 | Pascal, punti a diversa profondità, vasi comunicanti, getti |
 | 2 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
 | 3 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
 | 4 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
@@ -97,9 +97,22 @@ permettendo di distinguere:
 
 Non vengono inventati massa o volume assoluti quando l'esercizio non li fornisce.
 
+### `buoyancy_apparent_weight`
+
+Copre `FIS-FLU-ARC-002`. Il testo dell'esercizio rende ora espliciti `ρ_mare=1030 kg/m³` e `g=9,8 m/s²`, così dati e soluzione sono autosufficienti. Il modello usa le due letture del dinamometro per ricavare
+
+```text
+F_A = P - P_app
+V = F_A / (ρ_f g)
+m = P / g
+ρ_c = m / V
+```
+
+e riusa internamente `floating_body` per descrivere la crescita della spinta con la frazione di volume immerso. La vista aggiunge il terzo vettore di forza, la tensione del dinamometro, e mantiene in ogni stato il bilancio quasi-statico `T + F_A = P`.
+
 ## Schema multi-model
 
-Con il secondo modello, il manifest di `fluid_statics` usa varianti `oneOf`: ogni modello conserva un proprio insieme stretto di parametri, controlli, opzioni di visualizzazione e testi didattici obbligatori.
+Con più modelli, il manifest di `fluid_statics` usa varianti `oneOf`: ogni modello conserva un proprio insieme stretto di parametri, controlli, opzioni di visualizzazione e testi didattici obbligatori.
 
 Il validatore Python supporta il sottoinsieme `oneOf` necessario a Exergo e continua a rifiutare:
 
@@ -112,13 +125,12 @@ Questo evita di indebolire la validazione del repository man mano che un engine 
 
 ## Prossimi modelli `fluid_statics`
 
-1. **`buoyancy_apparent_weight`** — `FIS-FLU-ARC-002`;
-2. `hydrostatic_pressure_points` — `FIS-FLU-PID-003`;
-3. `hydraulic_press` — `FIS-FLU-PAS-001`;
-4. `communicating_vessels` — `FIS-FLU-VAS-001`;
-5. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
+1. **`hydrostatic_pressure_points`** — `FIS-FLU-PID-003`;
+2. `hydraulic_press` — `FIS-FLU-PAS-001`;
+3. `communicating_vessels` — `FIS-FLU-VAS-001`;
+4. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
 
-Il prossimo modello da implementare è **`buoyancy_apparent_weight`**: è ancora un caso di Archimede, quindi può riusare parte del linguaggio visuale appena stabilizzato, ma aggiunge un bilancio di forze con peso apparente e grandezze assolute fornite dal problema.
+Il prossimo modello da implementare è **`hydrostatic_pressure_points`**: riusa la legge di Stevino già validata ma introduce punti mobili nello stesso fluido, preparando il passaggio dai confronti tra colonne alla lettura locale della pressione.
 
 ## Fasi
 
