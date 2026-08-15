@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "engine": "dc_circuit",
+  "model": "ohmic_resistor",
+  "parameters": {"voltage_initial_V": 0.0, "voltage_final_V": 12.0, "resistance_initial_ohm": 6.0, "resistance_final_ohm": 6.0},
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 5},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Mantieni costante la resistenza e aumenta la tensione per osservare la proporzionalità diretta tra V e I.",
+    "model_note_it": "I valori 0–12 V e 6 Ω costituiscono una scala didattica per esplorare V=RI e non sono dati del quesito teorico. Il resistore è ideale e ohmico, con temperatura costante."
+  }
+}
