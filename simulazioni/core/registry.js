@@ -29,6 +29,16 @@ registerSimulationEngine("fluid_statics", {
   loadView: () => import("../engines/fluid_statics/multi_view.js"),
 });
 
+registerSimulationEngine("dc_circuit", {
+  loadEngine: () => import("../engines/dc_circuit/engine.js"),
+  loadView: () => import("../engines/dc_circuit/view.js"),
+});
+
+registerSimulationEngine("calorimetry", {
+  loadEngine: () => import("../engines/calorimetry/engine.js"),
+  loadView: () => import("../engines/calorimetry/view.js"),
+});
+
 export async function loadSimulationEngine(name) {
   const loaders = registry.get(name);
   if (!loaders) {
