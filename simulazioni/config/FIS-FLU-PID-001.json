@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "hydrostatic_column",
+  "parameters": {
+    "fluid_density_initial_kg_m3": 1000,
+    "gravity_m_s2": 9.8,
+    "depth_reference_m": 0.2,
+    "depth_moving_initial_m": 0.2,
+    "depth_moving_final_m": 0.4,
+    "vessel_radius_1_m": 0.04,
+    "vessel_radius_2_m": 0.06
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "allow_density_change": false,
+    "playback_duration_s": 5,
+    "density_min_kg_m3": 500,
+    "density_max_kg_m3": 1500,
+    "target_pressure_ratio": 2
+  },
+  "display": {
+    "show_equations": true,
+    "show_pressure_ratio": true,
+    "show_vessel_width_note": true
+  },
+  "didactics": {
+    "model_note_it": "Liquido incomprimibile e in quiete, densità uniforme e g costante. Si rappresenta la pressione relativa Δp=ρgh; la dinamica del riempimento non è modellizzata e il raggio dei recipienti non entra nel calcolo della pressione.",
+    "learning_action_it": "Fai crescere la profondità del secondo recipiente fino a ottenere una pressione sul fondo doppia rispetto al primo. Osserva che il secondo recipiente è anche più largo, ma questa differenza non modifica Δp=ρgh.",
+    "column_1_label_it": "Recipiente 1 — r = 4 cm",
+    "column_2_label_it": "Recipiente 2 — r = 6 cm"
+  }
+}
