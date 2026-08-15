@@ -67,8 +67,8 @@ function setFloatingBodyGeometry(container, state) {
   buoyancyLabel.setAttribute("y", String(centerY - 12));
 
   const hasBuoyancy = buoyancyLength > 0.5;
-  buoyancyArrow.hidden = !hasBuoyancy;
-  buoyancyLabel.hidden = !hasBuoyancy;
+  buoyancyArrow.style.display = hasBuoyancy ? "" : "none";
+  buoyancyLabel.style.display = hasBuoyancy ? "" : "none";
 }
 
 function createFloatingBodyView({ container, config, instanceId }) {
