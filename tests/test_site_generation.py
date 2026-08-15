@@ -9,7 +9,8 @@ from scripts import genera_sito
 
 PILOT_ID = "FIS-ROT-ANG-001"
 REUSE_ID = "FIS-ROT-ANG-002"
-GAS_ID = "FIS-TER-GAS-003"
+GAS_PILOT_ID = "FIS-TER-GAS-003"
+GAS_REUSE_ID = "FIS-TER-GAS-006"
 
 
 class StaticSiteGenerationTests(unittest.TestCase):
@@ -22,8 +23,11 @@ class StaticSiteGenerationTests(unittest.TestCase):
         cls.reuse = next(
             exercise for exercise in cls.exercises if exercise.exercise_id == REUSE_ID
         )
-        cls.gas = next(
-            exercise for exercise in cls.exercises if exercise.exercise_id == GAS_ID
+        cls.gas_pilot = next(
+            exercise for exercise in cls.exercises if exercise.exercise_id == GAS_PILOT_ID
+        )
+        cls.gas_reuse = next(
+            exercise for exercise in cls.exercises if exercise.exercise_id == GAS_REUSE_ID
         )
         cls.normal = next(
             exercise
@@ -50,18 +54,20 @@ class StaticSiteGenerationTests(unittest.TestCase):
                     page.index("<summary>Soluzione</summary>"),
                 )
 
-    def test_gas_exercise_uses_second_engine_before_solution(self) -> None:
-        page = genera_sito.render_exercise_page(self.gas)
-        self.assertIn('data-simulation-engine="ideal_gas_process"', page)
-        self.assertIn("runtime.js", page)
-        self.assertIn("simulation.css", page)
-        self.assertIn("engines/ideal_gas_process/style.css", page)
-        self.assertLess(
-            page.index(">Simulazione</h2>"),
-            page.index("<summary>Soluzione</summary>"),
-        )
+    def test_gas_exercises_reuse_second_engine_before_solution(self) -> None:
+        for exercise in (self.gas_pilot, self.gas_reuse):
+            with self.subTest(exercise=exercise.exercise_id):
+                page = genera_sito.render_exercise_page(exercise)
+                self.assertIn('data-simulation-engine="ideal_gas_process"', page)
+                self.assertIn("runtime.js", page)
+                self.assertIn("simulation.css", page)
+                self.assertIn("engines/ideal_gas_process/style.css", page)
+                self.assertLess(
+                    page.index(">Simulazione</h2>"),
+                    page.index("<summary>Soluzione</summary>"),
+                )
 
-    def test_site_contains_both_engines_and_three_configs(self) -> None:
+    def test_site_contains_both_engines_and_four_configs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             genera_sito.write_site(self.exercises, output)
@@ -79,7 +85,8 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 "engines/ideal_gas_process/style.css",
                 f"config/{PILOT_ID}.json",
                 f"config/{REUSE_ID}.json",
-                f"config/{GAS_ID}.json",
+                f"config/{GAS_PILOT_ID}.json",
+                f"config/{GAS_REUSE_ID}.json",
             }
             asset_root = output / "assets" / "simulazioni"
             actual_assets = {
@@ -89,20 +96,21 @@ class StaticSiteGenerationTests(unittest.TestCase):
             }
             self.assertEqual(actual_assets, expected_assets)
             self.assertTrue((output / "index.html").is_file())
-            self.assertTrue(
-                (output / "esercizi" / PILOT_ID.casefold() / "index.html").is_file()
-            )
-            self.assertTrue(
-                (output / "esercizi" / REUSE_ID.casefold() / "index.html").is_file()
-            )
-            self.assertTrue(
-                (output / "esercizi" / GAS_ID.casefold() / "index.html").is_file()
-            )
+            for exercise_id in (PILOT_ID, REUSE_ID, GAS_PILOT_ID, GAS_REUSE_ID):
+                with self.subTest(exercise=exercise_id):
+                    self.assertTrue(
+                        (
+                            output
+                            / "esercizi"
+                            / exercise_id.casefold()
+                            / "index.html"
+                        ).is_file()
+                    )
 
-    def test_subset_copies_only_the_engine_actually_used(self) -> None:
+    def test_gas_subset_copies_only_ideal_gas_engine(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
-            genera_sito.write_site([self.gas], output)
+            genera_sito.write_site([self.gas_pilot, self.gas_reuse], output)
 
             asset_root = output / "assets" / "simulazioni"
             actual_assets = {
@@ -113,6 +121,8 @@ class StaticSiteGenerationTests(unittest.TestCase):
             self.assertIn("engines/ideal_gas_process/engine.js", actual_assets)
             self.assertIn("engines/ideal_gas_process/view.js", actual_assets)
             self.assertIn("engines/ideal_gas_process/style.css", actual_assets)
+            self.assertIn(f"config/{GAS_PILOT_ID}.json", actual_assets)
+            self.assertIn(f"config/{GAS_REUSE_ID}.json", actual_assets)
             self.assertFalse(
                 any(path.startswith("engines/rotational_platform/") for path in actual_assets)
             )

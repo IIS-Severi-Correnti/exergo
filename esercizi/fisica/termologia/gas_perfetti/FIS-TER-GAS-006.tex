@@ -1,0 +1,83 @@
+% ID: FIS-TER-GAS-006
+% Titolo: Raddoppio di volume in un'espansione isoterma
+% Disciplina: Fisica
+% Area: Termologia
+% Argomento: Gas perfetti
+% Sottoargomento: Espansione isoterma reversibile
+% Classe: Quarta liceo scientifico
+% Difficolta: 4
+% Tipo: problema_numerico
+% Risultato: p_i = 9,98 * 10^4 Pa; p_f = 4,99 * 10^4 Pa; L = Q = 6,92 * 10^2 J
+% Tempo_stimato: 12 min
+% Competenze: equazione di stato, lavoro isotermo, primo principio, interpretazione del piano pressione-volume
+% Prerequisiti: gas perfetti, trasformazione isoterma, logaritmi, primo principio della termodinamica
+% Tag: termologia, gas_perfetti, isoterma, pressione, lavoro, calore, piano_pv
+% Fonte: esempio_originale
+% Autore: Riccardo Carli
+% Licenza: CC-BY-SA-4.0
+% Simulazione: ideal_gas_process
+
+\begin{esercizio}
+Un cilindro contiene \(0{,}40\,\mathrm{mol}\) di gas perfetto alla temperatura
+costante di \(300\,\mathrm{K}\). Il gas compie un'espansione isoterma
+reversibile passando dal volume
+\[
+V_i=1{,}00\cdot 10^{-2}\,\mathrm{m^3}
+\]
+al volume
+\[
+V_f=2{,}00\cdot 10^{-2}\,\mathrm{m^3}.
+\]
+
+Determina:
+\begin{enumerate}
+  \item la pressione iniziale e la pressione finale;
+  \item il lavoro compiuto dal gas durante l'espansione;
+  \item il calore assorbito dal gas.
+\end{enumerate}
+\end{esercizio}
+
+\begin{soluzione}
+Per un gas perfetto vale
+\[
+pV=nRT.
+\]
+La pressione iniziale e quindi
+\[
+p_i=\frac{nRT}{V_i}
+=\frac{0{,}40\cdot 8{,}314\cdot 300}{1{,}00\cdot10^{-2}}
+\simeq 9{,}98\cdot10^4\,\mathrm{Pa}.
+\]
+
+Poiche la trasformazione e isoterma, il prodotto \(pV\) resta costante. Il
+volume finale e il doppio di quello iniziale, quindi la pressione finale e la
+meta di quella iniziale:
+\[
+p_f=\frac{p_i}{2}
+\simeq 4{,}99\cdot10^4\,\mathrm{Pa}.
+\]
+
+Il lavoro compiuto dal gas in un'espansione isoterma reversibile vale
+\[
+L=nRT\ln\frac{V_f}{V_i}.
+\]
+Pertanto
+\[
+L=0{,}40\cdot8{,}314\cdot300\ln 2
+\simeq 6{,}92\cdot10^2\,\mathrm{J}.
+\]
+
+Per un gas perfetto l'energia interna dipende soltanto dalla temperatura. Essendo
+la temperatura costante,
+\[
+\Delta U=0.
+\]
+Con la convenzione \(\Delta U=Q-L\), dal primo principio segue
+\[
+Q=L.
+\]
+Quindi il gas assorbe
+\[
+\boxed{Q\simeq 6{,}92\cdot10^2\,\mathrm{J}}.
+\]
+\end{soluzione}

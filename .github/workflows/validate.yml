@@ -104,7 +104,7 @@ jobs:
             --hide-scrollbars \
             --virtual-time-budget=2500 \
             --window-size=1440,2400 \
-            --screenshot=browser-artifacts/gas-desktop.png \
+            --screenshot=browser-artifacts/gas-pilot-desktop.png \
             http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-003/
 
           google-chrome \
@@ -114,8 +114,28 @@ jobs:
             --hide-scrollbars \
             --virtual-time-budget=2500 \
             --window-size=430,3000 \
-            --screenshot=browser-artifacts/gas-mobile.png \
+            --screenshot=browser-artifacts/gas-pilot-mobile.png \
             http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-003/
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=1440,2400 \
+            --screenshot=browser-artifacts/gas-reuse-desktop.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-006/
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=430,3000 \
+            --screenshot=browser-artifacts/gas-reuse-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-006/
 
           google-chrome \
             --headless=new \

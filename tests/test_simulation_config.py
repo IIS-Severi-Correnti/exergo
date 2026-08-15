@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 ENGINE_NAME = "rotational_platform"
 EXERCISE_ID = "FIS-ROT-ANG-001"
 GAS_ENGINE_NAME = "ideal_gas_process"
-GAS_EXERCISE_ID = "FIS-TER-GAS-003"
+GAS_PILOT_ID = "FIS-TER-GAS-003"
+GAS_REUSE_ID = "FIS-TER-GAS-006"
 
 
 class SimulationConfigTests(unittest.TestCase):
@@ -169,7 +170,7 @@ class IdealGasSimulationConfigTests(unittest.TestCase):
                 ROOT
                 / "simulazioni"
                 / "config"
-                / f"{GAS_EXERCISE_ID}.json"
+                / f"{GAS_PILOT_ID}.json"
             ).read_text(encoding="utf-8")
         )
 
@@ -182,13 +183,30 @@ class IdealGasSimulationConfigTests(unittest.TestCase):
 
     def test_manifest_and_pilot_configuration_are_valid(self) -> None:
         config, manifest = load_simulation_config(
-            GAS_EXERCISE_ID,
+            GAS_PILOT_ID,
             GAS_ENGINE_NAME,
             root=ROOT,
         )
         self.assertEqual(config["model"], "reversible_isothermal")
         self.assertEqual(manifest["engine"], GAS_ENGINE_NAME)
         self.assertEqual(self.errors_for(deepcopy(self.config)), [])
+
+    def test_second_real_configuration_reuses_same_engine_and_model(self) -> None:
+        pilot, _ = load_simulation_config(
+            GAS_PILOT_ID,
+            GAS_ENGINE_NAME,
+            root=ROOT,
+        )
+        reuse, manifest = load_simulation_config(
+            GAS_REUSE_ID,
+            GAS_ENGINE_NAME,
+            root=ROOT,
+        )
+        self.assertEqual(manifest["engine"], GAS_ENGINE_NAME)
+        self.assertEqual(reuse["engine"], pilot["engine"])
+        self.assertEqual(reuse["model"], pilot["model"])
+        self.assertNotEqual(reuse["parameters"], pilot["parameters"])
+        self.assertEqual(self.errors_for(deepcopy(reuse)), [])
 
     def test_schema_is_strict_at_every_configuration_level(self) -> None:
         config = deepcopy(self.config)
@@ -239,7 +257,7 @@ class IdealGasSimulationConfigTests(unittest.TestCase):
             config_directory.mkdir()
             invalid = deepcopy(self.config)
             invalid["parameters"]["volume_final_m3"] = 0.1
-            (config_directory / f"{GAS_EXERCISE_ID}.json").write_text(
+            (config_directory / f"{GAS_PILOT_ID}.json").write_text(
                 json.dumps(invalid),
                 encoding="utf-8",
             )
@@ -249,7 +267,7 @@ class IdealGasSimulationConfigTests(unittest.TestCase):
                 r"(?s)configurazione non valida.*volume_final_m3",
             ):
                 load_simulation_config(
-                    GAS_EXERCISE_ID,
+                    GAS_PILOT_ID,
                     GAS_ENGINE_NAME,
                     root=temporary_root,
                 )
