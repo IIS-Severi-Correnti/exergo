@@ -18,8 +18,8 @@ Exercise (.tex)
 Un **simulation engine** rappresenta un modello fisico riusabile. Riceve dati
 in unita SI, calcola lo stato e non accede al DOM. Una **config** descrive invece
 un particolare esercizio: parametri, modello adottato, interazioni consentite,
-grandezze da visualizzare e copia didattica. Cambiare massa, raggio, numero o
-nome dei partecipanti non richiede di modificare il motore.
+grandezze da visualizzare e copia didattica. Varianti numeriche dello stesso
+modello non richiedono modifiche al motore.
 
 La struttura v1 e:
 
@@ -31,10 +31,16 @@ simulazioni/
 |   |-- registry.js         registro esplicito dei motori caricabili
 |   -- simulation.css       stile caricato solo nelle pagine con simulazioni
 |-- engines/
-|   -- rotational_platform/
-|       |-- engine.js       modello fisico e stato, senza DOM
-|       |-- view.js         vista SVG e aggiornamento accessibile
-|       -- manifest.json    entry point, modelli e schema della config
+|   |-- rotational_platform/
+|   |   |-- engine.js       modello fisico e stato, senza DOM
+|   |   |-- view.js         vista SVG e aggiornamento accessibile
+|   |   |-- style.css       stile specifico del motore
+|   |   -- manifest.json    entry point, modelli e schema della config
+|   -- ideal_gas_process/
+|       |-- engine.js
+|       |-- view.js
+|       |-- style.css
+|       -- manifest.json
 |-- config/
 |   -- <EXERCISE-ID>.json
 -- README.md
@@ -43,11 +49,42 @@ simulazioni/
 Il generatore copia nel sito statico solo il core, i motori e le configurazioni
 richiesti dagli esercizi presenti.
 
-Rispetto alla struttura concettuale iniziale, lo stile condiviso vive in
-core/simulation.css e la validazione lato build vive in
+Lo stile strutturale condiviso vive in core/simulation.css; colori, geometrie e
+selettori di dominio vivono invece nello style.css del rispettivo motore. La
+validazione lato build vive in
 scripts/simulation_config.py. Il primo e un asset comune a tutte le view; il
 secondo appartiene alla pipeline Python e non al runtime browser. La separazione
 tra runtime, modello, rendering e configurazione resta invariata.
+
+## Contratto multi-engine
+
+Il core tratta nomi di azione, payload e descrittori dei controlli come dati
+opachi. Non contiene condizioni sul nome del motore e non conosce partecipanti,
+pistoni o altre entita del dominio.
+
+Ogni `engine.js` espone:
+
+- `createSimulationEngine(config)`;
+- `getState()`, `advance(deltaSeconds)` e `pause()` per il ciclo comune;
+- `dispatch(action, payload)` per azioni lifecycle e azioni specifiche;
+- facoltativamente metodi diretti utili ai test, senza cambiare il contratto del
+  runtime.
+
+Ogni `view.js` espone `createSimulationView({container, config})`. L'oggetto
+restituito implementa `render(state)` e puo inoltre fornire:
+
+- `describeControls(state, context)`, che decide stato, testo accessibile e
+  visibilita dei controlli;
+- `resolveActionPayload(context)`, che traduce un evento DOM in un payload;
+- `handleActionResult(context)`, per effetti visivi conseguenti a un'azione;
+- `motionAllowed` e `onMotionPreferenceChange(callback)` per
+  `prefers-reduced-motion`.
+
+`controls.js` rileva qualsiasi elemento con `data-simulation-action`, inoltra
+l'azione senza interpretarla e applica soltanto descrittori DOM generici. Per
+esempio, l'uscita di una persona e la sua animazione sono interamente nel motore
+e nella view rotazionali; lo scrubbing del volume e interamente nel motore e
+nella view del gas.
 
 ## Associare una simulazione a un esercizio
 
@@ -80,6 +117,13 @@ condividono lo stesso `engine.js`. Per aggiungere un ulteriore esercizio:
 Non copiare il JavaScript per creare una variante numerica. Se una nuova config
 non basta, chiedersi prima se serve un nuovo **modello** nello stesso motore o
 un fenomeno fisico realmente diverso che giustifichi un nuovo motore.
+
+Il secondo motore pubblicato e `ideal_gas_process`. La versione 1 supporta solo
+`reversible_isothermal`: rappresenta una successione di stati di equilibrio a
+temperatura costante, con `pV=nRT`, `Delta U=0` e `Q=L`. Il progresso del
+playback e un parametro didattico, non tempo fisico; dinamica del pistone,
+attriti, inerzia, scambi termici finiti e irreversibilita restano fuori dal
+modello. Isobare, isocore, adiabatiche e cicli non sono implementati.
 
 ## Creare una configurazione
 
@@ -137,8 +181,10 @@ possono invece restare nello schema v1.
 3. esportare da `engine.js` una funzione `createSimulationEngine(config)`;
 4. mantenere formule e stato testabili senza DOM;
 5. esportare da `view.js` `createSimulationView({container, config})`;
-6. registrare i loader lazy in `core/registry.js`;
-7. aggiungere test del modello, dello stato, di una config non pilota e della
+6. aggiungere uno `style.css` del motore e dichiararlo negli entry point del
+   manifest quando servono stili di dominio;
+7. registrare i loader lazy in `core/registry.js`;
+8. aggiungere test del modello, dello stato, di una config non pilota e della
    generazione statica.
 
 La view deve usare elementi HTML reali per i controlli, testo per lo stato,
@@ -181,6 +227,7 @@ dipendenze. Il piccolo `simulazioni/package.json` dichiara esclusivamente i
 moduli ES e non introduce pacchetti da installare.
 
 La CI esegue inoltre `tests/browser/simulation_smoke.html` con Chrome headless:
-inizializza entrambe le configurazioni reali, esercita controlli, rimozioni,
-obiettivi, slot stabili e reset, quindi salva screenshot desktop e mobile di
-entrambi gli esercizi come artifact di revisione.
+inizializza entrambi i motori nello stesso runtime, verifica le due
+configurazioni rotazionali e il processo isotermo, poi ripete lo smoke con
+reduced motion forzato. Salva screenshot desktop/mobile del gas e una verifica
+visuale di entrambi gli esercizi rotazionali come artifact di revisione.

@@ -5,6 +5,8 @@
   <title>Exergo simulation smoke test</title>
   <link rel="stylesheet" href="../../_site/assets/style.css">
   <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/rotational_platform/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/ideal_gas_process/style.css">
 </head>
 <body>
   <main class="page">
@@ -24,6 +26,15 @@
       <div id="reuse-simulation" data-exergo-simulation
         data-simulation-engine="rotational_platform"
         data-simulation-config="../../_site/assets/simulazioni/config/FIS-ROT-ANG-002.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+
+    <section class="simulation-shell">
+      <h2>Trasformazione isoterma</h2>
+      <div id="gas-simulation" data-exergo-simulation
+        data-simulation-engine="ideal_gas_process"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-GAS-003.json">
         <p data-simulation-error hidden></p>
       </div>
     </section>
@@ -67,6 +78,8 @@
     const result = document.querySelector("#result");
     const pilot = document.querySelector("#pilot-simulation");
     const reuse = document.querySelector("#reuse-simulation");
+    const gas = document.querySelector("#gas-simulation");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function finish(status, details) {
       result.textContent = status + ": " + details;
@@ -77,7 +90,7 @@
     function checkSimulation(simulation, expected) {
       const count = simulation.querySelector('[data-value="participant-count"]');
       const omega = simulation.querySelector('[data-value="omega"]');
-      const remove = simulation.querySelector('[data-simulation-action="remove"]');
+      const remove = simulation.querySelector('[data-simulation-action="remove_participant"]');
       const reset = simulation.querySelector('[data-simulation-action="reset"]');
       const countLabel = simulation.querySelector('[data-participant-count-label]');
       const learningAction = simulation.querySelector('[data-learning-action]');
@@ -122,11 +135,60 @@
       if (simulation.dataset.targetReached !== "false") throw new Error(expected.name + ": reset obiettivo");
     }
 
+    function checkGasSimulation() {
+      const slider = gas.querySelector('[data-simulation-action="set_progress"]');
+      const play = gas.querySelector('[data-simulation-action="play"]');
+      const pause = gas.querySelector('[data-simulation-action="pause"]');
+      const reset = gas.querySelector('[data-simulation-action="reset"]');
+      const heat = gas.querySelector('[data-value="heat"]');
+      const deltaU = gas.querySelector('[data-value="delta-u"]');
+      const gasFill = gas.querySelector("[data-gas-fill]");
+      const statePoint = gas.querySelector("[data-state-point]");
+      const workArea = gas.querySelector("[data-work-area]");
+      const initialFillWidth = Number(gasFill.getAttribute("width"));
+      const initialPointX = Number(statePoint.getAttribute("cx"));
+      const initialPointY = Number(statePoint.getAttribute("cy"));
+      const initialWorkArea = workArea.getAttribute("d");
+
+      if (Math.abs(Number(gas.dataset.volumeM3) - 0.20) > 1e-12) throw new Error("gas: volume iniziale");
+      if (Math.abs(Number(gas.dataset.pressurePa) - 3741.5081781689573) > 1e-6) throw new Error("gas: pressione iniziale");
+      if (Number(gas.dataset.heatJ) !== 0) throw new Error("gas: calore iniziale");
+      if (slider.disabled) throw new Error("gas: slider disabilitato");
+      if (play.disabled !== reducedMotion) throw new Error("gas: semantica Play e reduced motion");
+      if (!pause.disabled) throw new Error("gas: Pausa iniziale");
+
+      slider.value = "500";
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+      if (Math.abs(Number(gas.dataset.volumeM3) - 0.275) > 1e-12) throw new Error("gas: scrubbing intermedio");
+
+      slider.value = "1000";
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+      if (Math.abs(Number(gas.dataset.volumeM3) - 0.35) > 1e-12) throw new Error("gas: volume finale");
+      if (Math.abs(Number(gas.dataset.pressurePa) - 2138.0046732394044) > 1e-6) throw new Error("gas: pressione finale");
+      if (Math.abs(Number(gas.dataset.heatJ) - 418.76140943856973) > 0.05) throw new Error("gas: Q finale");
+      if (Number(gas.dataset.deltaUJ) !== 0 || deltaU.textContent !== "0") throw new Error("gas: Delta U");
+      if (gas.dataset.complete !== "true") throw new Error("gas: completamento");
+      if (!heat.textContent.startsWith("418,8")) throw new Error("gas: presentazione Q finale");
+      if (Math.abs(Number(gasFill.getAttribute("width")) / initialFillWidth - 1.75) > 1e-9) {
+        throw new Error("gas: pistone non proporzionale al volume");
+      }
+      if (Number(statePoint.getAttribute("cx")) <= initialPointX) throw new Error("gas: punto p-V non avanza");
+      if (Number(statePoint.getAttribute("cy")) <= initialPointY) throw new Error("gas: punto p-V non scende");
+      if (workArea.getAttribute("d") === initialWorkArea) throw new Error("gas: area del lavoro non aggiornata");
+
+      reset.click();
+      if (Math.abs(Number(gas.dataset.volumeM3) - 0.20) > 1e-12) throw new Error("gas: reset volume");
+      if (Number(gas.dataset.heatJ) !== 0) throw new Error("gas: reset calore");
+      if (slider.value !== "0") throw new Error("gas: reset slider");
+      if (gas.dataset.complete !== "false") throw new Error("gas: reset completamento");
+    }
+
     const deadline = Date.now() + 5000;
     const checkReady = window.setInterval(() => {
       if (
         pilot?.dataset.simulationReady !== "true" ||
         reuse?.dataset.simulationReady !== "true" ||
+        gas?.dataset.simulationReady !== "true" ||
         window.engineGeneralityCheck === undefined
       ) {
         if (Date.now() > deadline) {
@@ -144,8 +206,13 @@
 
         const play = pilot.querySelector('[data-simulation-action="play"]');
         const pause = pilot.querySelector('[data-simulation-action="pause"]');
-        play.click();
-        pause.click();
+        if (play.disabled !== reducedMotion) {
+          throw new Error("rotazionale: semantica Play e reduced motion");
+        }
+        if (!reducedMotion) {
+          play.click();
+          pause.click();
+        }
 
         checkSimulation(pilot, {
           name: "pilota",
@@ -167,7 +234,22 @@
           omegaPrefix: "1,205"
         });
 
-        finish("PASS", "due config reali, copia didattica, slot stabili, obiettivi e reset");
+        checkGasSimulation();
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error(
+            "layout: overflow orizzontale " +
+            document.documentElement.scrollWidth +
+            "px su viewport " +
+            window.innerWidth +
+            "px"
+          );
+        }
+
+        finish(
+          "PASS",
+          "due motori, due esercizi rotazionali, gas con slider/Q/Delta U/reset, reduced motion=" + reducedMotion
+        );
       } catch (error) {
         finish("FAIL", error.message);
       }
