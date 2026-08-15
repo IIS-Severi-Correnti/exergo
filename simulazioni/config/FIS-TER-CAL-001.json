@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "engine": "calorimetry",
+  "model": "sensible_heat_compare",
+  "parameters": {"mass_kg": 0.50, "heat_final_J": 4500.0, "specific_heat_1_J_kgK": 390.0, "specific_heat_2_J_kgK": 900.0},
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 5},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Fornisci la stessa quantità di calore ai due blocchi e confronta gli aumenti di temperatura.",
+    "model_note_it": "Usa i dati del problema e Q=mcΔT. I blocchi non disperdono calore e i calori specifici sono considerati costanti nell'intervallo di temperatura.",
+    "slider_label_it": "Calore Q fornito a ciascun blocco",
+    "figure_note_it": "I due blocchi hanno la stessa massa e ricevono lo stesso Q; differisce soltanto il calore specifico.",
+    "left_label_it": "Rame",
+    "right_label_it": "Alluminio",
+    "equation_html": "<p><var>Q</var> = <var>m c</var> Δ<var>T</var> &nbsp; ⇒ &nbsp; Δ<var>T</var> = <var>Q</var>/(<var>m c</var>)</p>"
+  }
+}

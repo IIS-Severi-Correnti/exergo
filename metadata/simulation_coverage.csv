@@ -1,9 +1,9 @@
 id,status,engine,model,priority,rationale
-FIS-CIR-BAS-001,planned,dc_circuit,single_loop_topology,P1,"La struttura di un circuito chiuso si presta a una rappresentazione interattiva di generatore, conduttori e utilizzatore."
-FIS-CIR-COR-001,planned,dc_circuit,charge_flow,P2,"Un flusso di carica controllabile rende visibile la relazione tra carica trasferita, tempo e intensità di corrente."
-FIS-CIR-OHM-001,planned,dc_circuit,ohmic_resistor,P1,Slider per tensione e resistenza possono mostrare direttamente la relazione V=RI.
-FIS-CIR-OHM-002,planned,dc_circuit,ohmic_resistor,P1,Il problema numerico è un caso naturale dello stesso modello ohmico.
-FIS-CIR-RES-001,planned,dc_circuit,ohmic_resistor,P2,La definizione R=V/I acquista valore didattico se collegata allo stesso modello di circuito semplice.
+FIS-CIR-BAS-001,implemented,dc_circuit,single_loop_topology,P1,"La struttura di un circuito chiuso si presta a una rappresentazione interattiva di generatore, conduttori e utilizzatore."
+FIS-CIR-COR-001,implemented,dc_circuit,charge_flow,P2,"Un flusso di carica controllabile rende visibile la relazione tra carica trasferita, tempo e intensità di corrente."
+FIS-CIR-OHM-001,implemented,dc_circuit,ohmic_resistor,P1,Slider per tensione e resistenza possono mostrare direttamente la relazione V=RI.
+FIS-CIR-OHM-002,implemented,dc_circuit,ohmic_resistor,P1,Il problema numerico è un caso naturale dello stesso modello ohmico.
+FIS-CIR-RES-001,implemented,dc_circuit,ohmic_resistor,P2,La definizione R=V/I acquista valore didattico se collegata allo stesso modello di circuito semplice.
 FIS-DIN-NEW-001,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
 FIS-DIN-NEW-002,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
 FIS-DIN-NEW-003,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
@@ -39,11 +39,11 @@ FIS-OTT-RIF-003,planned,ray_optics,parallel_slab,P0,Una lastra a facce parallele
 FIS-OTT-SPE-001,planned,ray_optics,concave_mirror,P0,Diagramma dei raggi e posizione dell'immagine sono un caso classico ad alto valore didattico.
 FIS-ROT-ANG-001,implemented,rotational_platform,textbook_reduced_system,P0,Simulazione già pubblicata e verificata.
 FIS-ROT-ANG-002,implemented,rotational_platform,textbook_reduced_system,P0,"Seconda configurazione reale dello stesso motore, già pubblicata e verificata."
-FIS-TER-CAL-001,planned,calorimetry,sensible_heat_compare,P1,Confrontare materiali a parità di calore rende visibile il ruolo del calore specifico.
-FIS-TER-CAL-002,planned,calorimetry,heating_power,P1,"Potenza, tempo, massa e temperatura possono essere collegati in un bilancio energetico interattivo."
+FIS-TER-CAL-001,implemented,calorimetry,sensible_heat_compare,P1,Confrontare materiali a parità di calore rende visibile il ruolo del calore specifico.
+FIS-TER-CAL-002,implemented,calorimetry,heating_power,P1,"Potenza, tempo, massa e temperatura possono essere collegati in un bilancio energetico interattivo."
 FIS-TER-DIL-001,planned,thermal_expansion,linear_expansion_hole,P3,Una semplice geometria espandibile chiarisce che anche il foro aumenta di dimensione.
-FIS-TER-EQ-001,planned,calorimetry,thermal_mixing,P1,Masse e temperature iniziali possono convergere visivamente alla temperatura di equilibrio.
-FIS-TER-EQ-002,planned,calorimetry,ice_water_balance,P1,"Il modello deve distinguere riscaldamento, fusione e successivo equilibrio termico."
+FIS-TER-EQ-001,implemented,calorimetry,thermal_mixing,P1,Masse e temperature iniziali possono convergere visivamente alla temperatura di equilibrio.
+FIS-TER-EQ-002,implemented,calorimetry,ice_water_balance,P1,"Il modello deve distinguere riscaldamento, fusione e successivo equilibrio termico."
 FIS-TER-GAS-001,extension,ideal_gas_process,process_comparison,P1,"Il motore esistente può essere esteso a isocora, isobara e isoterma con grafici p-V coerenti."
 FIS-TER-GAS-002,extension,ideal_gas_process,piecewise_isobaric_isothermal,P1,Richiede due trasformazioni consecutive nello stesso spazio di stato.
 FIS-TER-GAS-003,implemented,ideal_gas_process,reversible_isothermal,P0,Pilot già pubblicato e verificato.
@@ -51,7 +51,7 @@ FIS-TER-GAS-004,extension,ideal_gas_process,thermodynamic_cycle,P2,Un ciclo chiu
 FIS-TER-GAS-005,extension,ideal_gas_process,isochoric_monoatomic,P1,"Il modello isocoro permette di collegare pressione, temperatura, calore ed energia interna."
 FIS-TER-GAS-006,implemented,ideal_gas_process,reversible_isothermal,P0,"Seconda configurazione reale dello stesso motore, già pubblicata e verificata."
 FIS-TER-MAC-001,planned,heat_engine,carnot_efficiency,P3,Un diagramma tra sorgente calda e fredda può rendere interattivo il limite di Carnot.
-FIS-TER-PAS-001,planned,calorimetry,phase_change_balance,P1,Il bilancio tra raffreddamento/solidificazione e vaporizzazione è adatto a una timeline energetica.
+FIS-TER-PAS-001,implemented,calorimetry,phase_change_balance,P1,Il bilancio tra raffreddamento/solidificazione e vaporizzazione è adatto a una timeline energetica.
 FIS-URT-ANE-001,composite,piecewise_mechanics,inelastic_collision_then_spring,P2,Combina urto completamente anelastico e successiva conversione in energia elastica; va orchestrato come due fasi esplicite.
 FIS-URT-ANE-002,composite,piecewise_mechanics,inclined_motion_then_inelastic_collision,P3,Combina dinamica con attrito su piano inclinato e urto anelastico; dipende da più modelli.
 FIS-URT-COM-001,implemented,one_dimensional_collision,elastic_1d,P0,Pilot già pubblicato e verificato.

@@ -1,0 +1,101 @@
+{
+  "manifest_version": 1,
+  "engine": "dc_circuit",
+  "label": "Circuiti in corrente continua",
+  "entry_points": {
+    "engine": "engine.js",
+    "view": "view.js",
+    "style": "style.css"
+  },
+  "supported_schema_versions": [1],
+  "supported_models": [
+    "single_loop_topology",
+    "charge_flow",
+    "ohmic_resistor"
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["schema_version", "engine", "model", "parameters", "interaction", "display", "didactics"],
+    "properties": {
+      "schema_version": {"type": "integer", "const": 1},
+      "engine": {"type": "string", "const": "dc_circuit"},
+      "model": {"type": "string", "enum": ["single_loop_topology", "charge_flow", "ohmic_resistor"]},
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "charge_final_C": {"type": "number", "exclusiveMinimum": 0},
+          "time_interval_s": {"type": "number", "exclusiveMinimum": 0},
+          "voltage_initial_V": {"type": "number", "minimum": 0},
+          "voltage_final_V": {"type": "number", "minimum": 0},
+          "resistance_initial_ohm": {"type": "number", "exclusiveMinimum": 0},
+          "resistance_final_ohm": {"type": "number", "exclusiveMinimum": 0}
+        }
+      },
+      "interaction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "playback_duration_s"],
+        "properties": {
+          "allow_play": {"type": "boolean"},
+          "allow_pause": {"type": "boolean"},
+          "allow_reset": {"type": "boolean"},
+          "allow_scrub": {"type": "boolean"},
+          "playback_duration_s": {"type": "number", "exclusiveMinimum": 0}
+        }
+      },
+      "display": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["show_equations", "show_values"],
+        "properties": {
+          "show_equations": {"type": "boolean"},
+          "show_values": {"type": "boolean"}
+        }
+      },
+      "didactics": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["learning_action_it", "model_note_it"],
+        "properties": {
+          "learning_action_it": {"type": "string", "minLength": 1},
+          "model_note_it": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "oneOf": [
+      {
+        "properties": {
+          "model": {"const": "single_loop_topology"},
+          "parameters": {"required": [], "additionalProperties": false, "properties": {}}
+        }
+      },
+      {
+        "properties": {
+          "model": {"const": "charge_flow"},
+          "parameters": {
+            "required": ["charge_final_C", "time_interval_s"],
+            "additionalProperties": false,
+            "properties": {"charge_final_C": {}, "time_interval_s": {}}
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {"const": "ohmic_resistor"},
+          "parameters": {
+            "required": ["voltage_initial_V", "voltage_final_V", "resistance_initial_ohm", "resistance_final_ohm"],
+            "additionalProperties": false,
+            "properties": {
+              "voltage_initial_V": {},
+              "voltage_final_V": {},
+              "resistance_initial_ohm": {},
+              "resistance_final_ohm": {}
+            }
+          }
+        }
+      }
+    ]
+  }
+}

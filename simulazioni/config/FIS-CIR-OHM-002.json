@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "engine": "dc_circuit",
+  "model": "ohmic_resistor",
+  "parameters": {"voltage_initial_V": 4.0, "voltage_final_V": 4.0, "resistance_initial_ohm": 8.0, "resistance_final_ohm": 4.0},
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 5},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Mantieni V = 4 V e dimezza la resistenza da 8 Ω a 4 Ω: verifica che la corrente passi da 0,5 A a 1 A.",
+    "model_note_it": "Usa esattamente i dati del problema e un resistore ohmico ideale. Il cursore modifica la resistenza come confronto parametrico e non descrive un cambiamento fisico nel tempo della lampadina."
+  }
+}

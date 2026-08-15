@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "engine": "dc_circuit",
+  "model": "single_loop_topology",
+  "parameters": {},
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 4},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Confronta lo stesso circuito con percorso interrotto e percorso chiuso, riconoscendo generatore, conduttori e utilizzatore.",
+    "model_note_it": "Schema topologico: non assegna tensione, corrente o resistenza numeriche perché il quesito non le fornisce. Il cursore confronta due configurazioni e non rappresenta tempo fisico."
+  }
+}

@@ -4,7 +4,7 @@ Le simulazioni sono arricchimenti progressivi delle pagine degli esercizi.
 Testo e soluzione rimangono sempre disponibili anche senza JavaScript. Il sito
 resta interamente statico e pubblicabile con GitHub Pages.
 
-## Architettura
+## Principio architetturale
 
 Il flusso e:
 
@@ -15,224 +15,215 @@ Exercise (.tex)
     -> Interactive view (SVG + DOM)
 ~~~
 
-Un **simulation engine** rappresenta un modello fisico riusabile. Riceve dati
-in unita SI, oppure rapporti adimensionali quando il testo non fornisce una
-scala assoluta necessaria, calcola lo stato e non accede al DOM. Una **config**
-descrive invece un particolare esercizio: parametri, modello adottato,
-interazioni consentite, grandezze da visualizzare e copia didattica. Varianti
-numeriche dello stesso modello non richiedono modifiche al motore.
+**Un motore rappresenta un modello o un dominio fisico riusabile, non un
+esercizio.** I dati specifici del quesito appartengono alla configurazione JSON.
+Quando il testo non fornisce una scala assoluta necessaria, la simulazione usa
+rapporti adimensionali oppure una scala esplicitamente dichiarata didattica,
+mai un dato fisico inventato presentato come parte del problema.
 
-La struttura v1 e:
+La struttura corrente e:
 
 ~~~text
 simulazioni/
 |-- core/
-|   |-- runtime.js          caricamento, ciclo requestAnimationFrame e lifecycle
-|   |-- controls.js         collegamento dei pulsanti HTML alle azioni
-|   |-- registry.js         registro esplicito dei motori caricabili
-|   -- simulation.css       stile caricato solo nelle pagine con simulazioni
+|   |-- runtime.js
+|   |-- controls.js
+|   |-- registry.js
+|   -- simulation.css
 |-- engines/
 |   |-- rotational_platform/
-|   |   |-- engine.js       modello fisico e stato, senza DOM
-|   |   |-- view.js         vista SVG e aggiornamento accessibile
-|   |   |-- style.css       stile specifico del motore
-|   |   -- manifest.json    entry point, modelli e schema della config
 |   |-- ideal_gas_process/
-|   |   |-- engine.js
-|   |   |-- view.js
-|   |   |-- style.css
-|   |   -- manifest.json
-|   -- one_dimensional_collision/
-|       |-- engine.js
-|       |-- view.js
-|       |-- style.css
-|       -- manifest.json
+|   |-- one_dimensional_collision/
+|   |-- fluid_statics/
+|   |-- dc_circuit/
+|   -- calorimetry/
 |-- config/
 |   -- <EXERCISE-ID>.json
 -- README.md
 ~~~
 
-Il generatore copia nel sito statico solo il core, i motori e le configurazioni
-richiesti dagli esercizi presenti.
+Ogni motore contiene un manifest, il modello DOM-free, una view e gli eventuali
+stili specifici. `fluid_statics` usa inoltre facade multi-model per mantenere
+separate le view specialistiche senza spostare logica di dominio nel core.
 
-Lo stile strutturale condiviso vive in core/simulation.css; colori, geometrie e
-selettori di dominio vivono invece nello style.css del rispettivo motore. La
-validazione lato build vive in scripts/simulation_config.py. Il primo e un asset
-comune a tutte le view; il secondo appartiene alla pipeline Python e non al
-runtime browser. La separazione tra runtime, modello, rendering e
-configurazione resta invariata.
+Il generatore copia nel sito statico solo core, motori e configurazioni
+necessari agli esercizi presenti. I test di subset verificano che, per esempio,
+una build composta solo da circuiti non trascini calorimetria o fluidostatica.
 
 ## Contratto multi-engine
 
 Il core tratta nomi di azione, payload e descrittori dei controlli come dati
 opachi. Non contiene condizioni sul nome del motore e non conosce partecipanti,
-pistoni, palle o altre entita del dominio.
+pistoni, palle, recipienti, resistori o materiali.
 
-Ogni `engine.js` espone:
+Ogni `engine.js` espone almeno:
 
 - `createSimulationEngine(config)`;
-- `getState()`, `advance(deltaSeconds)` e `pause()` per il ciclo comune;
-- `dispatch(action, payload)` per azioni lifecycle e azioni specifiche;
-- facoltativamente metodi diretti utili ai test, senza cambiare il contratto del
-  runtime.
+- `getState()`, `advance(deltaSeconds)`, `pause()`;
+- `dispatch(action, payload)`;
+- normalmente anche `play()`, `reset()` e `setProgress()` come API diretta
+  testabile.
 
 Ogni `view.js` espone `createSimulationView({container, config})`. L'oggetto
 restituito implementa `render(state)` e puo inoltre fornire:
 
-- `describeControls(state, context)`, che decide stato, testo accessibile e
-  visibilita dei controlli;
-- `resolveActionPayload(context)`, che traduce un evento DOM in un payload;
-- `handleActionResult(context)`, per effetti visivi conseguenti a un'azione;
+- `describeControls(state, context)`;
+- `resolveActionPayload(context)`;
+- `handleActionResult(context)` quando necessario;
 - `motionAllowed` e `onMotionPreferenceChange(callback)` per
   `prefers-reduced-motion`.
 
-`controls.js` rileva qualsiasi elemento con `data-simulation-action`, inoltra
-l'azione senza interpretarla e applica soltanto descrittori DOM generici. Per
-esempio, l'uscita di una persona e la sua animazione sono interamente nel motore
-e nella view rotazionali; lo scrubbing del volume e interamente nel motore e
-nella view del gas; il cambio tra sistema del tavolo e sistema del centro di
-massa appartiene interamente al motore e alla view degli urti.
+`controls.js` inoltra le azioni senza interpretarle. Il runtime comune gestisce
+lifecycle e `requestAnimationFrame`; formule, stato e significato fisico restano
+negli engine.
+
+## Engine attivi
+
+### `rotational_platform`
+
+Modello `textbook_reduced_system`, riusato da `FIS-ROT-ANG-001` e
+`FIS-ROT-ANG-002`. Conserva il momento angolare del sistema ridotto
+piattaforma-persone rimaste. Il modello dichiara il limite rispetto a un'uscita
+reale che porterebbe via momento angolare.
+
+### `ideal_gas_process`
+
+Modello `reversible_isothermal`, riusato da `FIS-TER-GAS-003` e
+`FIS-TER-GAS-006`:
+
+~~~text
+pV = nRT
+Delta U = 0
+Q = L = nRT ln(V/Vi)
+~~~
+
+Rappresenta una successione di stati di equilibrio; il playback non e tempo
+fisico. Dinamica del pistone, attriti, inerzia, scambio termico finito e
+irreversibilita restano fuori dal modello corrente.
+
+### `one_dimensional_collision`
+
+Modello `elastic_1d` per urti frontali, istantanei ed elastici. Supporta sistema
+del tavolo e sistema del centro di massa e usa rapporti di massa quando il testo
+non fornisce masse assolute. Le posizioni sono schematiche e il progresso ordina
+prima/urto/dopo, non rappresenta tempo fisico.
+
+### `fluid_statics`
+
+Primo engine Exergo esplicitamente multi-model. Serve otto esercizi attraverso
+sei modelli:
+
+- `hydrostatic_column`;
+- `floating_body`;
+- `buoyancy_apparent_weight`;
+- `hydrostatic_pressure_points`;
+- `hydraulic_press`;
+- `communicating_vessels`.
+
+Il dominio dimostra sia riuso tra configurazioni dello stesso modello sia riuso
+di infrastruttura tra fenomeni distinti. Le grandezze non fornite vengono
+omesse o dichiarate come scala didattica; per esempio `communicating_vessels`
+usa soltanto il numero reale di rami e scarti di livello normalizzati, senza
+inventare sezioni, volumi o quote metriche.
+
+### `dc_circuit`
+
+Serve tutti i cinque esercizi di circuiti elettrici attualmente presenti e usa
+tre modelli:
+
+- `single_loop_topology`: circuito aperto/chiuso senza parametri elettrici
+  numerici inventati;
+- `charge_flow`: definizione `I = Delta Q / Delta t`;
+- `ohmic_resistor`: `V = RI`, corrente e potenza nel punto di lavoro.
+
+`FIS-CIR-OHM-002` usa direttamente i dati `4 V`, `8 ohm -> 4 ohm` e mostra
+`0,5 A -> 1 A`. I quesiti puramente teorici possono usare scale numeriche di
+esplorazione, ma la config e la pagina le dichiarano esplicitamente come
+**scale didattiche**, non dati del quesito.
+
+La view V-I non e decorativa: la retta viene ricalcolata dalla resistenza dello
+stato corrente e il punto rappresenta il punto di lavoro effettivo.
+
+### `calorimetry`
+
+Serve cinque esercizi attraverso cinque modelli:
+
+- `sensible_heat_compare`: confronto `Q=mc Delta T` tra materiali;
+- `heating_power`: `Q=eta P t` seguito da `Delta T=Q/(mc)`;
+- `thermal_mixing`: equilibrio energetico tra due masse;
+- `ice_water_balance`: riscaldamento del ghiaccio, fusione e successivo
+  equilibrio;
+- `phase_change_balance`: calore latente ceduto da una sostanza che solidifica
+  e assorbito da una sostanza che si riscalda/vaporizza.
+
+I modelli a fasi verificano il regime fisico prima di procedere. Per esempio
+`ice_water_balance` rifiuta una configurazione in cui l'energia disponibile non
+sia sufficiente a fondere completamente il ghiaccio, invece di applicare
+silenziosamente la formula di un altro regime.
+
+La coordinata interattiva rappresenta tempo soltanto quando il modello lo
+consente esplicitamente (`heating_power` a potenza costante); negli altri casi e
+una frazione di energia trasferita o una coordinata didattica.
 
 ## Associare una simulazione a un esercizio
 
-Nel blocco iniziale di metadati del file .tex aggiungere, per esempio:
+Nel blocco iniziale del `.tex` aggiungere:
 
 ~~~tex
-% Simulazione: rotational_platform
+% Simulazione: dc_circuit
 ~~~
 
-Il campo e facoltativo e contiene il nome del motore, non i valori numerici.
-Creare poi `simulazioni/config/EXERCISE-ID.json`. Il nome del file deve
-corrispondere esattamente all'ID dell'esercizio.
-
-## Riutilizzare un motore esistente
-
-Il riuso reale di `rotational_platform` e verificato da due esercizi pubblicati:
-
-- `FIS-ROT-ANG-001`: sei ragazze su una piattaforma rotante;
-- `FIS-ROT-ANG-002`: otto studenti su una giostra rotante.
-
-I due casi usano masse, raggi, conteggi, velocita, target e testi diversi, ma
-condividono lo stesso `engine.js`. Per aggiungere un ulteriore esercizio:
-
-1. aggiungere `Simulazione: rotational_platform` al .tex;
-2. copiare una configurazione v1 come punto di partenza;
-3. rinominare il JSON con il nuovo ID;
-4. modificare parametri, opzioni, display e dati didattici;
-5. eseguire validazione e test.
-
-Non copiare il JavaScript per creare una variante numerica. Se una nuova config
-non basta, chiedersi prima se serve un nuovo **modello** nello stesso motore o
-un fenomeno fisico realmente diverso che giustifichi un nuovo motore.
-
-`ideal_gas_process` supporta nella versione 1 il modello
-`reversible_isothermal`: rappresenta una successione di stati di equilibrio a
-temperatura costante, con `pV=nRT`, `Delta U=0` e `Q=L`. Il progresso del
-playback e un parametro didattico, non tempo fisico; dinamica del pistone,
-attriti, inerzia, scambi termici finiti e irreversibilita restano fuori dal
-modello. Isobare, isocore, adiabatiche e cicli non sono implementati.
-
-`one_dimensional_collision` introduce il modello `elastic_1d`: un urto
-frontale, istantaneo ed elastico in una dimensione. Conserva quantita di moto ed
-energia cinetica e permette di osservare lo stesso evento nel sistema del
-tavolo e nel sistema del centro di massa. Se un esercizio specifica soltanto un
-rapporto tra masse, la configurazione usa rapporti adimensionali invece di
-inventare masse assolute. Le posizioni nella vista sono schematiche e il
-progresso del playback ordina didatticamente prima, urto e dopo: non e un tempo
-fisico. Urti anelastici, urti obliqui, deformazione durante il contatto e urti
-successivi a tre o piu corpi non fanno parte del modello v1.
-
-## Creare una configurazione
+Il campo contiene il nome del motore, non i valori numerici. Creare quindi
+`simulazioni/config/EXERCISE-ID.json`, con nome identico all'ID dell'esercizio.
 
 Ogni config contiene almeno:
 
-- `schema_version`: versione del contratto dati, attualmente 1;
-- `engine`: nome del motore, uguale al metadato del .tex;
-- `model`: variante fisica esplicitamente adottata;
-- `parameters`: dati fisici e criterio numerico dell'obiettivo;
-- `interaction`: azioni abilitate;
-- `display`: grandezze ed equazioni visibili;
-- `didactics.model_note_it`: ipotesi e limiti del modello in forma leggibile.
-
-Per `rotational_platform`, la sezione `didactics` puo inoltre personalizzare la
-copia senza modificare la view:
-
-- `participant_singular_it` e `participant_plural_it`;
-- `participant_count_label_it`;
-- `remove_action_label_it`;
-- `learning_action_it`.
-
-Questi campi restano opzionali nello schema v1 e hanno fallback generici
-(`persona`, `persone`, ecc.), quindi l'estensione e retrocompatibile con le
-configurazioni v1 precedenti.
+- `schema_version`;
+- `engine`;
+- `model`;
+- `parameters`;
+- `interaction`;
+- `display`;
+- `didactics`, inclusa una nota leggibile sulle ipotesi e sui limiti.
 
 Il manifest del motore elenca chiavi, tipi, vincoli, versioni e modelli
-supportati. Chiavi sconosciute sono errori: un refuso come `participant_mass_k`
-non viene ignorato.
+supportati. Chiavi sconosciute sono errori. Gli engine multi-model usano varianti
+`oneOf` strette per impedire che parametri di un modello vengano accettati da un
+altro.
 
-### Unita e rapporti
+## Unita, rapporti e scale illustrative
 
-I dati dimensionali interni usano unita SI e nomi espliciti:
+I dati dimensionali interni usano unita SI e nomi espliciti (`_kg`, `_m`,
+`_m_s`, `_Pa`, `_J`, `_W`, `_V`, `_A`, `_ohm`, ecc.). Non sono previste
+conversioni implicite.
 
-- masse assolute, quando necessarie, in chilogrammi: suffisso `_kg`;
-- lunghezze in metri: suffisso `_m`;
-- velocita lineari in metri al secondo: suffisso `_m_s`;
-- velocita angolari in radianti al secondo: suffisso `_rad_s`;
-- tolleranze con la stessa unita della grandezza confrontata.
+Quando la fisica dipende soltanto da un rapporto e il testo non fornisce una
+scala assoluta, sono ammessi parametri adimensionali espliciti come
+`mass_1_ratio`. Quando un quesito teorico beneficia di numeri per visualizzare
+una proporzionalita, la scala puo comparire nel JSON solo se la copia didattica
+la dichiara chiaramente come illustrativa.
 
-Non sono previste conversioni implicite. Quando la fisica dipende soltanto dal
-rapporto tra masse e il testo non fornisce una scala assoluta, un motore puo
-usare parametri esplicitamente adimensionali con suffisso `_ratio`, come
-`mass_1_ratio` e `mass_2_ratio` in `elastic_1d`.
+## Creare o estendere un motore
 
-### Versione dello schema
-
-`schema_version` non e decorativo. Runtime e validatore v1 accettano soltanto la
-versione 1; una versione sconosciuta fallisce con un errore leggibile. Una
-futura modifica incompatibile dovra aggiungere una nuova versione al manifest e
-la relativa gestione, senza reinterpretare silenziosamente le config esistenti.
-Estensioni opzionali e retrocompatibili, come la copia didattica configurabile,
-possono invece restare nello schema v1.
-
-## Creare un nuovo motore
-
-1. creare `simulazioni/engines/engine_name/`;
-2. aggiungere un `manifest.json` v1 con entry point, versioni, modelli, schema e
-   vincoli incrociati;
-3. esportare da `engine.js` una funzione `createSimulationEngine(config)`;
-4. mantenere formule e stato testabili senza DOM;
-5. esportare da `view.js` `createSimulationView({container, config})`;
-6. aggiungere uno `style.css` del motore e dichiararlo negli entry point del
-   manifest quando servono stili di dominio;
-7. registrare i loader lazy in `core/registry.js`;
-8. aggiungere test del modello, dello stato, di una config non pilota e della
-   generazione statica.
-
-La view deve usare elementi HTML reali per i controlli, testo per lo stato,
-SVG quando adatto e `prefers-reduced-motion`. Il runtime comune si occupa del
-lifecycle; il motore non deve manipolare HTML.
-
-## Modelli fisici e trasparenza
-
-Ogni configurazione deve dichiarare il modello e una nota sulle sue ipotesi.
-Il prototipo rotazionale usa `textbook_reduced_system`: conserva un momento
-angolare di riferimento per il sistema ridotto formato da piattaforma e persone
-rimaste. Non descrive l'impulso e il momento angolare portato via durante un
-salto o un'uscita reale.
-
-Una futura variante, per esempio `full_angular_momentum`, va aggiunta come
-implementazione distinta nel registro dei modelli del motore e nel manifest.
-Non va nascosta dietro lo stesso nome ne introdotta riscrivendo la view. Lo
-stesso criterio vale per un futuro `inelastic_1d`: non deve essere simulato
-alterando silenziosamente le equazioni di `elastic_1d`.
+1. verificare prima se basta una nuova config;
+2. se cambia il modello ma resta lo stesso dominio, preferire un nuovo modello
+   nello stesso engine;
+3. creare un nuovo engine solo per un dominio/modello realmente distinto;
+4. mantenere il calcolo testabile senza DOM;
+5. aggiungere o aggiornare `manifest.json` con uno schema stretto;
+6. registrare il loader lazy in `core/registry.js`;
+7. aggiungere almeno un test con dati indipendenti dal pilot per escludere
+   hardcoding;
+8. aggiungere test config, asset graph e generazione statica;
+9. verificare browser normale, reduced-motion e mobile;
+10. revisionare screenshot prima del merge.
 
 ## Regola contro l'hardcoding
 
 Masse, raggi, conteggi, velocita, target e testi specifici di un esercizio
-appartengono al JSON. In `engine.js` sono ammessi soltanto costanti matematiche o
-coefficienti del modello fisico, come `1/2` per il momento d'inerzia di un disco
-pieno o i coefficienti delle formule dell'urto elastico. Numeri specifici dei
-casi pubblicati possono comparire solo nelle fixture di test.
+appartengono al JSON. In `engine.js` sono ammessi soltanto costanti matematiche,
+coefficienti fisici del modello e logica generale. Numeri specifici dei casi
+pubblicati possono comparire nelle fixture di test, non nella logica del motore.
 
 ## Validare e testare
 
@@ -244,13 +235,14 @@ node --test tests/js/*.test.mjs
 python scripts/genera_sito.py --output _site
 ~~~
 
-I test Python coprono config e generazione. I test Node usano soltanto il test
-runner integrato e verificano modello, stato e contratto della vista senza npm o
-dipendenze. Il piccolo `simulazioni/package.json` dichiara esclusivamente i
-moduli ES e non introduce pacchetti da installare.
+La CI aggiunge smoke test Chrome, `prefers-reduced-motion`, viewport mobile e
+screenshot di revisione. `validate-expansion-browser.yml` mantiene una matrice
+visuale dedicata ai nuovi domini circuiti/calorimetria senza rendere ancora piu
+monolitico lo smoke storico.
 
-La CI esegue inoltre smoke test con Chrome headless per i motori pubblicati,
-verifica il comportamento con `prefers-reduced-motion`, controlla il layout
-mobile e salva screenshot desktop/mobile come artifact di revisione. Per il
-motore degli urti, lo smoke verifica anche cambio di sistema di riferimento,
-invarianti del modello elastico, scrubbing prima/urto/dopo e reset.
+## Stato del catalogo simulato
+
+Dopo l'espansione circuiti + calorimetria, Exergo pubblica **23 esercizi di
+Fisica con simulazione** attraverso **6 engine**. La fonte machine-readable per
+la copertura resta `metadata/simulation_coverage.csv`; la roadmap e mantenuta in
+`docs/SIMULATION_ROADMAP.md`.
