@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "floating_body",
+  "parameters": {
+    "fluid_density_kg_m3": 1000,
+    "body_density_initial_kg_m3": 600,
+    "submerged_fraction_initial": 0,
+    "submerged_fraction_final": 1
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "allow_body_density_change": true,
+    "playback_duration_s": 6,
+    "body_density_min_kg_m3": 300,
+    "body_density_max_kg_m3": 1300,
+    "force_balance_tolerance": 0.01
+  },
+  "display": {
+    "show_equations": true,
+    "show_force_ratio": true,
+    "show_density_ratio": true
+  },
+  "didactics": {
+    "model_note_it": "Corpo omogeneo e fluido incomprimibile in quiete; si trascurano viscosità, moti transitori e tensione superficiale. Il modello confronta configurazioni statiche e permette di distinguere galleggiamento, equilibrio neutro e affondamento.",
+    "learning_action_it": "Varia la densità del corpo e la frazione immersa. Osserva quando Fₐ=P e che cosa accade se il corpo diventa denso quanto il fluido o più denso del fluido.",
+    "body_label_it": "Corpo omogeneo",
+    "fluid_label_it": "Fluido di riferimento — ρf = 1000 kg/m³",
+    "exploration_note_it": "La densità iniziale del corpo e la densità del fluido sono valori scelti per esplorare qualitativamente il fenomeno: non sono dati del quesito teorico."
+  }
+}
