@@ -11,7 +11,10 @@
 }
 
 .collision-frame-controls button {
+  width: auto;
+  min-width: 10rem;
   min-height: 2.4rem;
+  flex: 0 0 auto;
 }
 
 .collision-figure {
@@ -175,6 +178,8 @@
   }
 
   .collision-frame-controls button {
+    width: auto;
+    min-width: 0;
     flex: 1 1 9rem;
   }
 
