@@ -115,8 +115,20 @@
   stroke: #287fae;
 }
 
-.fluid-force-arrow-head {
-  fill: currentColor;
+.fluid-force-weight-head {
+  fill: #a64a44;
+}
+
+.fluid-force-buoyancy-head {
+  fill: #287fae;
+}
+
+.fluid-force-weight-label {
+  fill: #a64a44;
+}
+
+.fluid-force-buoyancy-label {
+  fill: #287fae;
 }
 
 .fluid-force-label {
