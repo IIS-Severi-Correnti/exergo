@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo circuit and calorimetry expansion smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/dc_circuit/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/calorimetry/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell"><h2>Circuito base</h2><div id="topology" data-exergo-simulation data-simulation-engine="dc_circuit" data-simulation-config="../../_site/assets/simulazioni/config/FIS-CIR-BAS-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><h2>Legge di Ohm</h2><div id="ohm" data-exergo-simulation data-simulation-engine="dc_circuit" data-simulation-config="../../_site/assets/simulazioni/config/FIS-CIR-OHM-002.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><h2>Calore specifico</h2><div id="specific" data-exergo-simulation data-simulation-engine="calorimetry" data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-CAL-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><h2>Equilibrio acqua-acqua</h2><div id="mix" data-exergo-simulation data-simulation-engine="calorimetry" data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-EQ-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><h2>Acqua e ghiaccio</h2><div id="ice" data-exergo-simulation data-simulation-engine="calorimetry" data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-EQ-002.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><h2>Solidificazione e vaporizzazione</h2><div id="phase" data-exergo-simulation data-simulation-engine="calorimetry" data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-PAS-001.json"><p data-simulation-error hidden></p></div></section>
+  </main>
+
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector("#result");
+    const simulations = [...document.querySelectorAll("[data-exergo-simulation]")];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo expansion smoke test";
+    }
+    function close(actual, expected, tolerance = 1e-7) {
+      if (Math.abs(actual - expected) > tolerance) throw new Error(actual + " != " + expected);
+    }
+    function scrub(simulation, value) {
+      const slider = simulation.querySelector('[data-simulation-action="set_progress"]');
+      slider.value = String(value);
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+      return slider;
+    }
+
+    const deadline = Date.now() + 9000;
+    const timer = window.setInterval(() => {
+      if (!simulations.every((simulation) => simulation.dataset.simulationReady === "true")) {
+        if (Date.now() > deadline) {
+          window.clearInterval(timer);
+          finish("FAIL", "inizializzazione multipla scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(timer);
+      try {
+        for (const simulation of simulations) {
+          const play = simulation.querySelector('[data-simulation-action="play"]');
+          if (play.disabled !== reducedMotion) throw new Error("semantica Play/reduced-motion errata per " + simulation.id);
+        }
+
+        const topology = document.querySelector("#topology");
+        if (topology.dataset.pathClosed !== "false") throw new Error("circuito base non parte aperto");
+        scrub(topology, 1000);
+        if (topology.dataset.pathClosed !== "true") throw new Error("circuito base non si chiude");
+        topology.querySelector('[data-simulation-action="reset"]').click();
+        if (topology.dataset.pathClosed !== "false") throw new Error("reset topologia fallito");
+
+        const ohm = document.querySelector("#ohm");
+        close(Number(ohm.dataset.currentA), 0.5);
+        close(Number(ohm.dataset.resistanceOhm), 8);
+        scrub(ohm, 1000);
+        close(Number(ohm.dataset.currentA), 1);
+        close(Number(ohm.dataset.resistanceOhm), 4);
+
+        const specific = document.querySelector("#specific");
+        scrub(specific, 1000);
+        close(Number(specific.dataset.primaryValue), 4500 / (0.5 * 390));
+        close(Number(specific.dataset.secondaryValue), 10);
+
+        const mix = document.querySelector("#mix");
+        scrub(mix, 1000);
+        close(Number(mix.dataset.primaryValue), 44);
+        close(Number(mix.dataset.secondaryValue), 44);
+
+        const ice = document.querySelector("#ice");
+        scrub(ice, 1000);
+        close(Number(ice.dataset.primaryValue), 17.288798158363374);
+        close(Number(ice.dataset.secondaryValue), 17.288798158363374);
+        if (ice.dataset.phase !== "acqua") throw new Error("fase finale acqua/ghiaccio errata");
+
+        const phase = document.querySelector("#phase");
+        scrub(phase, 1000);
+        close(Number(phase.dataset.primaryValue), 0.00449595364172245, 1e-10);
+        if (phase.dataset.phase !== "vapore") throw new Error("vaporizzazione finale non rilevata");
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error("overflow orizzontale " + document.documentElement.scrollWidth + "px su viewport " + window.innerWidth + "px");
+        }
+
+        finish("PASS", "2 domini, 6 esempi, formule, reset, reduced motion=" + reducedMotion);
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>
