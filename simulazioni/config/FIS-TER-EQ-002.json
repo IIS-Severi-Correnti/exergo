@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "engine": "calorimetry",
+  "model": "ice_water_balance",
+  "parameters": {
+    "water_mass_kg": 1.0,
+    "ice_mass_kg": 0.100,
+    "water_specific_heat_J_kgK": 4186.0,
+    "ice_specific_heat_J_kgK": 2100.0,
+    "latent_heat_fusion_J_kg": 334000.0,
+    "water_temperature_initial_C": 28.0,
+    "ice_temperature_initial_C": -20.0
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 7},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Segui in sequenza il riscaldamento del ghiaccio, la fusione completa e il successivo equilibrio dell'acqua.",
+    "model_note_it": "Sistema isolato con dati del problema; il modello verifica prima che l'acqua possa scaldare e fondere tutto il ghiaccio. Il progresso è frazione di energia trasferita, non tempo fisico.",
+    "slider_label_it": "Frazione dell'energia totale trasferita",
+    "figure_note_it": "L'energia passa dall'acqua inizialmente a 28 °C al ghiaccio a −20 °C attraverso tre fasi energetiche.",
+    "left_label_it": "1,0 kg acqua a 28 °C",
+    "right_label_it": "0,100 kg ghiaccio a −20 °C",
+    "equation_html": "<p><var>Q</var> = <var>m</var><sub>g</sub><var>c</var><sub>g</sub>·20 + <var>m</var><sub>g</sub><var>L</var><sub>f</sub> + (<var>m</var><sub>a</sub>+<var>m</var><sub>g</sub>)<var>c</var><sub>a</sub><var>T</var><sub>f</sub></p>"
+  }
+}
