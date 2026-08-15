@@ -46,6 +46,8 @@ function setFloatingBodyGeometry(container, state) {
 
   const weightArrow = container.querySelector("[data-force-weight]");
   const buoyancyArrow = container.querySelector("[data-force-buoyancy]");
+  const weightLabel = container.querySelector("[data-weight-label]");
+  const buoyancyLabel = container.querySelector("[data-buoyancy-label]");
   const ratio = Math.max(0, state.buoyancy_to_weight_ratio);
   const scale = Math.max(1, ratio);
   const weightLength = 76 / scale;
@@ -61,8 +63,12 @@ function setFloatingBodyGeometry(container, state) {
   buoyancyArrow.setAttribute("y1", String(centerY));
   buoyancyArrow.setAttribute("y2", String(centerY - buoyancyLength));
 
-  container.querySelector("[data-weight-label]").setAttribute("y", String(centerY + weightLength + 18));
-  container.querySelector("[data-buoyancy-label]").setAttribute("y", String(centerY - buoyancyLength - 8));
+  weightLabel.setAttribute("y", String(centerY + 18));
+  buoyancyLabel.setAttribute("y", String(centerY - 12));
+
+  const hasBuoyancy = buoyancyLength > 0.5;
+  buoyancyArrow.hidden = !hasBuoyancy;
+  buoyancyLabel.hidden = !hasBuoyancy;
 }
 
 function createFloatingBodyView({ container, config, instanceId }) {
@@ -70,7 +76,8 @@ function createFloatingBodyView({ container, config, instanceId }) {
   const figureDescriptionId = `fluid-floating-description-${instanceId}`;
   const progressId = `fluid-floating-progress-${instanceId}`;
   const bodyDensityId = `fluid-floating-body-density-${instanceId}`;
-  const arrowMarkerId = `fluid-floating-arrow-${instanceId}`;
+  const weightArrowMarkerId = `fluid-floating-weight-arrow-${instanceId}`;
+  const buoyancyArrowMarkerId = `fluid-floating-buoyancy-arrow-${instanceId}`;
   const reducedMotion = reducedMotionMedia();
 
   container.innerHTML = `
@@ -85,24 +92,27 @@ function createFloatingBodyView({ container, config, instanceId }) {
         <title id="${figureTitleId}">Corpo parzialmente immerso in un fluido con forza peso e spinta di Archimede</title>
         <desc id="${figureDescriptionId}">Un corpo rettangolare attraversa la superficie del liquido. Due frecce mostrano peso e spinta di Archimede.</desc>
         <defs>
-          <marker id="${arrowMarkerId}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
-            <path d="M 0 0 L 8 4 L 0 8 z" class="fluid-force-arrow-head"></path>
+          <marker id="${weightArrowMarkerId}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+            <path d="M 0 0 L 8 4 L 0 8 z" class="fluid-force-weight-head"></path>
+          </marker>
+          <marker id="${buoyancyArrowMarkerId}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+            <path d="M 0 0 L 8 4 L 0 8 z" class="fluid-force-buoyancy-head"></path>
           </marker>
         </defs>
 
         <path class="fluid-floating-tank" d="M 76 70 V 330 H 524 V 70"></path>
         <rect class="fluid-floating-water" x="80" y="156" width="440" height="170"></rect>
         <line class="fluid-surface-guide" x1="80" y1="156" x2="520" y2="156"></line>
-        <text class="fluid-surface-label" x="88" y="143" data-fluid-label></text>
+        <text class="fluid-surface-label" x="88" y="315" data-fluid-label></text>
 
         <rect class="fluid-floating-body" data-floating-body rx="8"></rect>
         <rect class="fluid-floating-water-overlay" data-floating-water-overlay rx="0"></rect>
         <text class="fluid-floating-body-label" x="300" y="24" text-anchor="middle" data-body-label></text>
 
-        <line class="fluid-force-arrow fluid-force-weight" data-force-weight marker-end="url(#${arrowMarkerId})"></line>
-        <line class="fluid-force-arrow fluid-force-buoyancy" data-force-buoyancy marker-end="url(#${arrowMarkerId})"></line>
-        <text class="fluid-force-label" x="258" data-weight-label text-anchor="middle">P</text>
-        <text class="fluid-force-label" x="342" data-buoyancy-label text-anchor="middle">Fₐ</text>
+        <line class="fluid-force-arrow fluid-force-weight" data-force-weight marker-end="url(#${weightArrowMarkerId})"></line>
+        <line class="fluid-force-arrow fluid-force-buoyancy" data-force-buoyancy marker-end="url(#${buoyancyArrowMarkerId})"></line>
+        <text class="fluid-force-label fluid-force-weight-label" x="244" data-weight-label text-anchor="middle">P</text>
+        <text class="fluid-force-label fluid-force-buoyancy-label" x="356" data-buoyancy-label text-anchor="middle">Fₐ</text>
 
         <text class="fluid-floating-fraction-label" x="300" y="372" text-anchor="middle" data-submerged-label></text>
       </svg>
