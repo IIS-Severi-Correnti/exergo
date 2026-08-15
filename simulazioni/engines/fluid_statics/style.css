@@ -1,0 +1,153 @@
+.fluid-statics-figure {
+  margin: 1rem 0 0;
+}
+
+.fluid-statics-svg {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.fluid-statics-figure figcaption {
+  max-width: 720px;
+  margin: 0.6rem auto 0;
+  color: var(--muted, #5c6773);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.fluid-surface-guide {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+  opacity: 0.45;
+}
+
+.fluid-surface-label,
+.fluid-column-label,
+.fluid-depth-label,
+.fluid-pressure-label {
+  fill: currentColor;
+  font-family: system-ui, sans-serif;
+}
+
+.fluid-surface-label {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.fluid-column-label {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.fluid-depth-label,
+.fluid-pressure-label {
+  font-size: 13px;
+}
+
+.fluid-vessel-outline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fluid-water {
+  fill: #5ba7d8;
+  fill-opacity: 0.28;
+}
+
+.fluid-depth-line,
+.fluid-depth-cap {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  opacity: 0.75;
+}
+
+.fluid-pressure-bar {
+  fill: #d77724;
+  opacity: 0.82;
+}
+
+.fluid-statics-panel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.fluid-statics-scrubber,
+.fluid-statics-density-control {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.fluid-statics-scrubber label,
+.fluid-statics-density-control label {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  font-weight: 650;
+}
+
+.fluid-statics-scrubber output,
+.fluid-statics-density-control output {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.fluid-statics-scrubber input[type="range"],
+.fluid-statics-density-control input[type="range"] {
+  width: 100%;
+}
+
+.fluid-statics-slider-scale {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted, #5c6773);
+  font-size: 0.86rem;
+}
+
+.fluid-statics-values {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.fluid-statics-width-note,
+.fluid-statics-exploration-note {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+  line-height: 1.45;
+}
+
+.fluid-statics-exploration-note {
+  font-size: 0.92rem;
+}
+
+@media (max-width: 680px) {
+  .fluid-statics-values {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fluid-statics-scrubber label,
+  .fluid-statics-density-control label {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .fluid-statics-values {
+    grid-template-columns: 1fr;
+  }
+
+  .fluid-statics-figure figcaption {
+    font-size: 0.88rem;
+  }
+}
