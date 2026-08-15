@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "buoyancy_apparent_weight",
+  "parameters": {
+    "weight_air_N": 820,
+    "apparent_weight_fully_submerged_N": 770,
+    "fluid_density_kg_m3": 1030,
+    "gravity_m_s2": 9.8,
+    "submerged_fraction_initial": 0,
+    "submerged_fraction_final": 1
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 6
+  },
+  "display": {
+    "show_equations": true,
+    "show_force_balance": true,
+    "show_derived_volume": true,
+    "show_derived_density": true
+  },
+  "didactics": {
+    "model_note_it": "Il corpo e mantenuto in equilibrio da un dinamometro durante un'immersione quasi-statica. Il cursore rappresenta la frazione di volume immerso, non il tempo. Si trascura la spinta dell'aria; il peso indicato dal dinamometro coincide con la tensione del filo.",
+    "learning_action_it": "Porta gradualmente il corpo dall'aria all'immersione completa e osserva come la spinta di Archimede riduce la lettura del dinamometro da 820 N a 770 N. Usa la differenza per ricavare volume e densita.",
+    "body_label_it": "corpo",
+    "fluid_label_it": "acqua di mare",
+    "dynamometer_label_it": "dinamometro"
+  }
+}

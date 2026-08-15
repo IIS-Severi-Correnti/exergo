@@ -171,6 +171,41 @@ jobs:
             --headless=new \
             --no-sandbox \
             --disable-gpu \
+            --virtual-time-budget=7000 \
+            --dump-dom \
+            http://127.0.0.1:8765/tests/browser/apparent_weight_smoke.html \
+            > browser-artifacts/apparent-weight-dom.html
+
+          grep -q 'data-status="PASS"' browser-artifacts/apparent-weight-dom.html
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --force-prefers-reduced-motion \
+            --virtual-time-budget=7000 \
+            --dump-dom \
+            http://127.0.0.1:8765/tests/browser/apparent_weight_smoke.html \
+            > browser-artifacts/apparent-weight-reduced-motion-dom.html
+
+          grep -q 'data-status="PASS"' browser-artifacts/apparent-weight-reduced-motion-dom.html
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --window-size=430,3000 \
+            --virtual-time-budget=7000 \
+            --dump-dom \
+            http://127.0.0.1:8765/tests/browser/apparent_weight_smoke.html \
+            > browser-artifacts/apparent-weight-mobile-dom.html
+
+          grep -q 'data-status="PASS"' browser-artifacts/apparent-weight-mobile-dom.html
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
             --hide-scrollbars \
             --virtual-time-budget=2500 \
             --window-size=1440,2400 \
@@ -326,6 +361,26 @@ jobs:
             --window-size=430,3000 \
             --screenshot=browser-artifacts/floating-reuse-mobile.png \
             http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-003/
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=1440,2400 \
+            --screenshot=browser-artifacts/apparent-weight-desktop.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-002/
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=430,3000 \
+            --screenshot=browser-artifacts/apparent-weight-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-002/
 
       - name: Upload simulation browser artifacts
         if: always()

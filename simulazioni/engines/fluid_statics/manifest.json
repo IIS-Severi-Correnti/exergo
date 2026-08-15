@@ -3,18 +3,20 @@
   "engine": "fluid_statics",
   "label": "Fluidostatica",
   "entry_points": {
-    "engine": "engine.js",
+    "engine": "multi_engine.js",
     "view": "multi_view.js",
     "style": "style.css",
+    "base_engine": "engine.js",
     "hydrostatic_view": "view.js",
-    "floating_view": "floating_view.js"
+    "floating_view": "floating_view.js",
+    "apparent_weight_engine": "apparent_weight_engine.js",
+    "apparent_weight_view": "apparent_weight_view.js"
   },
-  "supported_schema_versions": [
-    1
-  ],
+  "supported_schema_versions": [1],
   "supported_models": [
     "hydrostatic_column",
-    "floating_body"
+    "floating_body",
+    "buoyancy_apparent_weight"
   ],
   "config_schema": {
     "type": "object",
@@ -31,7 +33,10 @@
     "properties": {
       "schema_version": {"type": "integer", "const": 1},
       "engine": {"type": "string", "const": "fluid_statics"},
-      "model": {"type": "string", "enum": ["hydrostatic_column", "floating_body"]},
+      "model": {
+        "type": "string",
+        "enum": ["hydrostatic_column", "floating_body", "buoyancy_apparent_weight"]
+      },
       "parameters": {
         "type": "object",
         "additionalProperties": false,
@@ -46,7 +51,9 @@
           "fluid_density_kg_m3": {"type": "number", "exclusiveMinimum": 0},
           "body_density_initial_kg_m3": {"type": "number", "exclusiveMinimum": 0},
           "submerged_fraction_initial": {"type": "number", "minimum": 0, "maximum": 1},
-          "submerged_fraction_final": {"type": "number", "minimum": 0, "maximum": 1}
+          "submerged_fraction_final": {"type": "number", "minimum": 0, "maximum": 1},
+          "weight_air_N": {"type": "number", "exclusiveMinimum": 0},
+          "apparent_weight_fully_submerged_N": {"type": "number", "minimum": 0}
         }
       },
       "interaction": {
@@ -76,7 +83,10 @@
           "show_pressure_ratio": {"type": "boolean"},
           "show_vessel_width_note": {"type": "boolean"},
           "show_force_ratio": {"type": "boolean"},
-          "show_density_ratio": {"type": "boolean"}
+          "show_density_ratio": {"type": "boolean"},
+          "show_force_balance": {"type": "boolean"},
+          "show_derived_volume": {"type": "boolean"},
+          "show_derived_density": {"type": "boolean"}
         }
       },
       "didactics": {
@@ -89,6 +99,7 @@
           "column_2_label_it": {"type": "string", "minLength": 1},
           "body_label_it": {"type": "string", "minLength": 1},
           "fluid_label_it": {"type": "string", "minLength": 1},
+          "dynamometer_label_it": {"type": "string", "minLength": 1},
           "exploration_note_it": {"type": "string", "minLength": 1}
         }
       }
@@ -101,13 +112,9 @@
             "required": ["fluid_density_initial_kg_m3", "gravity_m_s2", "depth_reference_m", "depth_moving_initial_m", "depth_moving_final_m"],
             "additionalProperties": false,
             "properties": {
-              "fluid_density_initial_kg_m3": {},
-              "gravity_m_s2": {},
-              "depth_reference_m": {},
-              "depth_moving_initial_m": {},
-              "depth_moving_final_m": {},
-              "vessel_radius_1_m": {},
-              "vessel_radius_2_m": {}
+              "fluid_density_initial_kg_m3": {}, "gravity_m_s2": {},
+              "depth_reference_m": {}, "depth_moving_initial_m": {},
+              "depth_moving_final_m": {}, "vessel_radius_1_m": {}, "vessel_radius_2_m": {}
             }
           },
           "interaction": {
@@ -168,6 +175,44 @@
             }
           }
         }
+      },
+      {
+        "properties": {
+          "model": {"const": "buoyancy_apparent_weight"},
+          "parameters": {
+            "required": ["weight_air_N", "apparent_weight_fully_submerged_N", "fluid_density_kg_m3", "gravity_m_s2", "submerged_fraction_initial", "submerged_fraction_final"],
+            "additionalProperties": false,
+            "properties": {
+              "weight_air_N": {}, "apparent_weight_fully_submerged_N": {},
+              "fluid_density_kg_m3": {}, "gravity_m_s2": {},
+              "submerged_fraction_initial": {}, "submerged_fraction_final": {}
+            }
+          },
+          "interaction": {
+            "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "playback_duration_s"],
+            "additionalProperties": false,
+            "properties": {
+              "allow_play": {}, "allow_pause": {}, "allow_reset": {}, "allow_scrub": {},
+              "playback_duration_s": {}
+            }
+          },
+          "display": {
+            "required": ["show_equations", "show_force_balance", "show_derived_volume", "show_derived_density"],
+            "additionalProperties": false,
+            "properties": {
+              "show_equations": {}, "show_force_balance": {},
+              "show_derived_volume": {}, "show_derived_density": {}
+            }
+          },
+          "didactics": {
+            "required": ["model_note_it", "learning_action_it", "body_label_it", "fluid_label_it", "dynamometer_label_it"],
+            "additionalProperties": false,
+            "properties": {
+              "model_note_it": {}, "learning_action_it": {}, "body_label_it": {},
+              "fluid_label_it": {}, "dynamometer_label_it": {}
+            }
+          }
+        }
       }
     ]
   },
@@ -177,6 +222,7 @@
     {"left": "parameters.submerged_fraction_final", "operator": ">", "right": "parameters.submerged_fraction_initial", "message": "submerged_fraction_final deve essere maggiore di submerged_fraction_initial"},
     {"left": "interaction.body_density_max_kg_m3", "operator": ">", "right": "interaction.body_density_min_kg_m3", "message": "body_density_max_kg_m3 deve essere maggiore di body_density_min_kg_m3"},
     {"left": "parameters.body_density_initial_kg_m3", "operator": ">=", "right": "interaction.body_density_min_kg_m3", "message": "body_density_initial_kg_m3 deve essere >= body_density_min_kg_m3"},
-    {"left": "parameters.body_density_initial_kg_m3", "operator": "<=", "right": "interaction.body_density_max_kg_m3", "message": "body_density_initial_kg_m3 deve essere <= body_density_max_kg_m3"}
+    {"left": "parameters.body_density_initial_kg_m3", "operator": "<=", "right": "interaction.body_density_max_kg_m3", "message": "body_density_initial_kg_m3 deve essere <= body_density_max_kg_m3"},
+    {"left": "parameters.apparent_weight_fully_submerged_N", "operator": "<", "right": "parameters.weight_air_N", "message": "apparent_weight_fully_submerged_N deve essere minore di weight_air_N"}
   ]
 }
