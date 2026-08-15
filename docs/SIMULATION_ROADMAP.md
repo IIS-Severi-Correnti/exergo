@@ -20,8 +20,8 @@ L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 12 | Simulazione già collegata nell'indice e coperta dalla CI |
-| `planned` | 37 | Copribile direttamente da un engine/modello pianificato |
+| `implemented` | 13 | Simulazione già collegata nell'indice e coperta dalla CI |
+| `planned` | 36 | Copribile direttamente da un engine/modello pianificato |
 | `extension` | 5 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
@@ -33,7 +33,7 @@ Gli engine attivi sono:
 - `rotational_platform` — 2 esercizi, modello `textbook_reduced_system`;
 - `ideal_gas_process` — 2 esercizi, modello `reversible_isothermal`;
 - `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
-- `fluid_statics` — 7 esercizi, modelli `hydrostatic_column`, `floating_body`, `buoyancy_apparent_weight`, `hydrostatic_pressure_points` e `hydraulic_press`.
+- `fluid_statics` — 8 esercizi, modelli `hydrostatic_column`, `floating_body`, `buoyancy_apparent_weight`, `hydrostatic_pressure_points`, `hydraulic_press` e `communicating_vessels`.
 
 `fluid_statics` è il primo engine Exergo che dimostra esplicitamente **riuso sia tra configurazioni sia tra modelli fisici distinti nello stesso dominio**.
 
@@ -47,22 +47,22 @@ priority_score = incremental_exercises * didactic_value / implementation_complex
 
 dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5. Il punteggio serve a scegliere dove investire, ma non sostituisce la revisione fisica o architetturale.
 
-## Backlog ordinato dopo `hydraulic_press`
+## Backlog ordinato dopo `communicating_vessels`
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `fluid_statics` | estensione engine attivo | 2 | 5 | 3 | 3.33 | Vasi comunicanti e getti |
-| 2 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
-| 3 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
-| 4 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
-| 5 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
-| 6 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
-| 7 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
-| 8 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
-| 9 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
-| 10 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
-| 11 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
-| 12 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
+| 1 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
+| 2 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
+| 3 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
+| 4 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
+| 5 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
+| 6 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
+| 7 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
+| 8 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
+| 9 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
+| 10 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
+| 11 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
+| 12 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
 | 13 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
 | 14 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
 | 15 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
@@ -133,6 +133,18 @@ A₂/A₁ = mg/F₁ = 266
 
 La coordinata interattiva è il rapporto dimensionale `A₂/A₁`, da `1` al valore minimo necessario per equilibrare l'automobile. Non vengono introdotte aree assolute né diametri non forniti dal testo; le larghezze dei pistoni nella vista sono dichiarate schematiche e non in scala. Il playback modifica un parametro di progetto e non rappresenta tempo fisico.
 
+### `communicating_vessels`
+
+Copre `FIS-FLU-VAS-001` senza introdurre densità, quote metriche, sezioni o volumi assenti dal quesito. La config contiene soltanto `branch_count=4`, dato strutturale esplicito nel testo. Il motore usa scarti di livello normalizzati per confrontare stati:
+
+```text
+p_i = p_0 + ρ g h_i
+stesso p_0, stessa ρ e stesso g
+p_i = p_j  <=>  h_i = h_j
+```
+
+Il parametro di avanzamento riduce un indicatore di dislivello da `1` a `0`; non rappresenta tempo fisico e non simula un travaso volume-conservativo. Le forme diverse dei recipienti appartengono alla vista e non modificano la condizione idrostatica di equilibrio.
+
 ## Schema multi-model
 
 Con più modelli, il manifest di `fluid_statics` usa varianti `oneOf`: ogni modello conserva un proprio insieme stretto di parametri, controlli, opzioni di visualizzazione e testi didattici obbligatori.
@@ -148,22 +160,21 @@ Questo evita di indebolire la validazione del repository man mano che un engine 
 
 ## Prossimi modelli `fluid_statics`
 
-1. **`communicating_vessels`** — `FIS-FLU-VAS-001`;
-2. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
+1. **`orifice_outflow`** — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
 
-Il prossimo modello da implementare è **`communicating_vessels`**: riusa l'uguaglianza della pressione alla stessa quota per mostrare come livelli e densità si vincolano tra rami comunicanti, completando la parte strettamente statica prima di introdurre il moto del fluido con `orifice_outflow`.
+Con `communicating_vessels` la parte strettamente idrostatica del catalogo corrente è coperta. Il prossimo modello `fluid_statics` è **`orifice_outflow`**, che costituisce il passaggio controllato dall'equilibrio statico al moto del fluido e va quindi trattato come estensione concettualmente distinta.
 
 ## Fasi
 
 ### Fase A — massima copertura
 
-1. completare `fluid_statics`;
-2. `dc_circuit`;
-3. `calorimetry`;
-4. estendere `ideal_gas_process`;
-5. `ray_optics`;
-6. `wave_1d`;
-7. `newtonian_particle`.
+1. `dc_circuit`;
+2. `calorimetry`;
+3. estendere `ideal_gas_process`;
+4. `ray_optics`;
+5. `wave_1d`;
+6. `newtonian_particle`;
+7. completare `fluid_statics` con `orifice_outflow`.
 
 ### Fase B — elettromagnetismo
 

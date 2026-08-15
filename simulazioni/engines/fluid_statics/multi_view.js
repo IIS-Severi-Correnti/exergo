@@ -3,6 +3,7 @@ import { createSimulationView as createFloatingBodyView } from "./floating_view.
 import { createSimulationView as createApparentWeightView } from "./apparent_weight_view.js";
 import { createSimulationView as createPressurePointsView } from "./pressure_points_view.js";
 import { createSimulationView as createHydraulicPressView } from "./hydraulic_press_view.js";
+import { createSimulationView as createCommunicatingVesselsView } from "./communicating_vessels_view.js";
 
 export function createSimulationView(context) {
   if (context.config.model === "hydrostatic_column") {
@@ -19,6 +20,9 @@ export function createSimulationView(context) {
   }
   if (context.config.model === "hydraulic_press") {
     return createHydraulicPressView(context);
+  }
+  if (context.config.model === "communicating_vessels") {
+    return createCommunicatingVesselsView(context);
   }
   throw new RangeError(
     `view non disponibile per il modello: ${String(context.config.model)}`,

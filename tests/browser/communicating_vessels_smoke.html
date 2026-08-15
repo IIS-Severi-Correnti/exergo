@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo communicating vessels smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/fluid_statics/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell">
+      <h2>Vasi comunicanti</h2>
+      <div id="vessels" data-exergo-simulation
+        data-simulation-engine="fluid_statics"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-FLU-VAS-001.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector("#result");
+    const simulation = document.querySelector("#vessels");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo communicating vessels smoke test";
+    }
+
+    function close(actual, expected, tolerance = 1e-8) {
+      if (Math.abs(actual - expected) > tolerance) {
+        throw new Error(actual + " != " + expected);
+      }
+    }
+
+    const deadline = Date.now() + 6000;
+    const timer = window.setInterval(() => {
+      if (simulation?.dataset.simulationReady !== "true") {
+        if (Date.now() > deadline) {
+          window.clearInterval(timer);
+          finish("FAIL", "inizializzazione scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(timer);
+      try {
+        const slider = simulation.querySelector('[data-simulation-action="set_progress"]');
+        const play = simulation.querySelector('[data-simulation-action="play"]');
+        const pause = simulation.querySelector('[data-simulation-action="pause"]');
+        const reset = simulation.querySelector('[data-simulation-action="reset"]');
+
+        if (simulation.dataset.branchCount !== "4") throw new Error("numero rami errato");
+        close(Number(simulation.dataset.imbalanceFraction), 1);
+        close(Number(simulation.dataset.pressureSpreadRelative), 2);
+        if (simulation.dataset.equilibriumReached !== "false") throw new Error("equilibrio iniziale errato");
+        if (play.disabled !== reducedMotion) throw new Error("semantica Play/reduced-motion errata");
+        if (!pause.disabled) throw new Error("Pausa dovrebbe essere inizialmente disabilitata");
+
+        slider.value = "500";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(simulation.dataset.imbalanceFraction), 0.5);
+        close(Number(simulation.dataset.pressureSpreadRelative), 1);
+        if (simulation.dataset.equilibriumReached !== "false") throw new Error("equilibrio anticipato");
+
+        slider.value = "1000";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(simulation.dataset.imbalanceFraction), 0);
+        close(Number(simulation.dataset.pressureSpreadRelative), 0);
+        if (simulation.dataset.equilibriumReached !== "true") throw new Error("equilibrio finale non rilevato");
+        if (!simulation.querySelector('[data-simulation-status]').textContent.includes("Equilibrio idrostatico")) {
+          throw new Error("feedback finale mancante");
+        }
+        const offsets = simulation.dataset.levelOffsets.split(",").map(Number);
+        if (!offsets.every((value) => Math.abs(value) < 1e-10)) throw new Error("livelli finali non uguali");
+
+        reset.click();
+        close(Number(simulation.dataset.pressureSpreadRelative), 2);
+        if (slider.value !== "0") throw new Error("reset slider non riuscito");
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error("overflow orizzontale " + document.documentElement.scrollWidth + "px su viewport " + window.innerWidth + "px");
+        }
+
+        finish("PASS", "4 vasi, livelli -> equilibrio, reset, reduced motion=" + reducedMotion);
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>

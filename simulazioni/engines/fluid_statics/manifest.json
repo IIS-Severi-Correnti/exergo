@@ -12,7 +12,8 @@
     "apparent_weight_engine": "apparent_weight_engine.js",
     "apparent_weight_view": "apparent_weight_view.js",
     "pressure_points_view": "pressure_points_view.js",
-    "hydraulic_press_view": "hydraulic_press_view.js"
+    "hydraulic_press_view": "hydraulic_press_view.js",
+    "communicating_vessels_view": "communicating_vessels_view.js"
   },
   "supported_schema_versions": [
     1
@@ -22,7 +23,8 @@
     "floating_body",
     "buoyancy_apparent_weight",
     "hydrostatic_pressure_points",
-    "hydraulic_press"
+    "hydraulic_press",
+    "communicating_vessels"
   ],
   "config_schema": {
     "type": "object",
@@ -52,7 +54,8 @@
           "floating_body",
           "buoyancy_apparent_weight",
           "hydrostatic_pressure_points",
-          "hydraulic_press"
+          "hydraulic_press",
+          "communicating_vessels"
         ]
       },
       "parameters": {
@@ -128,6 +131,11 @@
           "load_mass_kg": {
             "type": "number",
             "exclusiveMinimum": 0
+          },
+          "branch_count": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 6
           }
         }
       },
@@ -222,6 +230,12 @@
             "type": "boolean"
           },
           "show_pressure_equality_note": {
+            "type": "boolean"
+          },
+          "show_pressure_comparison": {
+            "type": "boolean"
+          },
+          "show_shape_independence_note": {
             "type": "boolean"
           }
         }
@@ -669,6 +683,67 @@
               "small_piston_label_it": {},
               "large_piston_label_it": {},
               "load_label_it": {}
+            }
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {
+            "const": "communicating_vessels"
+          },
+          "parameters": {
+            "required": [
+              "branch_count"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "branch_count": {}
+            }
+          },
+          "interaction": {
+            "required": [
+              "allow_play",
+              "allow_pause",
+              "allow_reset",
+              "allow_scrub",
+              "playback_duration_s"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "allow_play": {},
+              "allow_pause": {},
+              "allow_reset": {},
+              "allow_scrub": {},
+              "playback_duration_s": {}
+            }
+          },
+          "display": {
+            "required": [
+              "show_equations",
+              "show_pressure_comparison",
+              "show_shape_independence_note"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "show_equations": {},
+              "show_pressure_comparison": {},
+              "show_shape_independence_note": {}
+            }
+          },
+          "didactics": {
+            "required": [
+              "model_note_it",
+              "learning_action_it",
+              "fluid_label_it",
+              "exploration_note_it"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "model_note_it": {},
+              "learning_action_it": {},
+              "fluid_label_it": {},
+              "exploration_note_it": {}
             }
           }
         }

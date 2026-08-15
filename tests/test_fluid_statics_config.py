@@ -16,6 +16,7 @@ FLOATING_REUSE_ID = "FIS-FLU-ARC-003"
 APPARENT_WEIGHT_ID = "FIS-FLU-ARC-002"
 PRESSURE_POINTS_ID = "FIS-FLU-PID-003"
 HYDRAULIC_PRESS_ID = "FIS-FLU-PAS-001"
+COMMUNICATING_VESSELS_ID = "FIS-FLU-VAS-001"
 
 
 class FluidStaticsMultiModelConfigTests(unittest.TestCase):
@@ -44,6 +45,7 @@ class FluidStaticsMultiModelConfigTests(unittest.TestCase):
                 "buoyancy_apparent_weight",
                 "hydrostatic_pressure_points",
                 "hydraulic_press",
+                "communicating_vessels",
             ],
         )
         for exercise_id, model in (
@@ -53,6 +55,7 @@ class FluidStaticsMultiModelConfigTests(unittest.TestCase):
             (APPARENT_WEIGHT_ID, "buoyancy_apparent_weight"),
             (PRESSURE_POINTS_ID, "hydrostatic_pressure_points"),
             (HYDRAULIC_PRESS_ID, "hydraulic_press"),
+            (COMMUNICATING_VESSELS_ID, "communicating_vessels"),
         ):
             with self.subTest(exercise=exercise_id):
                 config, _ = load_simulation_config(
