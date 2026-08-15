@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "engine": "calorimetry",
+  "model": "heating_power",
+  "parameters": {"received_power_W": 18000.0, "efficiency": 0.80, "mass_kg": 495.0, "specific_heat_J_kgK": 4186.0, "duration_s": 3600.0, "temperature_initial_C": 12.0},
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 6},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Segui l'energia utile accumulata in un'ora e osserva l'aumento di temperatura dell'acqua.",
+    "model_note_it": "Usa i dati del problema: potenza solare costante, rendimento 80% costante, acqua ben mescolata e nessuna ulteriore dispersione. Qui il cursore può essere letto come frazione dell'ora perché la potenza è assunta costante.",
+    "slider_label_it": "Tempo di funzionamento entro 1 h",
+    "figure_note_it": "Il pannello trasferisce all'acqua una potenza utile Pᵤ = 0,80·18 kW.",
+    "left_label_it": "Pannelli solari",
+    "right_label_it": "495 kg di acqua",
+    "equation_html": "<p><var>Q</var> = η<var>P t</var>, &nbsp; Δ<var>T</var> = <var>Q</var>/(<var>m c</var>)</p>"
+  }
+}
