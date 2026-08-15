@@ -96,7 +96,7 @@ export function createSimulationView({ container, config }) {
           <button type="button" data-simulation-action="play">Play</button>
           <button type="button" data-simulation-action="pause">Pausa</button>
           <button type="button" data-simulation-action="reset">Reset</button>
-          <button type="button" data-simulation-action="remove" class="simulation-remove-button"></button>
+          <button type="button" data-simulation-action="remove_participant" class="simulation-remove-button"></button>
         </div>
 
         <dl class="simulation-values" aria-label="Grandezze fisiche">
@@ -131,7 +131,7 @@ export function createSimulationView({ container, config }) {
   const description = container.querySelector(`#${descriptionId}`);
   container.querySelector("[data-model-note]").textContent = config.didactics.model_note_it;
   container.querySelector("[data-learning-action]").textContent = participantCopy.learningAction;
-  container.querySelector('[data-simulation-action="remove"]').textContent = participantCopy.removeAction;
+  container.querySelector('[data-simulation-action="remove_participant"]').textContent = participantCopy.removeAction;
   container.querySelector("[data-participant-count-label]").textContent = participantCopy.countLabel;
   let renderedParticipantCount = null;
   let renderedEquationCount = null;
@@ -189,6 +189,38 @@ export function createSimulationView({ container, config }) {
     onMotionPreferenceChange(callback) {
       reducedMotion.addEventListener("change", callback);
       return () => reducedMotion.removeEventListener("change", callback);
+    },
+
+    describeControls(state, { motionAllowed = true } = {}) {
+      const reducedMotionTitle =
+        "Animazione disattivata dalla preferenza di riduzione del movimento";
+      return {
+        play: {
+          disabled: state.is_running || !motionAllowed,
+          title: motionAllowed ? "Avvia la rotazione" : reducedMotionTitle,
+        },
+        pause: {
+          disabled: !state.is_running || !motionAllowed,
+          hidden: !config.interaction.allow_pause,
+          title: motionAllowed ? "Metti in pausa la rotazione" : reducedMotionTitle,
+        },
+        reset: {
+          hidden: !config.interaction.allow_reset,
+        },
+        remove_participant: {
+          disabled: state.participant_count_current === 0,
+          hidden: !config.interaction.allow_remove_participant,
+        },
+      };
+    },
+
+    handleActionResult({ action, previousState, result }) {
+      if (action === "remove_participant" && result.removed) {
+        this.animateParticipantDeparture(result.removed_index, previousState);
+      }
+      if (action === "reset") {
+        this.resetMotion();
+      }
     },
 
     render(state) {

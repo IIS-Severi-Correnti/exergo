@@ -461,7 +461,13 @@ def render_exercise_page(exercise: Exercise) -> str:
             '<script type="module" '
             'src="../../assets/simulazioni/core/runtime.js"></script>'
         )
+        engine_name = exercise.row["simulazione"]
+        engine_style = exercise.simulation_manifest["entry_points"].get("style")
         simulation_styles = ("assets/simulazioni/core/simulation.css",)
+        if engine_style:
+            simulation_styles += (
+                f"assets/simulazioni/engines/{engine_name}/{engine_style}",
+            )
 
     body = f"""
 <main class="page exercise-page">

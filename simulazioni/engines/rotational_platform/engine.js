@@ -124,47 +124,67 @@ export function createSimulationEngine(config) {
     });
   }
 
+  function play() {
+    running = true;
+    return getState();
+  }
+
+  function pause() {
+    running = false;
+    return getState();
+  }
+
+  function advance(deltaSeconds) {
+    requireFiniteNumber(deltaSeconds, "deltaSeconds");
+    if (deltaSeconds < 0) {
+      throw new RangeError("deltaSeconds non puo essere negativo");
+    }
+    if (running) {
+      angleRad = (angleRad + getState().omega_rad_s * deltaSeconds) % FULL_TURN_RAD;
+    }
+    return getState();
+  }
+
+  function removeParticipant() {
+    if (participantCountCurrent === 0) {
+      return Object.freeze({ removed: false, removed_index: null, state: getState() });
+    }
+
+    const removedIndex = participantCountCurrent - 1;
+    participantCountCurrent -= 1;
+    removalSerial += 1;
+    return Object.freeze({ removed: true, removed_index: removedIndex, state: getState() });
+  }
+
+  function reset() {
+    participantCountCurrent = initialParticipantCount;
+    angleRad = 0;
+    running = false;
+    removalSerial = 0;
+    return getState();
+  }
+
+  function dispatch(action) {
+    const actions = {
+      play,
+      pause,
+      reset,
+      remove_participant: removeParticipant,
+    };
+    const handler = actions[action];
+    if (!handler) {
+      throw new RangeError(`azione non supportata: ${String(action)}`);
+    }
+    return handler();
+  }
+
   return Object.freeze({
     getState,
-
-    play() {
-      running = true;
-      return getState();
-    },
-
-    pause() {
-      running = false;
-      return getState();
-    },
-
-    advance(deltaSeconds) {
-      requireFiniteNumber(deltaSeconds, "deltaSeconds");
-      if (deltaSeconds < 0) {
-        throw new RangeError("deltaSeconds non puo essere negativo");
-      }
-      if (running) {
-        angleRad = (angleRad + getState().omega_rad_s * deltaSeconds) % FULL_TURN_RAD;
-      }
-      return getState();
-    },
-
-    removeParticipant() {
-      if (participantCountCurrent === 0) {
-        return Object.freeze({ removed: false, removed_index: null, state: getState() });
-      }
-
-      const removedIndex = participantCountCurrent - 1;
-      participantCountCurrent -= 1;
-      removalSerial += 1;
-      return Object.freeze({ removed: true, removed_index: removedIndex, state: getState() });
-    },
-
-    reset() {
-      participantCountCurrent = initialParticipantCount;
-      angleRad = 0;
-      running = false;
-      removalSerial = 0;
-      return getState();
-    },
+    play,
+    pause,
+    advance,
+    removeParticipant,
+    reset,
+    dispatch,
   });
 }

@@ -1,51 +1,61 @@
-/** Collega i controlli HTML comuni alle azioni del runtime. */
+/** Collega controlli dichiarativi ad azioni opache per il core. */
 
-export function bindSimulationControls(root, handlers, interaction) {
-  const actions = {
-    play: handlers.play,
-    pause: handlers.pause,
-    reset: handlers.reset,
-    remove: handlers.removeParticipant,
-  };
-  const buttons = new Map();
+function controlsWithActions(root) {
+  return Array.from(root.querySelectorAll("[data-simulation-action]"));
+}
+
+function applyDescriptor(control, descriptor) {
+  if (!descriptor || typeof descriptor !== "object") {
+    return;
+  }
+
+  if (Object.hasOwn(descriptor, "disabled")) {
+    control.disabled = Boolean(descriptor.disabled);
+  }
+  if (Object.hasOwn(descriptor, "hidden")) {
+    control.toggleAttribute("hidden", Boolean(descriptor.hidden));
+  }
+  if (Object.hasOwn(descriptor, "title")) {
+    control.title = descriptor.title ?? "";
+  }
+  if (Object.hasOwn(descriptor, "value") && control.value !== String(descriptor.value)) {
+    control.value = String(descriptor.value);
+  }
+  if (Object.hasOwn(descriptor, "ariaValueText")) {
+    if (descriptor.ariaValueText) {
+      control.setAttribute("aria-valuetext", descriptor.ariaValueText);
+    } else {
+      control.removeAttribute("aria-valuetext");
+    }
+  }
+}
+
+export function bindSimulationControls(
+  root,
+  { dispatch, resolvePayload = () => undefined } = {},
+) {
+  if (typeof dispatch !== "function") {
+    throw new TypeError("dispatch deve essere una funzione");
+  }
+
+  const controls = controlsWithActions(root);
   const listeners = [];
 
-  for (const [action, handler] of Object.entries(actions)) {
-    const button = root.querySelector(`[data-simulation-action="${action}"]`);
-    if (!button) {
-      continue;
-    }
-    buttons.set(action, button);
-    button.addEventListener("click", handler);
-    listeners.push(() => button.removeEventListener("click", handler));
-  }
-
-  if (!interaction.allow_pause) {
-    buttons.get("pause")?.setAttribute("hidden", "");
-  }
-  if (!interaction.allow_reset) {
-    buttons.get("reset")?.setAttribute("hidden", "");
-  }
-  if (!interaction.allow_remove_participant) {
-    buttons.get("remove")?.setAttribute("hidden", "");
+  for (const control of controls) {
+    const action = control.dataset.simulationAction;
+    const eventName = control.dataset.simulationEvent || "click";
+    const listener = (event) => {
+      const payload = resolvePayload({ action, control, event });
+      dispatch(action, payload);
+    };
+    control.addEventListener(eventName, listener);
+    listeners.push(() => control.removeEventListener(eventName, listener));
   }
 
   return Object.freeze({
-    update(state, { motionAllowed = true } = {}) {
-      if (buttons.has("play")) {
-        buttons.get("play").disabled = state.is_running || !motionAllowed;
-        buttons.get("play").title = motionAllowed
-          ? "Avvia la rotazione"
-          : "Animazione disattivata dalla preferenza di riduzione del movimento";
-      }
-      if (buttons.has("pause")) {
-        buttons.get("pause").disabled = !state.is_running || !motionAllowed;
-        buttons.get("pause").title = motionAllowed
-          ? "Metti in pausa la rotazione"
-          : "Animazione disattivata dalla preferenza di riduzione del movimento";
-      }
-      if (buttons.has("remove")) {
-        buttons.get("remove").disabled = state.participant_count_current === 0;
+    update(descriptors = {}) {
+      for (const control of controls) {
+        applyDescriptor(control, descriptors[control.dataset.simulationAction]);
       }
     },
 

@@ -4,7 +4,8 @@
   "label": "Piattaforma rotante",
   "entry_points": {
     "engine": "engine.js",
-    "view": "view.js"
+    "view": "view.js",
+    "style": "style.css"
   },
   "supported_schema_versions": [
     1

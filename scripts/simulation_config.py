@@ -75,6 +75,10 @@ def load_engine_manifest(engine_name: str, *, root: Path = ROOT) -> dict[str, An
         relative_entry = entry_points.get(role)
         if not isinstance(relative_entry, str) or not relative_entry:
             raise SimulationConfigError(f"{manifest_path}: entry_points.{role} non valido")
+
+    for role, relative_entry in entry_points.items():
+        if not isinstance(relative_entry, str) or not relative_entry:
+            raise SimulationConfigError(f"{manifest_path}: entry_points.{role} non valido")
         entry_path = (directory / relative_entry).resolve()
         if not entry_path.is_relative_to(directory.resolve()) or not entry_path.is_file():
             raise SimulationConfigError(
