@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "floating_body",
+  "parameters": {
+    "fluid_density_kg_m3": 1000,
+    "body_density_initial_kg_m3": 480,
+    "submerged_fraction_initial": 0,
+    "submerged_fraction_final": 1
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "allow_body_density_change": false,
+    "playback_duration_s": 6,
+    "body_density_min_kg_m3": 100,
+    "body_density_max_kg_m3": 1500,
+    "force_balance_tolerance": 0.005
+  },
+  "display": {
+    "show_equations": true,
+    "show_force_ratio": true,
+    "show_density_ratio": true
+  },
+  "didactics": {
+    "model_note_it": "Corpo omogeneo e fluido incomprimibile in quiete; si trascurano viscosità, moti transitori e tensione superficiale. Il cursore rappresenta una configurazione statica con una certa frazione di volume immerso, non il moto reale della cassa.",
+    "learning_action_it": "Immergi progressivamente la cassa e cerca il punto in cui la spinta di Archimede uguaglia il peso. Leggi poi quale percentuale del volume è immersa.",
+    "body_label_it": "Cassa — ρc = 480 kg/m³",
+    "fluid_label_it": "Acqua — ρf = 1000 kg/m³"
+  }
+}
