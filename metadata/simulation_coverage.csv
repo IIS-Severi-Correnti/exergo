@@ -1,0 +1,59 @@
+id,status,engine,model,priority,rationale
+FIS-CIR-BAS-001,planned,dc_circuit,single_loop_topology,P1,"La struttura di un circuito chiuso si presta a una rappresentazione interattiva di generatore, conduttori e utilizzatore."
+FIS-CIR-COR-001,planned,dc_circuit,charge_flow,P2,"Un flusso di carica controllabile rende visibile la relazione tra carica trasferita, tempo e intensità di corrente."
+FIS-CIR-OHM-001,planned,dc_circuit,ohmic_resistor,P1,Slider per tensione e resistenza possono mostrare direttamente la relazione V=RI.
+FIS-CIR-OHM-002,planned,dc_circuit,ohmic_resistor,P1,Il problema numerico è un caso naturale dello stesso modello ohmico.
+FIS-CIR-RES-001,planned,dc_circuit,ohmic_resistor,P2,La definizione R=V/I acquista valore didattico se collegata allo stesso modello di circuito semplice.
+FIS-DIN-NEW-001,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
+FIS-DIN-NEW-002,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
+FIS-DIN-NEW-003,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
+FIS-DIN-PIA-001,planned,newtonian_particle,inclined_plane_friction,P1,"Il modello richiede peso, reazione normale, attrito e inversione del moto lungo un piano inclinato."
+FIS-ELE-CAM-001,planned,electrostatics_2d,point_charge_field,P1,Campo vettoriale e linee di campo di una carica puntiforme hanno elevato valore visuale.
+FIS-ELE-CAR-001,not_required,,,P3,Quesito prevalentemente definitorio sulle proprietà fondamentali della carica; una simulazione completa aggiungerebbe poco.
+FIS-ELE-CON-001,not_required,,,P3,Quesito concettuale e classificatorio sui materiali; meglio eventuale illustrazione statica che un engine dedicato.
+FIS-ELE-COU-001,planned,electrostatics_2d,torsion_balance,P2,La dipendenza della forza da cariche e distanza può essere esplorata con una bilancia di torsione schematica.
+FIS-ELE-COU-002,planned,electrostatics_2d,inverse_square_compare,P2,Un confronto interattivo tra due leggi a inverso del quadrato rende evidenti analogie e differenze.
+FIS-FLU-ARC-001,planned,fluid_statics,floating_body,P0,"Percentuale immersa, densità e equilibrio peso-spinta sono direttamente visualizzabili."
+FIS-FLU-ARC-002,planned,fluid_statics,buoyancy_apparent_weight,P0,Peso apparente e spinta di Archimede sono adatti a vettori di forza e volume immerso.
+FIS-FLU-ARC-003,planned,fluid_statics,floating_body,P1,Lo stesso modello permette di mostrare qualitativamente l'equilibrio tra peso e spinta.
+FIS-FLU-PAS-001,planned,fluid_statics,hydraulic_press,P1,Il torchio idraulico rende visibile la trasmissione della pressione e il rapporto tra aree e forze.
+FIS-FLU-PID-001,planned,fluid_statics,hydrostatic_column,P0,Profondità e pressione possono essere variate e lette in tempo reale.
+FIS-FLU-PID-002,planned,fluid_statics,hydrostatic_column,P1,La legge p=p0+ρgh è il nucleo dello stesso modello.
+FIS-FLU-PID-003,planned,fluid_statics,hydrostatic_pressure_points,P1,Punti mobili a quote diverse permettono un confronto qualitativo immediato.
+FIS-FLU-PID-004,planned,fluid_statics,orifice_outflow,P1,Fori a diverse profondità possono collegare pressione idrostatica e velocità di uscita in una vista coerente.
+FIS-FLU-VAS-001,planned,fluid_statics,communicating_vessels,P1,I livelli e l'uguaglianza della pressione alla stessa quota sono naturalmente interattivi.
+FIS-MAG-FAR-001,planned,electromagnetic_induction,lenz_direction,P2,Una variazione controllabile del flusso può mostrare il verso della corrente indotta e il significato del segno meno.
+FIS-MAG-FAR-002,planned,electromagnetic_induction,faraday_loop,P1,"Flusso, variazione temporale e f.e.m. indotta possono essere collegati nella stessa vista."
+FIS-MAG-FIL-001,planned,magnetic_interaction_2d,parallel_wires,P1,Campo di un filo e forza tra correnti parallele sono altamente visualizzabili.
+FIS-MAG-LOR-001,planned,magnetic_interaction_2d,lorentz_force_charge,P1,"Velocità, campo magnetico e forza vettoriale possono essere manipolati direttamente."
+FIS-MAG-OER-001,planned,magnetic_interaction_2d,wire_field_compass,P2,Un ago magnetico vicino a un filo rende evidente la relazione corrente-campo.
+FIS-OND-COR-001,planned,wave_1d,string_mode,P1,"Densità lineare, tensione e frequenza sono adatte a una corda vibrante interattiva."
+FIS-OND-DOP-001,planned,wave_1d,doppler_observer_moving,P1,Fronti d'onda e osservatore mobile rendono intuitivo l'effetto Doppler.
+FIS-OND-DOP-002,planned,wave_1d,doppler_source_moving,P1,La sorgente mobile può usare lo stesso motore con un modello Doppler complementare.
+FIS-OND-MEC-001,planned,wave_1d,mechanical_wave_energy,P2,"Ampiezza, lavoro/potenza e propagazione possono sostenere la modellizzazione sperimentale proposta."
+FIS-OND-SUO-001,planned,wave_1d,echo_time_of_flight,P1,"Emissione, riflessione e tempo di volo permettono di visualizzare il principio del sonar."
+FIS-OTT-RFL-001,planned,ray_optics,total_internal_reflection,P0,Angolo di incidenza e indici di rifrazione possono mostrare direttamente la soglia di riflessione totale.
+FIS-OTT-RIF-001,planned,ray_optics,single_interface_refraction,P1,Indice e velocità della luce possono essere collegati nello stesso modello di mezzo trasparente.
+FIS-OTT-RIF-002,planned,ray_optics,snell_refraction,P0,Un raggio manipolabile rende immediata la legge di Snell e il calcolo della velocità nel mezzo.
+FIS-OTT-RIF-003,planned,ray_optics,parallel_slab,P0,Una lastra a facce parallele permette di vedere rifrazione e spostamento laterale.
+FIS-OTT-SPE-001,planned,ray_optics,concave_mirror,P0,Diagramma dei raggi e posizione dell'immagine sono un caso classico ad alto valore didattico.
+FIS-ROT-ANG-001,implemented,rotational_platform,textbook_reduced_system,P0,Simulazione già pubblicata e verificata.
+FIS-ROT-ANG-002,implemented,rotational_platform,textbook_reduced_system,P0,"Seconda configurazione reale dello stesso motore, già pubblicata e verificata."
+FIS-TER-CAL-001,planned,calorimetry,sensible_heat_compare,P1,Confrontare materiali a parità di calore rende visibile il ruolo del calore specifico.
+FIS-TER-CAL-002,planned,calorimetry,heating_power,P1,"Potenza, tempo, massa e temperatura possono essere collegati in un bilancio energetico interattivo."
+FIS-TER-DIL-001,planned,thermal_expansion,linear_expansion_hole,P3,Una semplice geometria espandibile chiarisce che anche il foro aumenta di dimensione.
+FIS-TER-EQ-001,planned,calorimetry,thermal_mixing,P1,Masse e temperature iniziali possono convergere visivamente alla temperatura di equilibrio.
+FIS-TER-EQ-002,planned,calorimetry,ice_water_balance,P1,"Il modello deve distinguere riscaldamento, fusione e successivo equilibrio termico."
+FIS-TER-GAS-001,extension,ideal_gas_process,process_comparison,P1,"Il motore esistente può essere esteso a isocora, isobara e isoterma con grafici p-V coerenti."
+FIS-TER-GAS-002,extension,ideal_gas_process,piecewise_isobaric_isothermal,P1,Richiede due trasformazioni consecutive nello stesso spazio di stato.
+FIS-TER-GAS-003,implemented,ideal_gas_process,reversible_isothermal,P0,Pilot già pubblicato e verificato.
+FIS-TER-GAS-004,extension,ideal_gas_process,thermodynamic_cycle,P2,Un ciclo chiuso nel piano p-V è una naturale estensione del motore termodinamico.
+FIS-TER-GAS-005,extension,ideal_gas_process,isochoric_monoatomic,P1,"Il modello isocoro permette di collegare pressione, temperatura, calore ed energia interna."
+FIS-TER-GAS-006,implemented,ideal_gas_process,reversible_isothermal,P0,"Seconda configurazione reale dello stesso motore, già pubblicata e verificata."
+FIS-TER-MAC-001,planned,heat_engine,carnot_efficiency,P3,Un diagramma tra sorgente calda e fredda può rendere interattivo il limite di Carnot.
+FIS-TER-PAS-001,planned,calorimetry,phase_change_balance,P1,Il bilancio tra raffreddamento/solidificazione e vaporizzazione è adatto a una timeline energetica.
+FIS-URT-ANE-001,composite,piecewise_mechanics,inelastic_collision_then_spring,P2,Combina urto completamente anelastico e successiva conversione in energia elastica; va orchestrato come due fasi esplicite.
+FIS-URT-ANE-002,composite,piecewise_mechanics,inclined_motion_then_inelastic_collision,P3,Combina dinamica con attrito su piano inclinato e urto anelastico; dipende da più modelli.
+FIS-URT-COM-001,implemented,one_dimensional_collision,elastic_1d,P0,Pilot già pubblicato e verificato.
+FIS-URT-ELA-001,extension,one_dimensional_collision,elastic_1d_sequence,P1,È un naturale ampliamento del motore esistente verso più corpi e urti successivi.
+FIS-URT-QDM-001,planned,momentum_system,recoil_sequence,P2,"Sequenze di lanci e rinculo richiedono uno stato discreto del sistema, non un urto singolo."
