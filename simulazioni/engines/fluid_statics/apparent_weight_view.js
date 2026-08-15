@@ -27,6 +27,7 @@ function setGeometry(container, state) {
   const body = container.querySelector("[data-apparent-body]");
   const waterOverlay = container.querySelector("[data-apparent-water-overlay]");
   const suspension = container.querySelector("[data-suspension-line]");
+  const bodyLabel = container.querySelector("[data-body-label]");
 
   body.setAttribute("x", String(bodyLeft));
   body.setAttribute("y", String(bodyTop));
@@ -43,7 +44,12 @@ function setGeometry(container, state) {
   suspension.setAttribute("y2", String(bodyTop));
 
   const centerY = bodyTop + SVG.bodyHeight / 2;
-  const scale = 78 / state.weight_air_N;
+  bodyLabel.setAttribute("x", String(bodyLeft - 12));
+  bodyLabel.setAttribute("y", String(centerY + 5));
+
+  // Tutte le frecce usano la stessa scala relativa. La lunghezza massima
+  // compatta evita che la tensione entri nel riquadro del dinamometro.
+  const scale = 48 / state.weight_air_N;
   const weightLength = state.weight_air_N * scale;
   const tensionLength = state.tension_force_N * scale;
   const buoyancyLength = state.buoyancy_force_N * scale;
@@ -115,14 +121,16 @@ export function createSimulationView({ container, config }) {
 
         <rect class="fluid-floating-body" data-apparent-body rx="8"></rect>
         <rect class="fluid-floating-water-overlay" data-apparent-water-overlay></rect>
-        <text class="fluid-floating-body-label" x="300" y="82" text-anchor="middle" data-body-label></text>
+        <text class="fluid-floating-body-label" text-anchor="end" data-body-label></text>
 
-        <line x1="252" x2="252" class="fluid-force-arrow" style="stroke:#8b3f2f" data-force-weight marker-end="url(#apparent-weight-head-${instanceCount})"></line>
-        <line x1="300" x2="300" class="fluid-force-arrow" style="stroke:#d77724" data-force-tension marker-end="url(#apparent-tension-head-${instanceCount})"></line>
-        <line x1="348" x2="348" class="fluid-force-arrow" style="stroke:#087f8c" data-force-buoyancy marker-end="url(#apparent-buoyancy-head-${instanceCount})"></line>
-        <text class="fluid-force-label" x="252" data-weight-label text-anchor="middle">P</text>
-        <text class="fluid-force-label" x="300" data-tension-label text-anchor="middle">T</text>
-        <text class="fluid-force-label" x="348" data-buoyancy-label text-anchor="middle">Fₐ</text>
+        <g data-force-balance>
+          <line x1="252" x2="252" class="fluid-force-arrow" style="stroke:#8b3f2f" data-force-weight marker-end="url(#apparent-weight-head-${instanceCount})"></line>
+          <line x1="300" x2="300" class="fluid-force-arrow" style="stroke:#d77724" data-force-tension marker-end="url(#apparent-tension-head-${instanceCount})"></line>
+          <line x1="348" x2="348" class="fluid-force-arrow" style="stroke:#087f8c" data-force-buoyancy marker-end="url(#apparent-buoyancy-head-${instanceCount})"></line>
+          <text class="fluid-force-label" x="252" data-weight-label text-anchor="middle">P</text>
+          <text class="fluid-force-label" x="300" data-tension-label text-anchor="middle">T</text>
+          <text class="fluid-force-label" x="348" data-buoyancy-label text-anchor="middle">Fₐ</text>
+        </g>
 
         <text class="fluid-floating-fraction-label" x="300" y="393" text-anchor="middle" data-submerged-label></text>
       </svg>
@@ -173,6 +181,7 @@ export function createSimulationView({ container, config }) {
   const progressSlider = container.querySelector('[data-simulation-action="set_progress"]');
   const status = container.querySelector("[data-simulation-status]");
   const figureDescription = container.querySelector(`#${figureDescriptionId}`);
+  const forceBalance = container.querySelector("[data-force-balance]");
   container.querySelector("[data-learning-action]").textContent = config.didactics.learning_action_it;
   container.querySelector("[data-model-note]").textContent = config.didactics.model_note_it;
   container.querySelector("[data-body-label]").textContent = config.didactics.body_label_it;
@@ -181,6 +190,7 @@ export function createSimulationView({ container, config }) {
   container.querySelector('[data-display="equations"]').hidden = !config.display.show_equations;
   container.querySelector('[data-display="volume"]').hidden = !config.display.show_derived_volume;
   container.querySelector('[data-display="density"]').hidden = !config.display.show_derived_density;
+  forceBalance.style.display = config.display.show_force_balance ? "" : "none";
 
   return Object.freeze({
     get motionAllowed() {
