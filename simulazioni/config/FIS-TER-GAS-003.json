@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "engine": "ideal_gas_process",
+  "model": "reversible_isothermal",
+  "parameters": {
+    "amount_mol": 0.30,
+    "temperature_K": 300,
+    "volume_initial_m3": 0.20,
+    "volume_final_m3": 0.35
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 5
+  },
+  "display": {
+    "show_piston": true,
+    "show_pv_diagram": true,
+    "show_work_area": true,
+    "show_equations": true,
+    "show_energy_values": true
+  },
+  "didactics": {
+    "model_note_it": "La simulazione rappresenta una successione di stati di equilibrio lungo una trasformazione isoterma reversibile o quasi-statica. Il parametro di playback non è tempo fisico. Non sono modellizzati dinamica del pistone, attriti, inerzia, scambi termici finiti o irreversibilità; la temperatura è mantenuta costante per ipotesi.",
+    "learning_action_it": "sposta il cursore da Vi a Vf e osserva insieme pistone, isoterma e area del lavoro. Al termine confronta Q e L."
+  }
+}

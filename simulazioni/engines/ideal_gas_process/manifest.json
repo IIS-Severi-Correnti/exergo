@@ -1,7 +1,7 @@
 {
   "manifest_version": 1,
-  "engine": "rotational_platform",
-  "label": "Piattaforma rotante",
+  "engine": "ideal_gas_process",
+  "label": "Trasformazione di gas perfetto",
   "entry_points": {
     "engine": "engine.js",
     "view": "view.js",
@@ -11,7 +11,7 @@
     1
   ],
   "supported_models": [
-    "textbook_reduced_system"
+    "reversible_isothermal"
   ],
   "config_schema": {
     "type": "object",
@@ -27,55 +27,42 @@
     ],
     "properties": {
       "schema_version": {
-        "type": "integer"
+        "type": "integer",
+        "const": 1
       },
       "engine": {
-        "type": "string"
+        "type": "string",
+        "const": "ideal_gas_process"
       },
       "model": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "reversible_isothermal"
+        ]
       },
       "parameters": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "platform_mass_kg",
-          "platform_radius_m",
-          "participant_count",
-          "participant_mass_kg",
-          "participant_radius_m",
-          "omega_initial_rad_s",
-          "omega_target_rad_s",
-          "omega_target_tolerance_rad_s"
+          "amount_mol",
+          "temperature_K",
+          "volume_initial_m3",
+          "volume_final_m3"
         ],
         "properties": {
-          "platform_mass_kg": {
+          "amount_mol": {
             "type": "number",
             "exclusiveMinimum": 0
           },
-          "platform_radius_m": {
+          "temperature_K": {
             "type": "number",
             "exclusiveMinimum": 0
           },
-          "participant_count": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "participant_mass_kg": {
+          "volume_initial_m3": {
             "type": "number",
             "exclusiveMinimum": 0
           },
-          "participant_radius_m": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
-          "omega_initial_rad_s": {
-            "type": "number"
-          },
-          "omega_target_rad_s": {
-            "type": "number"
-          },
-          "omega_target_tolerance_rad_s": {
+          "volume_final_m3": {
             "type": "number",
             "exclusiveMinimum": 0
           }
@@ -85,23 +72,28 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "allow_remove_participant",
-          "allow_reset",
+          "allow_play",
           "allow_pause",
-          "show_target"
+          "allow_reset",
+          "allow_scrub",
+          "playback_duration_s"
         ],
         "properties": {
-          "allow_remove_participant": {
-            "type": "boolean"
-          },
-          "allow_reset": {
+          "allow_play": {
             "type": "boolean"
           },
           "allow_pause": {
             "type": "boolean"
           },
-          "show_target": {
+          "allow_reset": {
             "type": "boolean"
+          },
+          "allow_scrub": {
+            "type": "boolean"
+          },
+          "playback_duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
           }
         }
       },
@@ -109,22 +101,26 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "show_moment_of_inertia",
-          "show_angular_velocity",
-          "show_angular_momentum",
-          "show_equations"
+          "show_piston",
+          "show_pv_diagram",
+          "show_work_area",
+          "show_equations",
+          "show_energy_values"
         ],
         "properties": {
-          "show_moment_of_inertia": {
+          "show_piston": {
             "type": "boolean"
           },
-          "show_angular_velocity": {
+          "show_pv_diagram": {
             "type": "boolean"
           },
-          "show_angular_momentum": {
+          "show_work_area": {
             "type": "boolean"
           },
           "show_equations": {
+            "type": "boolean"
+          },
+          "show_energy_values": {
             "type": "boolean"
           }
         }
@@ -133,26 +129,11 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "model_note_it"
+          "model_note_it",
+          "learning_action_it"
         ],
         "properties": {
           "model_note_it": {
-            "type": "string",
-            "minLength": 1
-          },
-          "participant_singular_it": {
-            "type": "string",
-            "minLength": 1
-          },
-          "participant_plural_it": {
-            "type": "string",
-            "minLength": 1
-          },
-          "participant_count_label_it": {
-            "type": "string",
-            "minLength": 1
-          },
-          "remove_action_label_it": {
             "type": "string",
             "minLength": 1
           },
@@ -166,10 +147,10 @@
   },
   "constraints": [
     {
-      "left": "parameters.participant_radius_m",
-      "operator": "<=",
-      "right": "parameters.platform_radius_m",
-      "message": "participant_radius_m deve essere minore o uguale a platform_radius_m"
+      "left": "parameters.volume_final_m3",
+      "operator": ">",
+      "right": "parameters.volume_initial_m3",
+      "message": "volume_final_m3 deve essere maggiore di volume_initial_m3 per reversible_isothermal"
     }
   ]
 }

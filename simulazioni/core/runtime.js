@@ -19,6 +19,14 @@ function showInitializationError(container, error) {
   console.error("Exergo simulation initialization failed", error);
 }
 
+function validateEngineContract(engine) {
+  for (const method of ["getState", "advance", "pause", "dispatch"]) {
+    if (typeof engine?.[method] !== "function") {
+      throw new TypeError(`contratto engine incompleto: manca ${method}()`);
+    }
+  }
+}
+
 export async function initializeSimulation(container) {
   const engineName = container.dataset.simulationEngine;
   const configUrl = container.dataset.simulationConfig;
@@ -37,6 +45,7 @@ export async function initializeSimulation(container) {
   }
 
   const engine = modules.engineModule.createSimulationEngine(config);
+  validateEngineContract(engine);
   const view = modules.viewModule.createSimulationView({ container, config });
   let frameId = null;
   let previousTimestamp = null;
@@ -53,7 +62,10 @@ export async function initializeSimulation(container) {
   function render() {
     const state = engine.getState();
     view.render(state);
-    controls?.update(state, { motionAllowed: view.motionAllowed });
+    const descriptors = view.describeControls?.(state, {
+      motionAllowed: view.motionAllowed,
+    });
+    controls?.update(descriptors);
     return state;
   }
 
@@ -77,53 +89,32 @@ export async function initializeSimulation(container) {
     }
   }
 
-  function startAnimationFrame() {
-    if (!view.motionAllowed) {
-      engine.pause();
+  function synchronizeAnimation(state) {
+    if (!view.motionAllowed || !state.is_running) {
+      if (!view.motionAllowed && state.is_running) {
+        engine.pause();
+        state = render();
+      }
       stopAnimationFrame();
-      render();
-      return;
+      return state;
     }
     if (frameId === null) {
       frameId = requestAnimationFrame(animationFrame);
     }
+    return state;
   }
 
-  controls = bindSimulationControls(
-    container,
-    {
-      play() {
-        if (!view.motionAllowed) {
-          engine.pause();
-          render();
-          return;
-        }
-        engine.play();
-        render();
-        startAnimationFrame();
-      },
-      pause() {
-        engine.pause();
-        stopAnimationFrame();
-        render();
-      },
-      reset() {
-        stopAnimationFrame();
-        engine.reset();
-        view.resetMotion();
-        render();
-      },
-      removeParticipant() {
-        const previousState = engine.getState();
-        const result = engine.removeParticipant();
-        if (result.removed) {
-          view.animateParticipantDeparture(result.removed_index, previousState);
-        }
-        render();
-      },
-    },
-    config.interaction,
-  );
+  function dispatch(action, payload) {
+    const previousState = engine.getState();
+    const result = engine.dispatch(action, payload);
+    view.handleActionResult?.({ action, payload, previousState, result });
+    return synchronizeAnimation(render());
+  }
+
+  controls = bindSimulationControls(container, {
+    dispatch,
+    resolvePayload: (context) => view.resolveActionPayload?.(context),
+  });
 
   view.onMotionPreferenceChange?.(() => {
     if (!view.motionAllowed) {
@@ -135,7 +126,7 @@ export async function initializeSimulation(container) {
 
   render();
   container.dataset.simulationReady = "true";
-  return Object.freeze({ engine, view, controls });
+  return Object.freeze({ engine, view, controls, dispatch });
 }
 
 export async function initializeSimulations(root = document) {

@@ -14,6 +14,11 @@ registerSimulationEngine("rotational_platform", {
   loadView: () => import("../engines/rotational_platform/view.js"),
 });
 
+registerSimulationEngine("ideal_gas_process", {
+  loadEngine: () => import("../engines/ideal_gas_process/engine.js"),
+  loadView: () => import("../engines/ideal_gas_process/view.js"),
+});
+
 export async function loadSimulationEngine(name) {
   const loaders = registry.get(name);
   if (!loaders) {
