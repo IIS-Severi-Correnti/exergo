@@ -12,8 +12,10 @@ REUSE_ID = "FIS-ROT-ANG-002"
 GAS_PILOT_ID = "FIS-TER-GAS-003"
 GAS_REUSE_ID = "FIS-TER-GAS-006"
 COLLISION_PILOT_ID = "FIS-URT-COM-001"
-FLUID_PILOT_ID = "FIS-FLU-PID-001"
-FLUID_REUSE_ID = "FIS-FLU-PID-002"
+FLUID_HYDRO_PILOT_ID = "FIS-FLU-PID-001"
+FLUID_HYDRO_REUSE_ID = "FIS-FLU-PID-002"
+FLUID_FLOATING_PILOT_ID = "FIS-FLU-ARC-001"
+FLUID_FLOATING_REUSE_ID = "FIS-FLU-ARC-003"
 
 
 class StaticSiteGenerationTests(unittest.TestCase):
@@ -37,11 +39,25 @@ class StaticSiteGenerationTests(unittest.TestCase):
             for exercise in cls.exercises
             if exercise.exercise_id == COLLISION_PILOT_ID
         )
-        cls.fluid_pilot = next(
-            exercise for exercise in cls.exercises if exercise.exercise_id == FLUID_PILOT_ID
+        cls.fluid_hydro_pilot = next(
+            exercise
+            for exercise in cls.exercises
+            if exercise.exercise_id == FLUID_HYDRO_PILOT_ID
         )
-        cls.fluid_reuse = next(
-            exercise for exercise in cls.exercises if exercise.exercise_id == FLUID_REUSE_ID
+        cls.fluid_hydro_reuse = next(
+            exercise
+            for exercise in cls.exercises
+            if exercise.exercise_id == FLUID_HYDRO_REUSE_ID
+        )
+        cls.fluid_floating_pilot = next(
+            exercise
+            for exercise in cls.exercises
+            if exercise.exercise_id == FLUID_FLOATING_PILOT_ID
+        )
+        cls.fluid_floating_reuse = next(
+            exercise
+            for exercise in cls.exercises
+            if exercise.exercise_id == FLUID_FLOATING_REUSE_ID
         )
         cls.normal = next(
             exercise
@@ -92,8 +108,14 @@ class StaticSiteGenerationTests(unittest.TestCase):
             page.index("<summary>Soluzione</summary>"),
         )
 
-    def test_fluid_exercises_reuse_fourth_engine_before_solution(self) -> None:
-        for exercise in (self.fluid_pilot, self.fluid_reuse):
+    def test_fluid_exercises_share_one_engine_across_two_models(self) -> None:
+        exercises = (
+            self.fluid_hydro_pilot,
+            self.fluid_hydro_reuse,
+            self.fluid_floating_pilot,
+            self.fluid_floating_reuse,
+        )
+        for exercise in exercises:
             with self.subTest(exercise=exercise.exercise_id):
                 page = genera_sito.render_exercise_page(exercise)
                 self.assertIn('data-simulation-engine="fluid_statics"', page)
@@ -105,7 +127,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                     page.index("<summary>Soluzione</summary>"),
                 )
 
-    def test_site_contains_four_engines_and_seven_configs(self) -> None:
+    def test_site_contains_four_engines_and_nine_configs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             genera_sito.write_site(self.exercises, output)
@@ -125,15 +147,19 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 "engines/one_dimensional_collision/view.js",
                 "engines/one_dimensional_collision/style.css",
                 "engines/fluid_statics/engine.js",
+                "engines/fluid_statics/multi_view.js",
                 "engines/fluid_statics/view.js",
+                "engines/fluid_statics/floating_view.js",
                 "engines/fluid_statics/style.css",
                 f"config/{PILOT_ID}.json",
                 f"config/{REUSE_ID}.json",
                 f"config/{GAS_PILOT_ID}.json",
                 f"config/{GAS_REUSE_ID}.json",
                 f"config/{COLLISION_PILOT_ID}.json",
-                f"config/{FLUID_PILOT_ID}.json",
-                f"config/{FLUID_REUSE_ID}.json",
+                f"config/{FLUID_HYDRO_PILOT_ID}.json",
+                f"config/{FLUID_HYDRO_REUSE_ID}.json",
+                f"config/{FLUID_FLOATING_PILOT_ID}.json",
+                f"config/{FLUID_FLOATING_REUSE_ID}.json",
             }
             asset_root = output / "assets" / "simulazioni"
             actual_assets = {
@@ -149,8 +175,10 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 GAS_PILOT_ID,
                 GAS_REUSE_ID,
                 COLLISION_PILOT_ID,
-                FLUID_PILOT_ID,
-                FLUID_REUSE_ID,
+                FLUID_HYDRO_PILOT_ID,
+                FLUID_HYDRO_REUSE_ID,
+                FLUID_FLOATING_PILOT_ID,
+                FLUID_FLOATING_REUSE_ID,
             ):
                 with self.subTest(exercise=exercise_id):
                     self.assertTrue(
@@ -213,10 +241,16 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 any(path.startswith("engines/fluid_statics/") for path in actual_assets)
             )
 
-    def test_fluid_subset_copies_only_fluid_engine(self) -> None:
+    def test_fluid_subset_copies_one_engine_and_both_models(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
-            genera_sito.write_site([self.fluid_pilot, self.fluid_reuse], output)
+            fluid_exercises = [
+                self.fluid_hydro_pilot,
+                self.fluid_hydro_reuse,
+                self.fluid_floating_pilot,
+                self.fluid_floating_reuse,
+            ]
+            genera_sito.write_site(fluid_exercises, output)
 
             asset_root = output / "assets" / "simulazioni"
             actual_assets = {
@@ -225,10 +259,17 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 if path.is_file()
             }
             self.assertIn("engines/fluid_statics/engine.js", actual_assets)
+            self.assertIn("engines/fluid_statics/multi_view.js", actual_assets)
             self.assertIn("engines/fluid_statics/view.js", actual_assets)
+            self.assertIn("engines/fluid_statics/floating_view.js", actual_assets)
             self.assertIn("engines/fluid_statics/style.css", actual_assets)
-            self.assertIn(f"config/{FLUID_PILOT_ID}.json", actual_assets)
-            self.assertIn(f"config/{FLUID_REUSE_ID}.json", actual_assets)
+            for exercise_id in (
+                FLUID_HYDRO_PILOT_ID,
+                FLUID_HYDRO_REUSE_ID,
+                FLUID_FLOATING_PILOT_ID,
+                FLUID_FLOATING_REUSE_ID,
+            ):
+                self.assertIn(f"config/{exercise_id}.json", actual_assets)
             self.assertFalse(
                 any(path.startswith("engines/rotational_platform/") for path in actual_assets)
             )
