@@ -61,11 +61,20 @@
   fill-opacity: 0.28;
 }
 
-.fluid-depth-line,
-.fluid-depth-cap {
+.fluid-depth-line {
   stroke: currentColor;
   stroke-width: 1.5;
   opacity: 0.75;
+}
+
+/*
+ * La linea verticale è sufficiente a rendere la profondità. Le due tacche
+ * terminali restano nel markup per compatibilità della view, ma sono nascoste:
+ * gli elementi path non usano x/y come coordinate e altrimenti verrebbero
+ * disegnati all'origine dell'SVG come segni isolati.
+ */
+.fluid-depth-cap {
+  display: none;
 }
 
 .fluid-pressure-bar {
