@@ -20,8 +20,8 @@ L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 7 | Simulazione già collegata nell'indice e coperta dalla CI |
-| `planned` | 42 | Copribile direttamente da un engine/modello pianificato |
+| `implemented` | 9 | Simulazione già collegata nell'indice e coperta dalla CI |
+| `planned` | 40 | Copribile direttamente da un engine/modello pianificato |
 | `extension` | 5 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
@@ -33,7 +33,9 @@ Gli engine attivi sono:
 - `rotational_platform` — 2 esercizi, modello `textbook_reduced_system`;
 - `ideal_gas_process` — 2 esercizi, modello `reversible_isothermal`;
 - `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
-- `fluid_statics` — 2 esercizi, modello `hydrostatic_column`.
+- `fluid_statics` — 4 esercizi, modelli `hydrostatic_column` e `floating_body`.
+
+`fluid_statics` è il primo engine Exergo che dimostra esplicitamente **riuso sia tra configurazioni sia tra modelli fisici distinti nello stesso dominio**.
 
 ## Regola di priorità
 
@@ -45,11 +47,11 @@ priority_score = incremental_exercises * didactic_value / implementation_complex
 
 dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5. Il punteggio serve a scegliere dove investire, ma non sostituisce la revisione fisica o architetturale.
 
-## Backlog ordinato dopo `hydrostatic_column`
+## Backlog ordinato dopo `floating_body`
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `fluid_statics` | estensione engine attivo | 7 | 5 | 3 | 11.67 | Archimede, Pascal, punti a diversa profondità, vasi comunicanti, getti |
+| 1 | `fluid_statics` | estensione engine attivo | 5 | 5 | 3 | 8.33 | Peso apparente, Pascal, punti a diversa profondità, vasi comunicanti, getti |
 | 2 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
 | 3 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
 | 4 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
@@ -65,23 +67,58 @@ dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5
 | 14 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
 | 15 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
 
-## `fluid_statics`: piano di copertura
+## `fluid_statics`: copertura corrente
 
-Il modello `hydrostatic_column` copre:
+### `hydrostatic_column`
+
+Copre:
 
 - `FIS-FLU-PID-001`: problema numerico con due recipienti, inclusa la dimostrazione che il raggio non influenza la pressione idrostatica;
 - `FIS-FLU-PID-002`: riuso dello stesso modello come esploratore della legge `Δp=ρgh`, con valori numerici dichiarati esplicitamente come scala didattica e non come dati del quesito.
 
-Modelli successivi previsti nello stesso engine:
+### `floating_body`
 
-1. `floating_body` — `FIS-FLU-ARC-001` e `FIS-FLU-ARC-003`;
-2. `buoyancy_apparent_weight` — `FIS-FLU-ARC-002`;
-3. `hydrostatic_pressure_points` — `FIS-FLU-PID-003`;
-4. `hydraulic_press` — `FIS-FLU-PAS-001`;
-5. `communicating_vessels` — `FIS-FLU-VAS-001`;
-6. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
+Copre:
 
-Il prossimo modello da implementare è **`floating_body`**, perché consente subito un secondo test di riuso con due esercizi reali e introduce un principio fisico diverso (Archimede) senza creare un nuovo engine.
+- `FIS-FLU-ARC-001`: la densità della cassa `480 kg/m³` porta all'equilibrio con il **48% del volume immerso**;
+- `FIS-FLU-ARC-003`: lo stesso modello diventa esploratore qualitativo di peso, spinta di Archimede, densità e frazione immersa.
+
+Il modello usa come coordinata la frazione `V_imm/V_tot`, non un tempo fittizio, e rende esplicita la relazione
+
+```text
+F_A / P = (ρ_f / ρ_c) * (V_imm / V_tot)
+```
+
+permettendo di distinguere:
+
+- `ρ_c < ρ_f`: equilibrio di galleggiamento con immersione parziale;
+- `ρ_c = ρ_f`: equilibrio neutro a immersione completa;
+- `ρ_c > ρ_f`: la massima spinta non compensa il peso e il corpo affonda.
+
+Non vengono inventati massa o volume assoluti quando l'esercizio non li fornisce.
+
+## Schema multi-model
+
+Con il secondo modello, il manifest di `fluid_statics` usa varianti `oneOf`: ogni modello conserva un proprio insieme stretto di parametri, controlli, opzioni di visualizzazione e testi didattici obbligatori.
+
+Il validatore Python supporta il sottoinsieme `oneOf` necessario a Exergo e continua a rifiutare:
+
+- parametri mancanti per il modello selezionato;
+- chiavi appartenenti a un altro modello;
+- valori fuori dai limiti numerici dichiarati;
+- configurazioni che non corrispondono esattamente a una variante.
+
+Questo evita di indebolire la validazione del repository man mano che un engine acquisisce più modelli.
+
+## Prossimi modelli `fluid_statics`
+
+1. **`buoyancy_apparent_weight`** — `FIS-FLU-ARC-002`;
+2. `hydrostatic_pressure_points` — `FIS-FLU-PID-003`;
+3. `hydraulic_press` — `FIS-FLU-PAS-001`;
+4. `communicating_vessels` — `FIS-FLU-VAS-001`;
+5. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
+
+Il prossimo modello da implementare è **`buoyancy_apparent_weight`**: è ancora un caso di Archimede, quindi può riusare parte del linguaggio visuale appena stabilizzato, ma aggiunge un bilancio di forze con peso apparente e grandezze assolute fornite dal problema.
 
 ## Fasi
 
