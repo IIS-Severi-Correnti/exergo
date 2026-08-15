@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo collision smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/one_dimensional_collision/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell">
+      <h2>Urto elastico unidimensionale</h2>
+      <div id="collision-simulation" data-exergo-simulation
+        data-simulation-engine="one_dimensional_collision"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-URT-COM-001.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector("#result");
+    const simulation = document.querySelector("#collision-simulation");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo collision smoke test";
+    }
+
+    function close(actual, expected, tolerance = 1e-9) {
+      if (Math.abs(actual - expected) > tolerance) {
+        throw new Error(actual + " != " + expected);
+      }
+    }
+
+    const deadline = Date.now() + 5000;
+    const checkReady = window.setInterval(() => {
+      if (simulation?.dataset.simulationReady !== "true") {
+        if (Date.now() > deadline) {
+          window.clearInterval(checkReady);
+          finish("FAIL", "inizializzazione scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(checkReady);
+      try {
+        const play = simulation.querySelector('[data-simulation-action="play"]');
+        const pause = simulation.querySelector('[data-simulation-action="pause"]');
+        const reset = simulation.querySelector('[data-simulation-action="reset"]');
+        const slider = simulation.querySelector('[data-simulation-action="set_progress"]');
+        const tableFrame = simulation.querySelector('[data-simulation-action="frame_table"]');
+        const centerFrame = simulation.querySelector('[data-simulation-action="frame_center_of_mass"]');
+        const learningAction = simulation.querySelector('[data-learning-action]');
+        const object1 = simulation.querySelector('[data-object="1"]');
+        const object2 = simulation.querySelector('[data-object="2"]');
+
+        if (!learningAction.textContent.includes("centro di massa")) {
+          throw new Error("istruzione didattica mancante");
+        }
+        if (simulation.dataset.referenceFrame !== "table") {
+          throw new Error("frame iniziale non e il tavolo");
+        }
+        close(Number(simulation.dataset.velocity1Ms), 5.2);
+        close(Number(simulation.dataset.velocity2Ms), 0);
+        if (simulation.dataset.momentumConserved !== "true") {
+          throw new Error("quantita di moto non conservata");
+        }
+        if (simulation.dataset.energyConserved !== "true") {
+          throw new Error("energia cinetica non conservata");
+        }
+        if (slider.disabled) throw new Error("slider disabilitato");
+        if (play.disabled !== reducedMotion) {
+          throw new Error("semantica Play e reduced motion");
+        }
+        if (!pause.disabled) throw new Error("Pausa iniziale non disabilitata");
+        if (!tableFrame.disabled || centerFrame.disabled) {
+          throw new Error("stato iniziale dei controlli di riferimento");
+        }
+
+        const initialObject1 = object1.getAttribute("transform");
+        const initialObject2 = object2.getAttribute("transform");
+
+        centerFrame.click();
+        if (simulation.dataset.referenceFrame !== "center_of_mass") {
+          throw new Error("cambio al centro di massa non riuscito");
+        }
+        close(Number(simulation.dataset.velocity1Ms), 2.6);
+        close(Number(simulation.dataset.velocity2Ms), -2.6);
+        if (centerFrame.disabled !== true || tableFrame.disabled !== false) {
+          throw new Error("controlli frame non aggiornati");
+        }
+
+        slider.value = "500";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        if (simulation.dataset.phase !== "collision") {
+          throw new Error("fase collisione non raggiunta");
+        }
+        if (object1.getAttribute("transform") === initialObject1) {
+          throw new Error("palla 1 non si muove verso l'urto");
+        }
+        if (object2.getAttribute("transform") === initialObject2) {
+          throw new Error("palla 2 non si muove nel frame CM");
+        }
+
+        slider.value = "1000";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        if (simulation.dataset.phase !== "after" || simulation.dataset.complete !== "true") {
+          throw new Error("fase finale non raggiunta");
+        }
+        close(Number(simulation.dataset.velocity1Ms), -2.6);
+        close(Number(simulation.dataset.velocity2Ms), 2.6);
+
+        reset.click();
+        if (simulation.dataset.referenceFrame !== "table") {
+          throw new Error("reset del frame");
+        }
+        if (simulation.dataset.phase !== "before" || slider.value !== "0") {
+          throw new Error("reset dello stato");
+        }
+        close(Number(simulation.dataset.velocity1Ms), 5.2);
+        close(Number(simulation.dataset.velocity2Ms), 0);
+
+        if (!reducedMotion) {
+          play.click();
+          if (play.disabled !== true || pause.disabled !== false) {
+            throw new Error("playback non avviato");
+          }
+          pause.click();
+        }
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error(
+            "overflow orizzontale " + document.documentElement.scrollWidth +
+            "px su viewport " + window.innerWidth + "px"
+          );
+        }
+
+        finish(
+          "PASS",
+          "urto elastico, frame tavolo/CM, invarianti, reset, reduced motion=" + reducedMotion
+        );
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>
