@@ -62,230 +62,78 @@ jobs:
             sleep 0.25
           done
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/simulation_smoke.html \
-            > browser-artifacts/smoke-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/simulation_smoke.html > browser-artifacts/smoke-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/smoke-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --force-prefers-reduced-motion \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/simulation_smoke.html \
-            > browser-artifacts/smoke-reduced-motion-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --force-prefers-reduced-motion --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/simulation_smoke.html > browser-artifacts/smoke-reduced-motion-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/smoke-reduced-motion-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --window-size=430,3000 \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/simulation_smoke.html \
-            > browser-artifacts/smoke-mobile-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --window-size=430,3000 --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/simulation_smoke.html > browser-artifacts/smoke-mobile-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/smoke-mobile-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/collision_smoke.html \
-            > browser-artifacts/collision-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/collision_smoke.html > browser-artifacts/collision-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/collision-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --force-prefers-reduced-motion \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/collision_smoke.html \
-            > browser-artifacts/collision-reduced-motion-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --force-prefers-reduced-motion --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/collision_smoke.html > browser-artifacts/collision-reduced-motion-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/collision-reduced-motion-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --window-size=430,3000 \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/collision_smoke.html \
-            > browser-artifacts/collision-mobile-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --window-size=430,3000 --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/collision_smoke.html > browser-artifacts/collision-mobile-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/collision-mobile-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/fluid_statics_smoke.html \
-            > browser-artifacts/fluid-statics-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/fluid_statics_smoke.html > browser-artifacts/fluid-statics-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/fluid-statics-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --force-prefers-reduced-motion \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/fluid_statics_smoke.html \
-            > browser-artifacts/fluid-statics-reduced-motion-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --force-prefers-reduced-motion --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/fluid_statics_smoke.html > browser-artifacts/fluid-statics-reduced-motion-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/fluid-statics-reduced-motion-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --window-size=430,3000 \
-            --virtual-time-budget=7000 \
-            --dump-dom \
-            http://127.0.0.1:8765/tests/browser/fluid_statics_smoke.html \
-            > browser-artifacts/fluid-statics-mobile-dom.html
-
+          google-chrome --headless=new --no-sandbox --disable-gpu --window-size=430,3000 --virtual-time-budget=7000 --dump-dom \
+            http://127.0.0.1:8765/tests/browser/fluid_statics_smoke.html > browser-artifacts/fluid-statics-mobile-dom.html
           grep -q 'data-status="PASS"' browser-artifacts/fluid-statics-mobile-dom.html
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=1440,2400 \
-            --screenshot=browser-artifacts/gas-pilot-desktop.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-003/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,2400 \
+            --screenshot=browser-artifacts/gas-pilot-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-003/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=430,3000 \
+            --screenshot=browser-artifacts/gas-pilot-mobile.png http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-003/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,2400 \
+            --screenshot=browser-artifacts/gas-reuse-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-006/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=430,3000 \
+            --screenshot=browser-artifacts/gas-reuse-mobile.png http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-006/
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=430,3000 \
-            --screenshot=browser-artifacts/gas-pilot-mobile.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-003/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,1600 \
+            --screenshot=browser-artifacts/rotational-pilot-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-001/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,1600 \
+            --screenshot=browser-artifacts/rotational-reuse-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-002/
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=1440,2400 \
-            --screenshot=browser-artifacts/gas-reuse-desktop.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-006/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,1900 \
+            --screenshot=browser-artifacts/collision-pilot-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-urt-com-001/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=430,3000 \
+            --screenshot=browser-artifacts/collision-pilot-mobile.png http://127.0.0.1:8765/_site/esercizi/fis-urt-com-001/
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=430,3000 \
-            --screenshot=browser-artifacts/gas-reuse-mobile.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-006/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,2100 \
+            --screenshot=browser-artifacts/fluid-pilot-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-001/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=430,3000 \
+            --screenshot=browser-artifacts/fluid-pilot-mobile.png http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-001/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,2100 \
+            --screenshot=browser-artifacts/fluid-reuse-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-002/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=430,3000 \
+            --screenshot=browser-artifacts/fluid-reuse-mobile.png http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-002/
 
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=1440,1600 \
-            --screenshot=browser-artifacts/rotational-pilot-desktop.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-001/
-
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=1440,1600 \
-            --screenshot=browser-artifacts/rotational-reuse-desktop.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-rot-ang-002/
-
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=1440,1900 \
-            --screenshot=browser-artifacts/collision-pilot-desktop.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-urt-com-001/
-
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=430,3000 \
-            --screenshot=browser-artifacts/collision-pilot-mobile.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-urt-com-001/
-
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=1440,2100 \
-            --screenshot=browser-artifacts/fluid-pilot-desktop.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-001/
-
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=430,3000 \
-            --screenshot=browser-artifacts/fluid-pilot-mobile.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-001/
-
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=1440,2100 \
-            --screenshot=browser-artifacts/fluid-reuse-desktop.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-002/
-
-          google-chrome \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --virtual-time-budget=2500 \
-            --window-size=430,3000 \
-            --screenshot=browser-artifacts/fluid-reuse-mobile.png \
-            http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-002/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,2300 \
+            --screenshot=browser-artifacts/floating-pilot-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-001/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=430,3000 \
+            --screenshot=browser-artifacts/floating-pilot-mobile.png http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-001/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=1440,2400 \
+            --screenshot=browser-artifacts/floating-reuse-desktop.png http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-003/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=2500 --window-size=430,3000 \
+            --screenshot=browser-artifacts/floating-reuse-mobile.png http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-003/
 
       - name: Upload simulation browser artifacts
         if: always()
