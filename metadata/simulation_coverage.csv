@@ -19,7 +19,7 @@ FIS-FLU-ARC-003,implemented,fluid_statics,floating_body,P1,Lo stesso modello per
 FIS-FLU-PAS-001,planned,fluid_statics,hydraulic_press,P1,Il torchio idraulico rende visibile la trasmissione della pressione e il rapporto tra aree e forze.
 FIS-FLU-PID-001,implemented,fluid_statics,hydrostatic_column,P0,Profondità e pressione possono essere variate e lette in tempo reale.
 FIS-FLU-PID-002,implemented,fluid_statics,hydrostatic_column,P1,La legge p=p0+ρgh è il nucleo dello stesso modello.
-FIS-FLU-PID-003,planned,fluid_statics,hydrostatic_pressure_points,P1,Punti mobili a quote diverse permettono un confronto qualitativo immediato.
+FIS-FLU-PID-003,implemented,fluid_statics,hydrostatic_pressure_points,P1,Punti mobili a quote diverse permettono un confronto qualitativo immediato.
 FIS-FLU-PID-004,planned,fluid_statics,orifice_outflow,P1,Fori a diverse profondità possono collegare pressione idrostatica e velocità di uscita in una vista coerente.
 FIS-FLU-VAS-001,planned,fluid_statics,communicating_vessels,P1,I livelli e l'uguaglianza della pressione alla stessa quota sono naturalmente interattivi.
 FIS-MAG-FAR-001,planned,electromagnetic_induction,lenz_direction,P2,Una variazione controllabile del flusso può mostrare il verso della corrente indotta e il significato del segno meno.
