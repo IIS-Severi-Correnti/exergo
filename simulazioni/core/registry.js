@@ -24,6 +24,11 @@ registerSimulationEngine("one_dimensional_collision", {
   loadView: () => import("../engines/one_dimensional_collision/view.js"),
 });
 
+registerSimulationEngine("fluid_statics", {
+  loadEngine: () => import("../engines/fluid_statics/engine.js"),
+  loadView: () => import("../engines/fluid_statics/view.js"),
+});
+
 export async function loadSimulationEngine(name) {
   const loaders = registry.get(name);
   if (!loaders) {

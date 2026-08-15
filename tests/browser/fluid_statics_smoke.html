@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo fluid statics smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/fluid_statics/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+
+    <section class="simulation-shell">
+      <h2>Pilot numerico</h2>
+      <div id="fluid-pilot" data-exergo-simulation
+        data-simulation-engine="fluid_statics"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-FLU-PID-001.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+
+    <section class="simulation-shell">
+      <h2>Riuso teorico</h2>
+      <div id="fluid-reuse" data-exergo-simulation
+        data-simulation-engine="fluid_statics"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-FLU-PID-002.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector("#result");
+    const pilot = document.querySelector("#fluid-pilot");
+    const reuse = document.querySelector("#fluid-reuse");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo fluid statics smoke test";
+    }
+
+    function close(actual, expected, tolerance = 1e-8) {
+      if (Math.abs(actual - expected) > tolerance) {
+        throw new Error(actual + " != " + expected);
+      }
+    }
+
+    function numberFromItalianText(node) {
+      return Number(node.textContent.trim().replace(/\./g, "").replace(",", "."));
+    }
+
+    const deadline = Date.now() + 6000;
+    const checkReady = window.setInterval(() => {
+      if (
+        pilot?.dataset.simulationReady !== "true" ||
+        reuse?.dataset.simulationReady !== "true"
+      ) {
+        if (Date.now() > deadline) {
+          window.clearInterval(checkReady);
+          finish("FAIL", "inizializzazione scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(checkReady);
+      try {
+        const pilotPlay = pilot.querySelector('[data-simulation-action="play"]');
+        const pilotPause = pilot.querySelector('[data-simulation-action="pause"]');
+        const pilotReset = pilot.querySelector('[data-simulation-action="reset"]');
+        const pilotSlider = pilot.querySelector('[data-simulation-action="set_progress"]');
+        const pilotDensity = pilot.querySelector('[data-simulation-action="set_density"]');
+        const pilotWater1 = pilot.querySelector('[data-vessel="1"] [data-water]');
+        const pilotWater2 = pilot.querySelector('[data-vessel="2"] [data-water]');
+        const pilotLearning = pilot.querySelector('[data-learning-action]');
+
+        if (!pilotLearning.textContent.includes("doppia")) {
+          throw new Error("istruzione del pilot non esplicita l'obiettivo");
+        }
+        close(Number(pilot.dataset.depth1M), 0.2);
+        close(Number(pilot.dataset.depth2M), 0.2);
+        close(Number(pilot.dataset.pressure1Pa), 1960);
+        close(Number(pilot.dataset.pressure2Pa), 1960);
+        close(Number(pilot.dataset.pressureRatio), 1);
+        if (pilot.dataset.targetReached !== "false") {
+          throw new Error("target iniziale pilot errato");
+        }
+        if (!pilotDensity.hidden) {
+          throw new Error("densita modificabile nel problema numerico fisso");
+        }
+        if (!(Number(pilotWater2.getAttribute("width")) > Number(pilotWater1.getAttribute("width")))) {
+          throw new Error("i raggi 4 cm / 6 cm non sono resi visivamente distinti");
+        }
+        if (pilotPlay.disabled !== reducedMotion) {
+          throw new Error("semantica Play/reduced-motion del pilot");
+        }
+        if (!pilotPause.disabled) {
+          throw new Error("Pausa pilot dovrebbe essere inizialmente disabilitata");
+        }
+
+        pilotSlider.value = "1000";
+        pilotSlider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(pilot.dataset.depth2M), 0.4);
+        close(Number(pilot.dataset.pressure2Pa), 3920);
+        close(Number(pilot.dataset.pressureRatio), 2);
+        if (pilot.dataset.targetReached !== "true") {
+          throw new Error("target 2:1 non riconosciuto");
+        }
+        if (!pilot.querySelector('[data-simulation-status]').textContent.includes("Obiettivo raggiunto")) {
+          throw new Error("feedback didattico del target mancante");
+        }
+
+        pilotReset.click();
+        close(Number(pilot.dataset.depth2M), 0.2);
+        close(Number(pilot.dataset.pressure2Pa), 1960);
+        if (pilotSlider.value !== "0") {
+          throw new Error("reset slider pilot");
+        }
+
+        const reuseSlider = reuse.querySelector('[data-simulation-action="set_progress"]');
+        const reuseDensity = reuse.querySelector('[data-simulation-action="set_density"]');
+        const reuseReset = reuse.querySelector('[data-simulation-action="reset"]');
+        const reuseNote = reuse.querySelector('[data-exploration-note]');
+        const densityValue = reuse.querySelector('[data-value="density"]');
+        const pressure1Value = reuse.querySelector('[data-value="pressure-1"]');
+        const pressure2Value = reuse.querySelector('[data-value="pressure-2"]');
+
+        if (reuseDensity.hidden || reuseNote.hidden) {
+          throw new Error("riuso teorico non dichiara la scala esplorativa o la densita variabile");
+        }
+        if (!reuseNote.textContent.includes("non sono dati del quesito")) {
+          throw new Error("avvertenza sui valori esplorativi mancante");
+        }
+        close(Number(reuse.dataset.depth1M), 0.1);
+        close(Number(reuse.dataset.depth2M), 0.05);
+        close(Number(reuse.dataset.pressure1Pa), 980);
+        close(Number(reuse.dataset.pressure2Pa), 490);
+        close(Number(reuse.dataset.pressureRatio), 0.5);
+
+        reuseDensity.value = "1200";
+        reuseDensity.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(reuse.dataset.fluidDensityKgM3), 1200);
+        close(Number(reuse.dataset.pressure1Pa), 1176);
+        close(Number(reuse.dataset.pressure2Pa), 588);
+        close(Number(reuse.dataset.pressureRatio), 0.5);
+        close(numberFromItalianText(densityValue), 1200);
+        close(numberFromItalianText(pressure1Value), 1176);
+        close(numberFromItalianText(pressure2Value), 588);
+
+        reuseSlider.value = "1000";
+        reuseSlider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(reuse.dataset.depth2M), 0.4);
+        close(Number(reuse.dataset.pressure2Pa), 4704);
+        close(Number(reuse.dataset.pressureRatio), 4);
+
+        reuseReset.click();
+        close(Number(reuse.dataset.fluidDensityKgM3), 1000);
+        close(Number(reuse.dataset.depth2M), 0.05);
+        close(Number(reuse.dataset.pressure2Pa), 490);
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error(
+            "overflow orizzontale " + document.documentElement.scrollWidth +
+            "px su viewport " + window.innerWidth + "px"
+          );
+        }
+
+        finish(
+          "PASS",
+          "Stevino, indipendenza dal raggio, target 2:1, densita esplorabile, reset, reduced motion=" + reducedMotion
+        );
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>
