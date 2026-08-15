@@ -19,8 +19,9 @@ export function createSimulationView({ container, config }) {
   const figureTitleId = `hydraulic-press-title-${instanceCount}`;
   const figureDescriptionId = `hydraulic-press-description-${instanceCount}`;
   const progressId = `hydraulic-press-progress-${instanceCount}`;
-  const markerUpId = `hydraulic-arrow-up-${instanceCount}`;
-  const markerDownId = `hydraulic-arrow-down-${instanceCount}`;
+  const markerInputId = `hydraulic-arrow-input-${instanceCount}`;
+  const markerOutputId = `hydraulic-arrow-output-${instanceCount}`;
+  const markerWeightId = `hydraulic-arrow-weight-${instanceCount}`;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   container.innerHTML = `
@@ -34,11 +35,14 @@ export function createSimulationView({ container, config }) {
         <title id="${figureTitleId}">Torchio idraulico ideale con due pistoni e automobile</title>
         <desc id="${figureDescriptionId}">La stessa pressione agisce sui due pistoni. Aumentando il rapporto tra le aree cresce la forza disponibile sul pistone grande.</desc>
         <defs>
-          <marker id="${markerUpId}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          <marker id="${markerInputId}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#a64a44"></path>
           </marker>
-          <marker id="${markerDownId}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          <marker id="${markerOutputId}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#287fae"></path>
+          </marker>
+          <marker id="${markerWeightId}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c4a88"></path>
           </marker>
         </defs>
 
@@ -57,13 +61,13 @@ export function createSimulationView({ container, config }) {
           <text class="hydraulic-label" x="536" y="64" text-anchor="middle" data-load-label></text>
         </g>
 
-        <line class="hydraulic-force hydraulic-force-input" x1="164" x2="164" marker-end="url(#${markerDownId})" data-input-force></line>
+        <line class="hydraulic-force hydraulic-force-input" x1="164" x2="164" marker-end="url(#${markerInputId})" data-input-force></line>
         <text class="hydraulic-force-text hydraulic-force-input-text" x="180" y="86" data-input-force-label></text>
 
-        <line class="hydraulic-force hydraulic-force-output" x1="682" x2="682" marker-end="url(#${markerUpId})" data-output-force></line>
+        <line class="hydraulic-force hydraulic-force-output" x1="682" x2="682" marker-end="url(#${markerOutputId})" data-output-force></line>
         <text class="hydraulic-force-text hydraulic-force-output-text" x="698" y="150" data-output-force-label></text>
 
-        <line class="hydraulic-force hydraulic-force-weight" x1="536" x2="536" marker-end="url(#${markerDownId})" data-weight-force></line>
+        <line class="hydraulic-force hydraulic-force-weight" x1="536" x2="536" marker-end="url(#${markerWeightId})" data-weight-force></line>
         <text class="hydraulic-force-text hydraulic-force-weight-text" x="550" y="88" data-weight-force-label></text>
 
         <text class="hydraulic-label" x="164" y="310" text-anchor="middle" data-small-piston-label></text>
