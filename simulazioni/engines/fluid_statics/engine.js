@@ -1,20 +1,25 @@
 /**
- * Fluidostatica: confronto tra colonne idrostatiche. Nessuna dipendenza DOM.
+ * Fluidostatica: modelli riutilizzabili senza dipendenze DOM.
  *
- * Il progresso interpola una profondita di esplorazione: non rappresenta tempo
- * fisico. Il raggio dei recipienti e solo contesto geometrico e non entra in
- * Delta p = rho g h.
+ * I modelli disponibili usano `progress` come coordinata di esplorazione,
+ * non come tempo fisico. Il runtime comune fornisce play/pausa/reset e scrub.
  */
 
 export const SUPPORTED_SCHEMA_VERSION = 1;
 export const ENGINE_NAME = "fluid_statics";
 
-function requireFiniteNumber(value, name, { positive = false } = {}) {
+function requireFiniteNumber(value, name, { positive = false, minimum, maximum } = {}) {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new TypeError(`${name} deve essere un numero finito`);
   }
   if (positive && value <= 0) {
     throw new RangeError(`${name} deve essere maggiore di zero`);
+  }
+  if (minimum !== undefined && value < minimum) {
+    throw new RangeError(`${name} deve essere >= ${minimum}`);
+  }
+  if (maximum !== undefined && value > maximum) {
+    throw new RangeError(`${name} deve essere <= ${maximum}`);
   }
   return value;
 }
@@ -26,10 +31,36 @@ function requireBoolean(value, name) {
   return value;
 }
 
-function validateParameters(parameters) {
-  if (!parameters || typeof parameters !== "object" || Array.isArray(parameters)) {
-    throw new TypeError("parameters deve essere un oggetto");
+function requireObject(value, name) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new TypeError(`${name} deve essere un oggetto`);
   }
+  return value;
+}
+
+function clampProgress(progress) {
+  requireFiniteNumber(progress, "progress");
+  return Math.min(1, Math.max(0, progress));
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function validateCommonInteraction(interaction) {
+  requireObject(interaction, "interaction");
+  requireBoolean(interaction.allow_play, "allow_play");
+  requireBoolean(interaction.allow_pause, "allow_pause");
+  requireBoolean(interaction.allow_reset, "allow_reset");
+  requireBoolean(interaction.allow_scrub, "allow_scrub");
+  requireFiniteNumber(interaction.playback_duration_s, "playback_duration_s", {
+    positive: true,
+  });
+}
+
+function validateHydrostaticColumn(parameters, interaction) {
+  requireObject(parameters, "parameters");
+  validateCommonInteraction(interaction);
 
   requireFiniteNumber(parameters.fluid_density_initial_kg_m3, "fluid_density_initial_kg_m3", {
     positive: true,
@@ -53,15 +84,8 @@ function validateParameters(parameters) {
       requireFiniteNumber(parameters[key], key, { positive: true });
     }
   }
-}
 
-function validateInteraction(interaction, initialDensity) {
-  if (!interaction || typeof interaction !== "object" || Array.isArray(interaction)) {
-    throw new TypeError("interaction deve essere un oggetto");
-  }
-  requireFiniteNumber(interaction.playback_duration_s, "playback_duration_s", {
-    positive: true,
-  });
+  requireBoolean(interaction.allow_density_change, "allow_density_change");
   requireFiniteNumber(interaction.density_min_kg_m3, "density_min_kg_m3", {
     positive: true,
   });
@@ -72,14 +96,13 @@ function validateInteraction(interaction, initialDensity) {
     throw new RangeError("density_max_kg_m3 deve essere maggiore di density_min_kg_m3");
   }
   if (
-    initialDensity < interaction.density_min_kg_m3 ||
-    initialDensity > interaction.density_max_kg_m3
+    parameters.fluid_density_initial_kg_m3 < interaction.density_min_kg_m3 ||
+    parameters.fluid_density_initial_kg_m3 > interaction.density_max_kg_m3
   ) {
     throw new RangeError(
       "fluid_density_initial_kg_m3 deve essere compresa tra density_min_kg_m3 e density_max_kg_m3",
     );
   }
-  requireBoolean(interaction.allow_density_change, "allow_density_change");
   if (interaction.target_pressure_ratio !== undefined) {
     requireFiniteNumber(interaction.target_pressure_ratio, "target_pressure_ratio", {
       positive: true,
@@ -87,24 +110,67 @@ function validateInteraction(interaction, initialDensity) {
   }
 }
 
-function clampProgress(progress) {
-  requireFiniteNumber(progress, "progress");
-  return Math.min(1, Math.max(0, progress));
+function validateFloatingBody(parameters, interaction) {
+  requireObject(parameters, "parameters");
+  validateCommonInteraction(interaction);
+
+  requireFiniteNumber(parameters.fluid_density_kg_m3, "fluid_density_kg_m3", {
+    positive: true,
+  });
+  requireFiniteNumber(parameters.body_density_initial_kg_m3, "body_density_initial_kg_m3", {
+    positive: true,
+  });
+  requireFiniteNumber(parameters.submerged_fraction_initial, "submerged_fraction_initial", {
+    minimum: 0,
+    maximum: 1,
+  });
+  requireFiniteNumber(parameters.submerged_fraction_final, "submerged_fraction_final", {
+    minimum: 0,
+    maximum: 1,
+  });
+  if (parameters.submerged_fraction_final <= parameters.submerged_fraction_initial) {
+    throw new RangeError(
+      "submerged_fraction_final deve essere maggiore di submerged_fraction_initial",
+    );
+  }
+
+  requireBoolean(interaction.allow_body_density_change, "allow_body_density_change");
+  requireFiniteNumber(interaction.body_density_min_kg_m3, "body_density_min_kg_m3", {
+    positive: true,
+  });
+  requireFiniteNumber(interaction.body_density_max_kg_m3, "body_density_max_kg_m3", {
+    positive: true,
+  });
+  if (interaction.body_density_max_kg_m3 <= interaction.body_density_min_kg_m3) {
+    throw new RangeError(
+      "body_density_max_kg_m3 deve essere maggiore di body_density_min_kg_m3",
+    );
+  }
+  if (
+    parameters.body_density_initial_kg_m3 < interaction.body_density_min_kg_m3 ||
+    parameters.body_density_initial_kg_m3 > interaction.body_density_max_kg_m3
+  ) {
+    throw new RangeError(
+      "body_density_initial_kg_m3 deve essere compresa tra body_density_min_kg_m3 e body_density_max_kg_m3",
+    );
+  }
+  if (interaction.force_balance_tolerance !== undefined) {
+    requireFiniteNumber(interaction.force_balance_tolerance, "force_balance_tolerance", {
+      positive: true,
+      maximum: 0.25,
+    });
+  }
 }
 
-function clamp(value, minimum, maximum) {
-  return Math.min(maximum, Math.max(minimum, value));
-}
-
-function createHydrostaticColumnModel(parameters) {
+function createHydrostaticColumnRuntime(parameters, interaction) {
   const movingSpan = parameters.depth_moving_final_m - parameters.depth_moving_initial_m;
+  let density = parameters.fluid_density_initial_kg_m3;
 
   return Object.freeze({
-    derive(progress, density) {
+    derive(progress) {
       const depthMoving = parameters.depth_moving_initial_m + progress * movingSpan;
       const pressureReference = density * parameters.gravity_m_s2 * parameters.depth_reference_m;
       const pressureMoving = density * parameters.gravity_m_s2 * depthMoving;
-
       return Object.freeze({
         fluid_density_kg_m3: density,
         gravity_m_s2: parameters.gravity_m_s2,
@@ -119,37 +185,122 @@ function createHydrostaticColumnModel(parameters) {
         vessel_radius_2_m: parameters.vessel_radius_2_m,
       });
     },
+    dispatch(action, payload) {
+      if (action !== "set_density") return false;
+      if (!interaction.allow_density_change) {
+        throw new RangeError("la configurazione non consente di modificare la densita");
+      }
+      if (!payload || typeof payload !== "object") {
+        throw new TypeError("set_density richiede un payload");
+      }
+      requireFiniteNumber(payload.density_kg_m3, "density_kg_m3", { positive: true });
+      density = clamp(
+        payload.density_kg_m3,
+        interaction.density_min_kg_m3,
+        interaction.density_max_kg_m3,
+      );
+      return true;
+    },
+    reset() {
+      density = parameters.fluid_density_initial_kg_m3;
+    },
+    methods(getState, dispatch) {
+      return Object.freeze({
+        setDensity(nextDensity) {
+          dispatch("set_density", { density_kg_m3: nextDensity });
+          return getState();
+        },
+      });
+    },
   });
 }
 
-const MODEL_FACTORIES = Object.freeze({
-  hydrostatic_column: createHydrostaticColumnModel,
+function floatingRegime(bodyDensity, fluidDensity) {
+  const scale = Math.max(bodyDensity, fluidDensity, 1);
+  const tolerance = scale * 1e-12;
+  if (Math.abs(bodyDensity - fluidDensity) <= tolerance) return "neutral";
+  return bodyDensity < fluidDensity ? "floating" : "sinking";
+}
+
+function createFloatingBodyRuntime(parameters, interaction) {
+  const submergedSpan =
+    parameters.submerged_fraction_final - parameters.submerged_fraction_initial;
+  let bodyDensity = parameters.body_density_initial_kg_m3;
+
+  return Object.freeze({
+    derive(progress) {
+      const submergedFraction =
+        parameters.submerged_fraction_initial + progress * submergedSpan;
+      const densityRatio = bodyDensity / parameters.fluid_density_kg_m3;
+      const buoyancyWeightRatio =
+        (parameters.fluid_density_kg_m3 * submergedFraction) / bodyDensity;
+      const regime = floatingRegime(bodyDensity, parameters.fluid_density_kg_m3);
+      const equilibriumFraction = densityRatio <= 1 ? densityRatio : null;
+      const tolerance = interaction.force_balance_tolerance ?? 0.01;
+      const forceBalanceReached =
+        equilibriumFraction !== null && Math.abs(buoyancyWeightRatio - 1) <= tolerance;
+
+      return Object.freeze({
+        fluid_density_kg_m3: parameters.fluid_density_kg_m3,
+        body_density_kg_m3: bodyDensity,
+        submerged_fraction: submergedFraction,
+        submerged_fraction_initial: parameters.submerged_fraction_initial,
+        submerged_fraction_final: parameters.submerged_fraction_final,
+        density_ratio_body_to_fluid: densityRatio,
+        buoyancy_to_weight_ratio: buoyancyWeightRatio,
+        equilibrium_submerged_fraction: equilibriumFraction,
+        force_balance_reached: forceBalanceReached,
+        floating_regime: regime,
+      });
+    },
+    dispatch(action, payload) {
+      if (action !== "set_body_density") return false;
+      if (!interaction.allow_body_density_change) {
+        throw new RangeError(
+          "la configurazione non consente di modificare la densita del corpo",
+        );
+      }
+      if (!payload || typeof payload !== "object") {
+        throw new TypeError("set_body_density richiede un payload");
+      }
+      requireFiniteNumber(payload.body_density_kg_m3, "body_density_kg_m3", {
+        positive: true,
+      });
+      bodyDensity = clamp(
+        payload.body_density_kg_m3,
+        interaction.body_density_min_kg_m3,
+        interaction.body_density_max_kg_m3,
+      );
+      return true;
+    },
+    reset() {
+      bodyDensity = parameters.body_density_initial_kg_m3;
+    },
+    methods(getState, dispatch) {
+      return Object.freeze({
+        setBodyDensity(nextDensity) {
+          dispatch("set_body_density", { body_density_kg_m3: nextDensity });
+          return getState();
+        },
+      });
+    },
+  });
+}
+
+const MODEL_DEFINITIONS = Object.freeze({
+  hydrostatic_column: Object.freeze({
+    validate: validateHydrostaticColumn,
+    createRuntime: createHydrostaticColumnRuntime,
+  }),
+  floating_body: Object.freeze({
+    validate: validateFloatingBody,
+    createRuntime: createFloatingBodyRuntime,
+  }),
 });
 
-export function createSimulationEngine(config) {
-  if (!config || typeof config !== "object" || Array.isArray(config)) {
-    throw new TypeError("config deve essere un oggetto");
-  }
-  if (config.schema_version !== SUPPORTED_SCHEMA_VERSION) {
-    throw new RangeError(`schema_version non supportata: ${String(config.schema_version)}`);
-  }
-  if (config.engine !== ENGINE_NAME) {
-    throw new RangeError(`configurazione destinata a un altro motore: ${String(config.engine)}`);
-  }
-
-  const modelFactory = MODEL_FACTORIES[config.model];
-  if (!modelFactory) {
-    throw new RangeError(`modello non supportato: ${String(config.model)}`);
-  }
-
-  validateParameters(config.parameters);
-  validateInteraction(config.interaction, config.parameters.fluid_density_initial_kg_m3);
-
-  const parameters = Object.freeze({ ...config.parameters });
+function createProgressEngine(config, modelRuntime) {
   const interaction = Object.freeze({ ...config.interaction });
-  const model = modelFactory(parameters);
   let progress = 0;
-  let density = parameters.fluid_density_initial_kg_m3;
   let running = false;
 
   function getState() {
@@ -158,12 +309,12 @@ export function createSimulationEngine(config) {
       progress,
       is_running: running,
       is_complete: progress >= 1,
-      ...model.derive(progress, density),
+      ...modelRuntime.derive(progress),
     });
   }
 
   function play() {
-    running = progress < 1;
+    running = interaction.allow_play && progress < 1;
     return getState();
   }
 
@@ -174,22 +325,7 @@ export function createSimulationEngine(config) {
 
   function setProgress(nextProgress) {
     progress = clampProgress(nextProgress);
-    if (progress >= 1) {
-      running = false;
-    }
-    return getState();
-  }
-
-  function setDensity(nextDensity) {
-    if (!interaction.allow_density_change) {
-      throw new RangeError("la configurazione non consente di modificare la densita");
-    }
-    requireFiniteNumber(nextDensity, "density_kg_m3", { positive: true });
-    density = clamp(
-      nextDensity,
-      interaction.density_min_kg_m3,
-      interaction.density_max_kg_m3,
-    );
+    if (progress >= 1) running = false;
     return getState();
   }
 
@@ -206,8 +342,8 @@ export function createSimulationEngine(config) {
 
   function reset() {
     progress = 0;
-    density = parameters.fluid_density_initial_kg_m3;
     running = false;
+    modelRuntime.reset();
     return getState();
   }
 
@@ -221,23 +357,42 @@ export function createSimulationEngine(config) {
       }
       return setProgress(payload.progress);
     }
-    if (action === "set_density") {
-      if (!payload || typeof payload !== "object") {
-        throw new TypeError("set_density richiede un payload");
-      }
-      return setDensity(payload.density_kg_m3);
+    if (modelRuntime.dispatch(action, payload)) {
+      return getState();
     }
     throw new RangeError(`azione non supportata: ${String(action)}`);
   }
 
+  const modelMethods = modelRuntime.methods?.(getState, dispatch) ?? {};
   return Object.freeze({
     getState,
     play,
     pause,
     setProgress,
-    setDensity,
     advance,
     reset,
     dispatch,
+    ...modelMethods,
   });
+}
+
+export function createSimulationEngine(config) {
+  requireObject(config, "config");
+  if (config.schema_version !== SUPPORTED_SCHEMA_VERSION) {
+    throw new RangeError(`schema_version non supportata: ${String(config.schema_version)}`);
+  }
+  if (config.engine !== ENGINE_NAME) {
+    throw new RangeError(`configurazione destinata a un altro motore: ${String(config.engine)}`);
+  }
+
+  const definition = MODEL_DEFINITIONS[config.model];
+  if (!definition) {
+    throw new RangeError(`modello non supportato: ${String(config.model)}`);
+  }
+
+  definition.validate(config.parameters, config.interaction);
+  const parameters = Object.freeze({ ...config.parameters });
+  const interaction = Object.freeze({ ...config.interaction });
+  const modelRuntime = definition.createRuntime(parameters, interaction);
+  return createProgressEngine(config, modelRuntime);
 }
