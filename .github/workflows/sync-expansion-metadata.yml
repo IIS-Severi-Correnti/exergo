@@ -1,0 +1,61 @@
+name: Sync expansion metadata
+
+on:
+  push:
+    branches:
+      - feature/simulation-expansion-circuits-calorimetry
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feature/simulation-expansion-circuits-calorimetry
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - name: Mark expansion coverage implemented
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('metadata/simulation_coverage.csv')
+          targets = {
+              'FIS-CIR-BAS-001', 'FIS-CIR-COR-001', 'FIS-CIR-OHM-001',
+              'FIS-CIR-OHM-002', 'FIS-CIR-RES-001',
+              'FIS-TER-CAL-001', 'FIS-TER-CAL-002', 'FIS-TER-EQ-001',
+              'FIS-TER-EQ-002', 'FIS-TER-PAS-001',
+          }
+          with path.open(newline='', encoding='utf-8') as handle:
+              rows = list(csv.DictReader(handle))
+              fieldnames = ['id', 'status', 'engine', 'model', 'priority', 'rationale']
+          seen = set()
+          for row in rows:
+              if row['id'] in targets:
+                  row['status'] = 'implemented'
+                  seen.add(row['id'])
+          missing = targets - seen
+          if missing:
+              raise SystemExit(f'missing coverage ids: {sorted(missing)}')
+          with path.open('w', newline='', encoding='utf-8') as handle:
+              writer = csv.DictWriter(handle, fieldnames=fieldnames)
+              writer.writeheader()
+              writer.writerows(rows)
+          PY
+      - name: Regenerate exercise index
+        run: python scripts/genera_indice.py
+      - name: Commit synchronized metadata
+        run: |
+          if git diff --quiet -- metadata/indice_esercizi.csv metadata/simulation_coverage.csv; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add metadata/indice_esercizi.csv metadata/simulation_coverage.csv
+          git commit -m "chore: sync simulation expansion metadata"
+          git push origin HEAD:feature/simulation-expansion-circuits-calorimetry
