@@ -157,6 +157,35 @@ def _validate_schema(value: Any, schema: dict[str, Any], path: str, errors: list
             errors.append(f"{path}: deve essere >= {schema['minimum']}")
         if "exclusiveMinimum" in schema and value <= schema["exclusiveMinimum"]:
             errors.append(f"{path}: deve essere > {schema['exclusiveMinimum']}")
+        if "maximum" in schema and value > schema["maximum"]:
+            errors.append(f"{path}: deve essere <= {schema['maximum']}")
+
+    if "oneOf" in schema:
+        variants = schema["oneOf"]
+        if not isinstance(variants, list) or not variants:
+            errors.append(f"{path}: oneOf deve contenere almeno una variante")
+            return
+
+        matches = 0
+        variant_errors: list[list[str]] = []
+        for variant in variants:
+            if not isinstance(variant, dict):
+                errors.append(f"{path}: variante oneOf non valida")
+                continue
+            candidate_errors: list[str] = []
+            _validate_schema(value, variant, path, candidate_errors)
+            variant_errors.append(candidate_errors)
+            if not candidate_errors:
+                matches += 1
+
+        if matches != 1:
+            errors.append(
+                f"{path}: deve corrispondere esattamente a una variante oneOf; "
+                f"corrispondenze trovate: {matches}"
+            )
+            if matches == 0 and variant_errors:
+                closest = min(variant_errors, key=len)
+                errors.extend(closest)
 
 
 def _read_nested(config: dict[str, Any], dotted_path: str) -> Any:
