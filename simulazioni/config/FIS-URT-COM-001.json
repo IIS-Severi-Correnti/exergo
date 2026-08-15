@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "engine": "one_dimensional_collision",
+  "model": "elastic_1d",
+  "parameters": {
+    "mass_1_ratio": 1,
+    "mass_2_ratio": 1,
+    "velocity_1_initial_m_s": 5.2,
+    "velocity_2_initial_m_s": 0
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "allow_reference_frame_change": true,
+    "playback_duration_s": 4
+  },
+  "display": {
+    "reference_frame_default": "table",
+    "show_velocity_vectors": true,
+    "show_invariants": true,
+    "show_equations": true
+  },
+  "didactics": {
+    "model_note_it": "Urto frontale, istantaneo ed elastico in una dimensione. L'esercizio specifica soltanto che le masse sono uguali, quindi il modello usa il rapporto 1:1 senza inventare una massa assoluta. Le posizioni sono schematiche e il cursore non rappresenta il tempo fisico.",
+    "learning_action_it": "Confronta il sistema del tavolo con quello del centro di massa e osserva come, nel sistema del centro di massa, le due velocita abbiano sempre lo stesso modulo e si invertano dopo l'urto.",
+    "object_1_label_it": "Palla 1",
+    "object_2_label_it": "Palla 2"
+  }
+}
