@@ -11,6 +11,7 @@ PILOT_ID = "FIS-ROT-ANG-001"
 REUSE_ID = "FIS-ROT-ANG-002"
 GAS_PILOT_ID = "FIS-TER-GAS-003"
 GAS_REUSE_ID = "FIS-TER-GAS-006"
+COLLISION_PILOT_ID = "FIS-URT-COM-001"
 
 
 class StaticSiteGenerationTests(unittest.TestCase):
@@ -28,6 +29,11 @@ class StaticSiteGenerationTests(unittest.TestCase):
         )
         cls.gas_reuse = next(
             exercise for exercise in cls.exercises if exercise.exercise_id == GAS_REUSE_ID
+        )
+        cls.collision_pilot = next(
+            exercise
+            for exercise in cls.exercises
+            if exercise.exercise_id == COLLISION_PILOT_ID
         )
         cls.normal = next(
             exercise
@@ -67,7 +73,18 @@ class StaticSiteGenerationTests(unittest.TestCase):
                     page.index("<summary>Soluzione</summary>"),
                 )
 
-    def test_site_contains_both_engines_and_four_configs(self) -> None:
+    def test_collision_exercise_uses_third_engine_before_solution(self) -> None:
+        page = genera_sito.render_exercise_page(self.collision_pilot)
+        self.assertIn('data-simulation-engine="one_dimensional_collision"', page)
+        self.assertIn("runtime.js", page)
+        self.assertIn("simulation.css", page)
+        self.assertIn("engines/one_dimensional_collision/style.css", page)
+        self.assertLess(
+            page.index(">Simulazione</h2>"),
+            page.index("<summary>Soluzione</summary>"),
+        )
+
+    def test_site_contains_three_engines_and_five_configs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             genera_sito.write_site(self.exercises, output)
@@ -83,10 +100,14 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 "engines/ideal_gas_process/engine.js",
                 "engines/ideal_gas_process/view.js",
                 "engines/ideal_gas_process/style.css",
+                "engines/one_dimensional_collision/engine.js",
+                "engines/one_dimensional_collision/view.js",
+                "engines/one_dimensional_collision/style.css",
                 f"config/{PILOT_ID}.json",
                 f"config/{REUSE_ID}.json",
                 f"config/{GAS_PILOT_ID}.json",
                 f"config/{GAS_REUSE_ID}.json",
+                f"config/{COLLISION_PILOT_ID}.json",
             }
             asset_root = output / "assets" / "simulazioni"
             actual_assets = {
@@ -96,7 +117,13 @@ class StaticSiteGenerationTests(unittest.TestCase):
             }
             self.assertEqual(actual_assets, expected_assets)
             self.assertTrue((output / "index.html").is_file())
-            for exercise_id in (PILOT_ID, REUSE_ID, GAS_PILOT_ID, GAS_REUSE_ID):
+            for exercise_id in (
+                PILOT_ID,
+                REUSE_ID,
+                GAS_PILOT_ID,
+                GAS_REUSE_ID,
+                COLLISION_PILOT_ID,
+            ):
                 with self.subTest(exercise=exercise_id):
                     self.assertTrue(
                         (
@@ -125,6 +152,31 @@ class StaticSiteGenerationTests(unittest.TestCase):
             self.assertIn(f"config/{GAS_REUSE_ID}.json", actual_assets)
             self.assertFalse(
                 any(path.startswith("engines/rotational_platform/") for path in actual_assets)
+            )
+            self.assertFalse(
+                any(path.startswith("engines/one_dimensional_collision/") for path in actual_assets)
+            )
+
+    def test_collision_subset_copies_only_collision_engine(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            output = Path(temporary_directory) / "site"
+            genera_sito.write_site([self.collision_pilot], output)
+
+            asset_root = output / "assets" / "simulazioni"
+            actual_assets = {
+                path.relative_to(asset_root).as_posix()
+                for path in asset_root.rglob("*")
+                if path.is_file()
+            }
+            self.assertIn("engines/one_dimensional_collision/engine.js", actual_assets)
+            self.assertIn("engines/one_dimensional_collision/view.js", actual_assets)
+            self.assertIn("engines/one_dimensional_collision/style.css", actual_assets)
+            self.assertIn(f"config/{COLLISION_PILOT_ID}.json", actual_assets)
+            self.assertFalse(
+                any(path.startswith("engines/rotational_platform/") for path in actual_assets)
+            )
+            self.assertFalse(
+                any(path.startswith("engines/ideal_gas_process/") for path in actual_assets)
             )
 
 
