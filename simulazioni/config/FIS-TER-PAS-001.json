@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "engine": "calorimetry",
+  "model": "phase_change_balance",
+  "parameters": {
+    "hot_mass_kg": 0.180,
+    "hot_latent_heat_J_kg": 64500.0,
+    "water_specific_heat_J_kgK": 4186.0,
+    "water_latent_vaporization_J_kg": 2260000.0,
+    "water_temperature_initial_C": 23.0,
+    "water_boiling_temperature_C": 100.0
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 7},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Segui il calore latente ceduto dall'oro mentre riscalda e poi vaporizza la massa d'acqua richiesta dal bilancio.",
+    "model_note_it": "L'oro solidifica alla temperatura di fusione senza raffreddarsi; l'acqua raggiunge 100 °C e poi vaporizza. Le costanti termiche sono quelle usate nella soluzione dell'esercizio e si trascurano dispersioni.",
+    "slider_label_it": "Frazione del calore latente ceduto dall'oro",
+    "figure_note_it": "Il bilancio determina direttamente la massa d'acqua che può essere riscaldata da 23 °C a 100 °C e vaporizzata.",
+    "left_label_it": "180 g oro fuso",
+    "right_label_it": "Acqua a 23 °C",
+    "equation_html": "<p><var>m</var><sub>Au</sub><var>L</var><sub>f</sub> = <var>m</var><sub>w</sub>[<var>c</var><sub>w</sub>(100−23)+<var>L</var><sub>v</sub>]</p>"
+  }
+}
