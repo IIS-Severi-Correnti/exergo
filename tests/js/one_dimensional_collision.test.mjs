@@ -48,9 +48,14 @@ function close(actual, expected, tolerance = 1e-12) {
 test("equal masses exchange velocities in the table frame", () => {
   const engine = createSimulationEngine(config());
   const initial = engine.getState();
+  close(initial.velocity_center_of_mass_table_m_s, 2.6);
   close(initial.velocity_center_of_mass_m_s, 2.6);
   close(initial.velocity_1_final_table_m_s, 0);
   close(initial.velocity_2_final_table_m_s, 5.2);
+  close(initial.normalized_momentum_before, 5.2);
+  close(initial.normalized_momentum_after, 5.2);
+  close(initial.normalized_kinetic_energy_before, 13.52);
+  close(initial.normalized_kinetic_energy_after, 13.52);
   close(initial.momentum_conservation_error, 0);
   close(initial.energy_conservation_error, 0);
 
@@ -62,14 +67,22 @@ test("equal masses exchange velocities in the table frame", () => {
   assert.equal(final.is_complete, true);
 });
 
-test("center-of-mass frame gives symmetric reversal for equal masses", () => {
+test("center-of-mass frame gives symmetric reversal and frame-specific invariants", () => {
   const engine = createSimulationEngine(config());
   engine.setReferenceFrame("center_of_mass");
   let state = engine.getState();
+  close(state.velocity_center_of_mass_table_m_s, 2.6);
+  close(state.velocity_center_of_mass_m_s, 0);
   close(state.velocity_1_initial_m_s, 2.6);
   close(state.velocity_2_initial_m_s, -2.6);
   close(state.velocity_1_current_m_s, 2.6);
   close(state.velocity_2_current_m_s, -2.6);
+  close(state.normalized_momentum_before, 0);
+  close(state.normalized_momentum_after, 0);
+  close(state.normalized_kinetic_energy_before, 6.76);
+  close(state.normalized_kinetic_energy_after, 6.76);
+  close(state.momentum_conservation_error, 0);
+  close(state.energy_conservation_error, 0);
 
   engine.setProgress(1);
   state = engine.getState();
