@@ -1,16 +1,17 @@
 # Simulation Coverage Map e roadmap
 
-Questa roadmap trasforma le simulazioni da funzionalità sperimentale a livello strutturale di Exergo.
+Questa roadmap trasforma le simulazioni da funzionalità sperimentale a livello
+strutturale di Exergo.
 
 ## Principio
 
 L'obiettivo non è associare un'animazione a ogni esercizio. L'obiettivo è:
 
 1. classificare il 100% degli esercizi di Fisica rispetto alla simulabilità;
-2. costruire motori riutilizzabili per i modelli fisici significativi;
+2. costruire motori riutilizzabili per modelli fisici significativi;
 3. evitare codice specifico per singolo esercizio;
-4. dichiarare esplicitamente i casi in cui una simulazione non aggiunge abbastanza valore didattico;
-5. rendere la copertura verificabile dalla CI.
+4. dichiarare quando una simulazione non aggiunge abbastanza valore didattico;
+5. rendere copertura, formule, build e comportamento browser verificabili dalla CI.
 
 La fonte machine-readable è [`metadata/simulation_coverage.csv`](../metadata/simulation_coverage.csv).
 
@@ -20,174 +21,204 @@ L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 13 | Simulazione già collegata nell'indice e coperta dalla CI |
-| `planned` | 36 | Copribile direttamente da un engine/modello pianificato |
+| `implemented` | 23 | Simulazione collegata all'esercizio e coperta dalla CI |
+| `planned` | 26 | Copribile direttamente da un engine/modello pianificato |
 | `extension` | 5 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
 
-**56 esercizi su 58** hanno una traiettoria verso un modello interattivo; i due `not_required` restano intenzionalmente fuori dalla copertura con engine.
+**56 esercizi su 58** hanno una traiettoria verso un modello interattivo; i due
+`not_required` restano intenzionalmente fuori dalla copertura con engine.
 
 Gli engine attivi sono:
 
 - `rotational_platform` — 2 esercizi, modello `textbook_reduced_system`;
 - `ideal_gas_process` — 2 esercizi, modello `reversible_isothermal`;
 - `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
-- `fluid_statics` — 8 esercizi, modelli `hydrostatic_column`, `floating_body`, `buoyancy_apparent_weight`, `hydrostatic_pressure_points`, `hydraulic_press` e `communicating_vessels`.
+- `fluid_statics` — 8 esercizi, 6 modelli;
+- `dc_circuit` — 5 esercizi, 3 modelli;
+- `calorimetry` — 5 esercizi, 5 modelli.
 
-`fluid_statics` è il primo engine Exergo che dimostra esplicitamente **riuso sia tra configurazioni sia tra modelli fisici distinti nello stesso dominio**.
+L'espansione `dc_circuit` + `calorimetry` porta il catalogo simulato da 13 a
+**23 esercizi**, aggiungendo due domini completi e dieci esempi pubblicati senza
+creare implementazioni one-off.
 
 ## Regola di priorità
 
-Per ordinare il backlog usiamo una metrica euristica:
+Per ordinare il backlog usiamo la metrica euristica:
 
 ```text
 priority_score = incremental_exercises * didactic_value / implementation_complexity
 ```
 
-dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5. Il punteggio serve a scegliere dove investire, ma non sostituisce la revisione fisica o architetturale.
+dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5.
+Il punteggio ordina l'investimento, ma non sostituisce revisione fisica,
+architetturale o didattica.
 
-## Backlog ordinato dopo `communicating_vessels`
+## Backlog dopo l'espansione circuiti + calorimetria
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
-| 2 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
-| 3 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
-| 4 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
-| 5 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
-| 6 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
-| 7 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
-| 8 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
-| 9 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
-| 10 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
-| 11 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
-| 12 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
-| 13 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
-| 14 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
-| 15 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
+| 1 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
+| 2 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
+| 3 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
+| 4 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
+| 5 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
+| 6 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
+| 7 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
+| 8 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
+| 9 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
+| 10 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
+| 11 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
+| 12 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
+| 13 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
 
 ## `fluid_statics`: copertura corrente
 
-### `hydrostatic_column`
+L'engine serve otto esercizi con:
 
-Copre:
+- `hydrostatic_column` — legge di Stevino e indipendenza dalla forma;
+- `floating_body` — galleggiamento e rapporto tra densità;
+- `buoyancy_apparent_weight` — peso apparente e dinamometro;
+- `hydrostatic_pressure_points` — confronto di pressioni alla stessa quota;
+- `hydraulic_press` — principio di Pascal e amplificazione di forza;
+- `communicating_vessels` — uguaglianza dei livelli all'equilibrio.
 
-- `FIS-FLU-PID-001`: problema numerico con due recipienti, inclusa la dimostrazione che il raggio non influenza la pressione idrostatica;
-- `FIS-FLU-PID-002`: riuso dello stesso modello come esploratore della legge `Δp=ρgh`, con valori numerici dichiarati esplicitamente come scala didattica e non come dati del quesito.
+`communicating_vessels` chiude la parte strettamente idrostatica del catalogo
+corrente senza introdurre densità, sezioni, volumi o quote metriche non presenti
+nel quesito. Il prossimo modello del dominio è `orifice_outflow`, che introduce
+moto del fluido e resta quindi concettualmente distinto dall'equilibrio statico.
 
-### `floating_body`
+## `dc_circuit`: copertura corrente
 
-Copre:
+Cinque esercizi, tre modelli:
 
-- `FIS-FLU-ARC-001`: la densità della cassa `480 kg/m³` porta all'equilibrio con il **48% del volume immerso**;
-- `FIS-FLU-ARC-003`: lo stesso modello diventa esploratore qualitativo di peso, spinta di Archimede, densità e frazione immersa.
+### `single_loop_topology`
 
-Il modello usa come coordinata la frazione `V_imm/V_tot`, non un tempo fittizio, e rende esplicita la relazione
+Copre `FIS-CIR-BAS-001`. Confronta circuito aperto e chiuso senza assegnare
+valori numerici inesistenti. La vista esplicita generatore, collegamenti e
+utilizzatore.
 
-```text
-F_A / P = (ρ_f / ρ_c) * (V_imm / V_tot)
-```
+### `charge_flow`
 
-permettendo di distinguere:
-
-- `ρ_c < ρ_f`: equilibrio di galleggiamento con immersione parziale;
-- `ρ_c = ρ_f`: equilibrio neutro a immersione completa;
-- `ρ_c > ρ_f`: la massima spinta non compensa il peso e il corpo affonda.
-
-Non vengono inventati massa o volume assoluti quando l'esercizio non li fornisce.
-
-### `buoyancy_apparent_weight`
-
-Copre `FIS-FLU-ARC-002`. Il testo dell'esercizio rende ora espliciti `ρ_mare=1030 kg/m³` e `g=9,8 m/s²`, così dati e soluzione sono autosufficienti. Il modello usa le due letture del dinamometro per ricavare
+Copre `FIS-CIR-COR-001` e rende visibile
 
 ```text
-F_A = P - P_app
-V = F_A / (ρ_f g)
-m = P / g
-ρ_c = m / V
+I = Delta Q / Delta t
+1 A = 1 C/s
 ```
 
-e riusa internamente `floating_body` per descrivere la crescita della spinta con la frazione di volume immerso. La vista aggiunge il terzo vettore di forza, la tensione del dinamometro, e mantiene in ogni stato il bilancio quasi-statico `T + F_A = P`.
+La configurazione usa `1 C` in `1 s` soltanto come scala didattica della
+definizione SI, dichiarandolo esplicitamente come valore illustrativo.
 
-### `hydrostatic_pressure_points`
+### `ohmic_resistor`
 
-Copre `FIS-FLU-PID-003` senza trasformare i valori illustrativi in dati del quesito. Il motore riusa la stessa funzione `Δp=ρgh` di `hydrostatic_column`: nello stato iniziale il punto mobile B coincide con il livello di A, quindi
+Copre `FIS-CIR-OHM-001`, `FIS-CIR-OHM-002` e `FIS-CIR-RES-001`.
+`FIS-CIR-OHM-002` usa esclusivamente i dati reali del problema:
 
 ```text
-p_A = p_B < p_C = p_D = p_E
+V = 4 V
+R: 8 ohm -> 4 ohm
+I: 0.5 A -> 1 A
 ```
 
-Durante l'esplorazione B scende tra i due livelli e infine raggiunge C-D-E. I punti C, D ed E restano a coordinate orizzontali diverse ma alla stessa profondità, rendendo visivamente esplicito che la pressione idrostatica non dipende dalla posizione orizzontale. Le profondità metriche e i pascal mostrati dalla vista sono dichiarati come **scala didattica**, non come dati originali dell'esercizio.
+I quesiti teorici usano scale numeriche dichiarate illustrative. La retta V-I
+della view è calcolata dalla resistenza corrente e non è un elemento grafico
+statico.
 
-### `hydraulic_press`
+## `calorimetry`: copertura corrente
 
-Copre `FIS-FLU-PAS-001`. Il modello usa direttamente i dati del problema, `F₁=140 N`, `m=3800 kg` e `g=9,8 m/s²`, e calcola
+Cinque esercizi, cinque modelli:
+
+### `sensible_heat_compare`
+
+Copre `FIS-TER-CAL-001` con la stessa massa e lo stesso `Q` per rame e
+alluminio. La simulazione visualizza due sistemi separati alimentati dalla stessa
+sorgente energetica, evitando di suggerire un inesistente trasferimento di
+calore tra i materiali.
+
+Il controllo dei dati ha inoltre corretto un metadato preesistente: con
+`c_rame=390 J/(kg K)` e `c_alluminio=900 J/(kg K)` il rapporto degli aumenti di
+temperatura è circa **2,31**, non 5,8.
+
+### `heating_power`
+
+Copre `FIS-TER-CAL-002`:
 
 ```text
-P = mg
-F₁/A₁ = F₂/A₂
-F₂ = F₁ * (A₂/A₁)
-A₂/A₁ = mg/F₁ = 266
+Q = eta P t
+Delta T = Q/(m c)
 ```
 
-La coordinata interattiva è il rapporto dimensionale `A₂/A₁`, da `1` al valore minimo necessario per equilibrare l'automobile. Non vengono introdotte aree assolute né diametri non forniti dal testo; le larghezze dei pistoni nella vista sono dichiarate schematiche e non in scala. Il playback modifica un parametro di progetto e non rappresenta tempo fisico.
+Qui il cursore può essere interpretato come frazione dell'ora perché la potenza
+utile viene assunta costante.
 
-### `communicating_vessels`
+### `thermal_mixing`
 
-Copre `FIS-FLU-VAS-001` senza introdurre densità, quote metriche, sezioni o volumi assenti dal quesito. La config contiene soltanto `branch_count=4`, dato strutturale esplicito nel testo. Il motore usa scarti di livello normalizzati per confrontare stati:
+Copre `FIS-TER-EQ-001` e mantiene in ogni stato il bilancio energia assorbita +
+energia ceduta = 0. Il risultato finale è `44 °C`.
 
-```text
-p_i = p_0 + ρ g h_i
-stesso p_0, stessa ρ e stesso g
-p_i = p_j  <=>  h_i = h_j
-```
+### `ice_water_balance`
 
-Il parametro di avanzamento riduce un indicatore di dislivello da `1` a `0`; non rappresenta tempo fisico e non simula un travaso volume-conservativo. Le forme diverse dei recipienti appartengono alla vista e non modificano la condizione idrostatica di equilibrio.
+Copre `FIS-TER-EQ-002` come processo energetico a tre fasi:
+
+1. riscaldamento del ghiaccio fino a `0 °C`;
+2. fusione;
+3. riscaldamento dell'acqua fusa fino all'equilibrio.
+
+Prima di usare questo regime, l'engine verifica che l'energia disponibile sia
+sufficiente a fondere tutto il ghiaccio. Una configurazione appartenente al
+regime di fusione parziale viene rifiutata e richiederà una futura variante
+fisica esplicita.
+
+### `phase_change_balance`
+
+Copre `FIS-TER-PAS-001`: il calore latente ceduto dall'oro che solidifica
+riscalda l'acqua da `23 °C` a `100 °C` e poi la vaporizza. Il bilancio calcola
+circa `4,496 g` d'acqua.
 
 ## Schema multi-model
 
-Con più modelli, il manifest di `fluid_statics` usa varianti `oneOf`: ogni modello conserva un proprio insieme stretto di parametri, controlli, opzioni di visualizzazione e testi didattici obbligatori.
+Gli engine multi-model usano varianti `oneOf`: ogni modello conserva un insieme
+stretto di parametri e chiavi didattiche. Il validatore continua a rifiutare:
 
-Il validatore Python supporta il sottoinsieme `oneOf` necessario a Exergo e continua a rifiutare:
-
-- parametri mancanti per il modello selezionato;
+- parametri mancanti;
 - chiavi appartenenti a un altro modello;
-- valori fuori dai limiti numerici dichiarati;
-- configurazioni che non corrispondono esattamente a una variante.
+- valori fuori dai limiti dichiarati;
+- configurazioni che corrispondono a zero o più di una variante.
 
-Questo evita di indebolire la validazione del repository man mano che un engine acquisisce più modelli.
+Questo mantiene il contratto più forte man mano che un dominio cresce.
 
-## Prossimi modelli `fluid_statics`
-
-1. **`orifice_outflow`** — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
-
-Con `communicating_vessels` la parte strettamente idrostatica del catalogo corrente è coperta. Il prossimo modello `fluid_statics` è **`orifice_outflow`**, che costituisce il passaggio controllato dall'equilibrio statico al moto del fluido e va quindi trattato come estensione concettualmente distinta.
-
-## Fasi
+## Fasi aggiornate
 
 ### Fase A — massima copertura
 
-1. `dc_circuit`;
-2. `calorimetry`;
-3. estendere `ideal_gas_process`;
-4. `ray_optics`;
-5. `wave_1d`;
-6. `newtonian_particle`;
-7. completare `fluid_statics` con `orifice_outflow`.
+Completati:
+
+- `fluid_statics` strettamente idrostatico;
+- `dc_circuit`;
+- `calorimetry`.
+
+Prossimi:
+
+1. estendere `ideal_gas_process`;
+2. `ray_optics`;
+3. `wave_1d`;
+4. `newtonian_particle`;
+5. completare `fluid_statics` con `orifice_outflow`.
 
 ### Fase B — elettromagnetismo
 
-8. `electrostatics_2d`;
-9. `magnetic_interaction_2d`;
-10. `electromagnetic_induction`.
+- `electrostatics_2d`;
+- `magnetic_interaction_2d`;
+- `electromagnetic_induction`.
 
 ### Fase C — modelli specialistici e riuso avanzato
 
-11. estendere `one_dimensional_collision`;
-12. `thermal_expansion`;
-13. `momentum_system`;
-14. `heat_engine`.
+- estendere `one_dimensional_collision`;
+- `thermal_expansion`;
+- `momentum_system`;
+- `heat_engine`.
 
 ### Fase D — problemi compositi
 
@@ -198,15 +229,16 @@ Solo dopo che i componenti elementari sono maturi:
 - moto su piano inclinato seguito da urto;
 - altri problemi multi-fase futuri.
 
-L'orchestrazione non deve trasformarsi in un mega-engine che conosce gli esercizi: deve comporre modelli indipendenti.
+L'orchestrazione deve comporre motori indipendenti e non trasformarsi in un
+mega-engine che conosce gli esercizi.
 
 ## Stati ammessi nella coverage map
 
-- `implemented`: config e simulazione già presenti;
+- `implemented`: config e simulazione presenti;
 - `planned`: nuovo engine/modello pianificato;
-- `extension`: nuovo modello o capacità in un engine esistente;
-- `composite`: problema che richiede più fasi fisiche;
-- `not_required`: esercizio per cui un engine interattivo non è giustificato.
+- `extension`: nuova capacità in un engine esistente;
+- `composite`: problema multi-fase;
+- `not_required`: simulazione interattiva non giustificata.
 
 Priorità:
 
@@ -219,16 +251,23 @@ Priorità:
 
 `scripts/valida_copertura_simulazioni.py` deve fallire se:
 
-- un nuovo esercizio di Fisica non compare nella coverage map;
-- la mappa contiene ID non presenti nell'indice di Fisica;
-- un esercizio `implemented` non coincide con il metadato `Simulazione` dell'indice;
-- engine o model dichiarati non coincidono con la config JSON pubblicata;
-- `not_required` dichiara comunque un engine;
-- status, priorità o rationale sono mancanti/non validi.
+- un nuovo esercizio di Fisica manca dalla coverage map;
+- la mappa contiene ID non presenti nell'indice;
+- un esercizio `implemented` non coincide con il metadato `Simulazione`;
+- engine o model non coincidono con la config JSON;
+- `not_required` dichiara un engine;
+- status, priorità o rationale sono mancanti o non validi.
 
-Il test `tests/test_simulation_coverage.py` fa parte della normale suite Python già eseguita dalla CI. In questo modo la copertura rimane parte del contratto del repository, non un documento da mantenere a memoria.
+La CI verifica inoltre:
 
-## Criterio di completamento della roadmap
+- formule con test Node DOM-free;
+- schema/config e asset graph con test Python;
+- build statica;
+- Chrome normale, mobile e reduced-motion;
+- screenshot di revisione;
+- compilazione LaTeX.
+
+## Criterio di maturità
 
 La roadmap può dirsi matura quando:
 
@@ -237,3 +276,7 @@ La roadmap può dirsi matura quando:
 - ogni modello dichiara ipotesi e limiti fisici;
 - browser review, reduced-motion, mobile, test numerici e validazione archivio restano verdi;
 - i problemi compositi sono costruiti per composizione e non con hardcoding per esercizio.
+
+Il traguardo **23/58** non conclude la roadmap, ma costituisce un checkpoint
+sufficientemente ricco per una revisione didattica del sito prima della
+successiva espansione.
