@@ -2,6 +2,7 @@ import { createSimulationView as createHydrostaticColumnView } from "./view.js";
 import { createSimulationView as createFloatingBodyView } from "./floating_view.js";
 import { createSimulationView as createApparentWeightView } from "./apparent_weight_view.js";
 import { createSimulationView as createPressurePointsView } from "./pressure_points_view.js";
+import { createSimulationView as createHydraulicPressView } from "./hydraulic_press_view.js";
 
 export function createSimulationView(context) {
   if (context.config.model === "hydrostatic_column") {
@@ -15,6 +16,9 @@ export function createSimulationView(context) {
   }
   if (context.config.model === "hydrostatic_pressure_points") {
     return createPressurePointsView(context);
+  }
+  if (context.config.model === "hydraulic_press") {
+    return createHydraulicPressView(context);
   }
   throw new RangeError(
     `view non disponibile per il modello: ${String(context.config.model)}`,

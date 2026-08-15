@@ -11,7 +11,8 @@
     "floating_view": "floating_view.js",
     "apparent_weight_engine": "apparent_weight_engine.js",
     "apparent_weight_view": "apparent_weight_view.js",
-    "pressure_points_view": "pressure_points_view.js"
+    "pressure_points_view": "pressure_points_view.js",
+    "hydraulic_press_view": "hydraulic_press_view.js"
   },
   "supported_schema_versions": [
     1
@@ -20,7 +21,8 @@
     "hydrostatic_column",
     "floating_body",
     "buoyancy_apparent_weight",
-    "hydrostatic_pressure_points"
+    "hydrostatic_pressure_points",
+    "hydraulic_press"
   ],
   "config_schema": {
     "type": "object",
@@ -49,7 +51,8 @@
           "hydrostatic_column",
           "floating_body",
           "buoyancy_apparent_weight",
-          "hydrostatic_pressure_points"
+          "hydrostatic_pressure_points",
+          "hydraulic_press"
         ]
       },
       "parameters": {
@@ -115,6 +118,14 @@
             "exclusiveMinimum": 0
           },
           "lower_depth_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "small_piston_force_N": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "load_mass_kg": {
             "type": "number",
             "exclusiveMinimum": 0
           }
@@ -206,6 +217,12 @@
           },
           "show_horizontal_independence_note": {
             "type": "boolean"
+          },
+          "show_area_ratio": {
+            "type": "boolean"
+          },
+          "show_pressure_equality_note": {
+            "type": "boolean"
           }
         }
       },
@@ -262,6 +279,18 @@
             "minLength": 1
           },
           "lower_right_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "small_piston_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "large_piston_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "load_label_it": {
             "type": "string",
             "minLength": 1
           }
@@ -571,6 +600,75 @@
               "lower_center_label_it": {},
               "lower_right_label_it": {},
               "exploration_note_it": {}
+            }
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {
+            "const": "hydraulic_press"
+          },
+          "parameters": {
+            "required": [
+              "small_piston_force_N",
+              "load_mass_kg",
+              "gravity_m_s2"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "small_piston_force_N": {},
+              "load_mass_kg": {},
+              "gravity_m_s2": {}
+            }
+          },
+          "interaction": {
+            "required": [
+              "allow_play",
+              "allow_pause",
+              "allow_reset",
+              "allow_scrub",
+              "playback_duration_s"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "allow_play": {},
+              "allow_pause": {},
+              "allow_reset": {},
+              "allow_scrub": {},
+              "playback_duration_s": {}
+            }
+          },
+          "display": {
+            "required": [
+              "show_equations",
+              "show_force_balance",
+              "show_area_ratio",
+              "show_pressure_equality_note"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "show_equations": {},
+              "show_force_balance": {},
+              "show_area_ratio": {},
+              "show_pressure_equality_note": {}
+            }
+          },
+          "didactics": {
+            "required": [
+              "model_note_it",
+              "learning_action_it",
+              "small_piston_label_it",
+              "large_piston_label_it",
+              "load_label_it"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "model_note_it": {},
+              "learning_action_it": {},
+              "small_piston_label_it": {},
+              "large_piston_label_it": {},
+              "load_label_it": {}
             }
           }
         }

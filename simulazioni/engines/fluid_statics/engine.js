@@ -180,6 +180,24 @@ function validateHydrostaticPressurePoints(parameters, interaction) {
   }
 }
 
+
+function validateHydraulicPress(parameters, interaction) {
+  requireObject(parameters, "parameters");
+  validateCommonInteraction(interaction);
+  requireFiniteNumber(parameters.small_piston_force_N, "small_piston_force_N", {
+    positive: true,
+  });
+  requireFiniteNumber(parameters.load_mass_kg, "load_mass_kg", { positive: true });
+  requireFiniteNumber(parameters.gravity_m_s2, "gravity_m_s2", { positive: true });
+
+  const loadWeight = parameters.load_mass_kg * parameters.gravity_m_s2;
+  if (loadWeight <= parameters.small_piston_force_N) {
+    throw new RangeError(
+      "load_mass_kg * gravity_m_s2 deve produrre un peso maggiore di small_piston_force_N",
+    );
+  }
+}
+
 function createHydrostaticColumnRuntime(parameters, interaction) {
   const movingSpan = parameters.depth_moving_final_m - parameters.depth_moving_initial_m;
   let density = parameters.fluid_density_initial_kg_m3;
@@ -286,6 +304,39 @@ function createHydrostaticPressurePointsRuntime(parameters) {
   });
 }
 
+
+function createHydraulicPressRuntime(parameters) {
+  const loadWeight = parameters.load_mass_kg * parameters.gravity_m_s2;
+  const targetAreaRatio = loadWeight / parameters.small_piston_force_N;
+  const ratioSpan = targetAreaRatio - 1;
+
+  return Object.freeze({
+    derive(progress) {
+      const areaRatio = 1 + progress * ratioSpan;
+      const largePistonForce = parameters.small_piston_force_N * areaRatio;
+      const forceCoverage = largePistonForce / loadWeight;
+      const tolerance = Math.max(1e-9, loadWeight * 1e-10);
+
+      return Object.freeze({
+        small_piston_force_N: parameters.small_piston_force_N,
+        load_mass_kg: parameters.load_mass_kg,
+        gravity_m_s2: parameters.gravity_m_s2,
+        load_weight_N: loadWeight,
+        area_ratio: areaRatio,
+        target_area_ratio: targetAreaRatio,
+        large_piston_force_N: largePistonForce,
+        force_coverage: forceCoverage,
+        force_deficit_N: Math.max(0, loadWeight - largePistonForce),
+        balance_reached: Math.abs(largePistonForce - loadWeight) <= tolerance,
+      });
+    },
+    dispatch() {
+      return false;
+    },
+    reset() {},
+  });
+}
+
 function floatingRegime(bodyDensity, fluidDensity) {
   const scale = Math.max(bodyDensity, fluidDensity, 1);
   const tolerance = scale * 1e-12;
@@ -370,6 +421,10 @@ const MODEL_DEFINITIONS = Object.freeze({
   hydrostatic_pressure_points: Object.freeze({
     validate: validateHydrostaticPressurePoints,
     createRuntime: createHydrostaticPressurePointsRuntime,
+  }),
+  hydraulic_press: Object.freeze({
+    validate: validateHydraulicPress,
+    createRuntime: createHydraulicPressRuntime,
   }),
 });
 
