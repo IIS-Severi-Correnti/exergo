@@ -206,6 +206,41 @@ jobs:
             --headless=new \
             --no-sandbox \
             --disable-gpu \
+            --virtual-time-budget=7000 \
+            --dump-dom \
+            http://127.0.0.1:8765/tests/browser/pressure_points_smoke.html \
+            > browser-artifacts/pressure-points-dom.html
+
+          grep -q 'data-status="PASS"' browser-artifacts/pressure-points-dom.html
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --force-prefers-reduced-motion \
+            --virtual-time-budget=7000 \
+            --dump-dom \
+            http://127.0.0.1:8765/tests/browser/pressure_points_smoke.html \
+            > browser-artifacts/pressure-points-reduced-motion-dom.html
+
+          grep -q 'data-status="PASS"' browser-artifacts/pressure-points-reduced-motion-dom.html
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --window-size=430,3000 \
+            --virtual-time-budget=7000 \
+            --dump-dom \
+            http://127.0.0.1:8765/tests/browser/pressure_points_smoke.html \
+            > browser-artifacts/pressure-points-mobile-dom.html
+
+          grep -q 'data-status="PASS"' browser-artifacts/pressure-points-mobile-dom.html
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
             --hide-scrollbars \
             --virtual-time-budget=2500 \
             --window-size=1440,2400 \
@@ -381,6 +416,26 @@ jobs:
             --window-size=430,3000 \
             --screenshot=browser-artifacts/apparent-weight-mobile.png \
             http://127.0.0.1:8765/_site/esercizi/fis-flu-arc-002/
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=1440,2300 \
+            --screenshot=browser-artifacts/pressure-points-desktop.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-003/
+
+          google-chrome \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --virtual-time-budget=2500 \
+            --window-size=430,3000 \
+            --screenshot=browser-artifacts/pressure-points-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-flu-pid-003/
 
       - name: Upload simulation browser artifacts
         if: always()

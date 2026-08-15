@@ -10,13 +10,17 @@
     "hydrostatic_view": "view.js",
     "floating_view": "floating_view.js",
     "apparent_weight_engine": "apparent_weight_engine.js",
-    "apparent_weight_view": "apparent_weight_view.js"
+    "apparent_weight_view": "apparent_weight_view.js",
+    "pressure_points_view": "pressure_points_view.js"
   },
-  "supported_schema_versions": [1],
+  "supported_schema_versions": [
+    1
+  ],
   "supported_models": [
     "hydrostatic_column",
     "floating_body",
-    "buoyancy_apparent_weight"
+    "buoyancy_apparent_weight",
+    "hydrostatic_pressure_points"
   ],
   "config_schema": {
     "type": "object",
@@ -31,185 +35,542 @@
       "didactics"
     ],
     "properties": {
-      "schema_version": {"type": "integer", "const": 1},
-      "engine": {"type": "string", "const": "fluid_statics"},
+      "schema_version": {
+        "type": "integer",
+        "const": 1
+      },
+      "engine": {
+        "type": "string",
+        "const": "fluid_statics"
+      },
       "model": {
         "type": "string",
-        "enum": ["hydrostatic_column", "floating_body", "buoyancy_apparent_weight"]
+        "enum": [
+          "hydrostatic_column",
+          "floating_body",
+          "buoyancy_apparent_weight",
+          "hydrostatic_pressure_points"
+        ]
       },
       "parameters": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "fluid_density_initial_kg_m3": {"type": "number", "exclusiveMinimum": 0},
-          "gravity_m_s2": {"type": "number", "exclusiveMinimum": 0},
-          "depth_reference_m": {"type": "number", "exclusiveMinimum": 0},
-          "depth_moving_initial_m": {"type": "number", "exclusiveMinimum": 0},
-          "depth_moving_final_m": {"type": "number", "exclusiveMinimum": 0},
-          "vessel_radius_1_m": {"type": "number", "exclusiveMinimum": 0},
-          "vessel_radius_2_m": {"type": "number", "exclusiveMinimum": 0},
-          "fluid_density_kg_m3": {"type": "number", "exclusiveMinimum": 0},
-          "body_density_initial_kg_m3": {"type": "number", "exclusiveMinimum": 0},
-          "submerged_fraction_initial": {"type": "number", "minimum": 0, "maximum": 1},
-          "submerged_fraction_final": {"type": "number", "minimum": 0, "maximum": 1},
-          "weight_air_N": {"type": "number", "exclusiveMinimum": 0},
-          "apparent_weight_fully_submerged_N": {"type": "number", "minimum": 0}
+          "fluid_density_initial_kg_m3": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "gravity_m_s2": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "depth_reference_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "depth_moving_initial_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "depth_moving_final_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "vessel_radius_1_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "vessel_radius_2_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "fluid_density_kg_m3": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "body_density_initial_kg_m3": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "submerged_fraction_initial": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "submerged_fraction_final": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "weight_air_N": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "apparent_weight_fully_submerged_N": {
+            "type": "number",
+            "minimum": 0
+          },
+          "upper_depth_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "lower_depth_m": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
         }
       },
       "interaction": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "allow_play": {"type": "boolean"},
-          "allow_pause": {"type": "boolean"},
-          "allow_reset": {"type": "boolean"},
-          "allow_scrub": {"type": "boolean"},
-          "playback_duration_s": {"type": "number", "exclusiveMinimum": 0},
-          "allow_density_change": {"type": "boolean"},
-          "density_min_kg_m3": {"type": "number", "exclusiveMinimum": 0},
-          "density_max_kg_m3": {"type": "number", "exclusiveMinimum": 0},
-          "target_pressure_ratio": {"type": "number", "exclusiveMinimum": 0},
-          "allow_body_density_change": {"type": "boolean"},
-          "body_density_min_kg_m3": {"type": "number", "exclusiveMinimum": 0},
-          "body_density_max_kg_m3": {"type": "number", "exclusiveMinimum": 0},
-          "force_balance_tolerance": {"type": "number", "exclusiveMinimum": 0, "maximum": 0.25}
+          "allow_play": {
+            "type": "boolean"
+          },
+          "allow_pause": {
+            "type": "boolean"
+          },
+          "allow_reset": {
+            "type": "boolean"
+          },
+          "allow_scrub": {
+            "type": "boolean"
+          },
+          "playback_duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "allow_density_change": {
+            "type": "boolean"
+          },
+          "density_min_kg_m3": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "density_max_kg_m3": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "target_pressure_ratio": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "allow_body_density_change": {
+            "type": "boolean"
+          },
+          "body_density_min_kg_m3": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "body_density_max_kg_m3": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "force_balance_tolerance": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 0.25
+          }
         }
       },
       "display": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "show_equations": {"type": "boolean"},
-          "show_pressure_ratio": {"type": "boolean"},
-          "show_vessel_width_note": {"type": "boolean"},
-          "show_force_ratio": {"type": "boolean"},
-          "show_density_ratio": {"type": "boolean"},
-          "show_force_balance": {"type": "boolean"},
-          "show_derived_volume": {"type": "boolean"},
-          "show_derived_density": {"type": "boolean"}
+          "show_equations": {
+            "type": "boolean"
+          },
+          "show_pressure_ratio": {
+            "type": "boolean"
+          },
+          "show_vessel_width_note": {
+            "type": "boolean"
+          },
+          "show_force_ratio": {
+            "type": "boolean"
+          },
+          "show_density_ratio": {
+            "type": "boolean"
+          },
+          "show_force_balance": {
+            "type": "boolean"
+          },
+          "show_derived_volume": {
+            "type": "boolean"
+          },
+          "show_derived_density": {
+            "type": "boolean"
+          },
+          "show_pressure_values": {
+            "type": "boolean"
+          },
+          "show_horizontal_independence_note": {
+            "type": "boolean"
+          }
         }
       },
       "didactics": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "model_note_it": {"type": "string", "minLength": 1},
-          "learning_action_it": {"type": "string", "minLength": 1},
-          "column_1_label_it": {"type": "string", "minLength": 1},
-          "column_2_label_it": {"type": "string", "minLength": 1},
-          "body_label_it": {"type": "string", "minLength": 1},
-          "fluid_label_it": {"type": "string", "minLength": 1},
-          "dynamometer_label_it": {"type": "string", "minLength": 1},
-          "exploration_note_it": {"type": "string", "minLength": 1}
+          "model_note_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "learning_action_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "column_1_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "column_2_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "body_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fluid_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dynamometer_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exploration_note_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "upper_fixed_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "moving_point_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lower_left_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lower_center_label_it": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lower_right_label_it": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },
     "oneOf": [
       {
         "properties": {
-          "model": {"const": "hydrostatic_column"},
+          "model": {
+            "const": "hydrostatic_column"
+          },
           "parameters": {
-            "required": ["fluid_density_initial_kg_m3", "gravity_m_s2", "depth_reference_m", "depth_moving_initial_m", "depth_moving_final_m"],
+            "required": [
+              "fluid_density_initial_kg_m3",
+              "gravity_m_s2",
+              "depth_reference_m",
+              "depth_moving_initial_m",
+              "depth_moving_final_m"
+            ],
             "additionalProperties": false,
             "properties": {
-              "fluid_density_initial_kg_m3": {}, "gravity_m_s2": {},
-              "depth_reference_m": {}, "depth_moving_initial_m": {},
-              "depth_moving_final_m": {}, "vessel_radius_1_m": {}, "vessel_radius_2_m": {}
+              "fluid_density_initial_kg_m3": {},
+              "gravity_m_s2": {},
+              "depth_reference_m": {},
+              "depth_moving_initial_m": {},
+              "depth_moving_final_m": {},
+              "vessel_radius_1_m": {},
+              "vessel_radius_2_m": {}
             }
           },
           "interaction": {
-            "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "allow_density_change", "playback_duration_s", "density_min_kg_m3", "density_max_kg_m3"],
+            "required": [
+              "allow_play",
+              "allow_pause",
+              "allow_reset",
+              "allow_scrub",
+              "allow_density_change",
+              "playback_duration_s",
+              "density_min_kg_m3",
+              "density_max_kg_m3"
+            ],
             "additionalProperties": false,
             "properties": {
-              "allow_play": {}, "allow_pause": {}, "allow_reset": {}, "allow_scrub": {},
-              "allow_density_change": {}, "playback_duration_s": {}, "density_min_kg_m3": {},
-              "density_max_kg_m3": {}, "target_pressure_ratio": {}
+              "allow_play": {},
+              "allow_pause": {},
+              "allow_reset": {},
+              "allow_scrub": {},
+              "allow_density_change": {},
+              "playback_duration_s": {},
+              "density_min_kg_m3": {},
+              "density_max_kg_m3": {},
+              "target_pressure_ratio": {}
             }
           },
           "display": {
-            "required": ["show_equations", "show_pressure_ratio", "show_vessel_width_note"],
-            "additionalProperties": false,
-            "properties": {"show_equations": {}, "show_pressure_ratio": {}, "show_vessel_width_note": {}}
-          },
-          "didactics": {
-            "required": ["model_note_it", "learning_action_it", "column_1_label_it", "column_2_label_it"],
+            "required": [
+              "show_equations",
+              "show_pressure_ratio",
+              "show_vessel_width_note"
+            ],
             "additionalProperties": false,
             "properties": {
-              "model_note_it": {}, "learning_action_it": {}, "column_1_label_it": {},
-              "column_2_label_it": {}, "exploration_note_it": {}
+              "show_equations": {},
+              "show_pressure_ratio": {},
+              "show_vessel_width_note": {}
+            }
+          },
+          "didactics": {
+            "required": [
+              "model_note_it",
+              "learning_action_it",
+              "column_1_label_it",
+              "column_2_label_it"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "model_note_it": {},
+              "learning_action_it": {},
+              "column_1_label_it": {},
+              "column_2_label_it": {},
+              "exploration_note_it": {}
             }
           }
         }
       },
       {
         "properties": {
-          "model": {"const": "floating_body"},
+          "model": {
+            "const": "floating_body"
+          },
           "parameters": {
-            "required": ["fluid_density_kg_m3", "body_density_initial_kg_m3", "submerged_fraction_initial", "submerged_fraction_final"],
+            "required": [
+              "fluid_density_kg_m3",
+              "body_density_initial_kg_m3",
+              "submerged_fraction_initial",
+              "submerged_fraction_final"
+            ],
             "additionalProperties": false,
             "properties": {
-              "fluid_density_kg_m3": {}, "body_density_initial_kg_m3": {},
-              "submerged_fraction_initial": {}, "submerged_fraction_final": {}
+              "fluid_density_kg_m3": {},
+              "body_density_initial_kg_m3": {},
+              "submerged_fraction_initial": {},
+              "submerged_fraction_final": {}
             }
           },
           "interaction": {
-            "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "allow_body_density_change", "playback_duration_s", "body_density_min_kg_m3", "body_density_max_kg_m3"],
+            "required": [
+              "allow_play",
+              "allow_pause",
+              "allow_reset",
+              "allow_scrub",
+              "allow_body_density_change",
+              "playback_duration_s",
+              "body_density_min_kg_m3",
+              "body_density_max_kg_m3"
+            ],
             "additionalProperties": false,
             "properties": {
-              "allow_play": {}, "allow_pause": {}, "allow_reset": {}, "allow_scrub": {},
-              "allow_body_density_change": {}, "playback_duration_s": {}, "body_density_min_kg_m3": {},
-              "body_density_max_kg_m3": {}, "force_balance_tolerance": {}
+              "allow_play": {},
+              "allow_pause": {},
+              "allow_reset": {},
+              "allow_scrub": {},
+              "allow_body_density_change": {},
+              "playback_duration_s": {},
+              "body_density_min_kg_m3": {},
+              "body_density_max_kg_m3": {},
+              "force_balance_tolerance": {}
             }
           },
           "display": {
-            "required": ["show_equations", "show_force_ratio", "show_density_ratio"],
-            "additionalProperties": false,
-            "properties": {"show_equations": {}, "show_force_ratio": {}, "show_density_ratio": {}}
-          },
-          "didactics": {
-            "required": ["model_note_it", "learning_action_it", "body_label_it", "fluid_label_it"],
+            "required": [
+              "show_equations",
+              "show_force_ratio",
+              "show_density_ratio"
+            ],
             "additionalProperties": false,
             "properties": {
-              "model_note_it": {}, "learning_action_it": {}, "body_label_it": {},
-              "fluid_label_it": {}, "exploration_note_it": {}
+              "show_equations": {},
+              "show_force_ratio": {},
+              "show_density_ratio": {}
+            }
+          },
+          "didactics": {
+            "required": [
+              "model_note_it",
+              "learning_action_it",
+              "body_label_it",
+              "fluid_label_it"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "model_note_it": {},
+              "learning_action_it": {},
+              "body_label_it": {},
+              "fluid_label_it": {},
+              "exploration_note_it": {}
             }
           }
         }
       },
       {
         "properties": {
-          "model": {"const": "buoyancy_apparent_weight"},
+          "model": {
+            "const": "buoyancy_apparent_weight"
+          },
           "parameters": {
-            "required": ["weight_air_N", "apparent_weight_fully_submerged_N", "fluid_density_kg_m3", "gravity_m_s2", "submerged_fraction_initial", "submerged_fraction_final"],
+            "required": [
+              "weight_air_N",
+              "apparent_weight_fully_submerged_N",
+              "fluid_density_kg_m3",
+              "gravity_m_s2",
+              "submerged_fraction_initial",
+              "submerged_fraction_final"
+            ],
             "additionalProperties": false,
             "properties": {
-              "weight_air_N": {}, "apparent_weight_fully_submerged_N": {},
-              "fluid_density_kg_m3": {}, "gravity_m_s2": {},
-              "submerged_fraction_initial": {}, "submerged_fraction_final": {}
+              "weight_air_N": {},
+              "apparent_weight_fully_submerged_N": {},
+              "fluid_density_kg_m3": {},
+              "gravity_m_s2": {},
+              "submerged_fraction_initial": {},
+              "submerged_fraction_final": {}
             }
           },
           "interaction": {
-            "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "playback_duration_s"],
+            "required": [
+              "allow_play",
+              "allow_pause",
+              "allow_reset",
+              "allow_scrub",
+              "playback_duration_s"
+            ],
             "additionalProperties": false,
             "properties": {
-              "allow_play": {}, "allow_pause": {}, "allow_reset": {}, "allow_scrub": {},
+              "allow_play": {},
+              "allow_pause": {},
+              "allow_reset": {},
+              "allow_scrub": {},
               "playback_duration_s": {}
             }
           },
           "display": {
-            "required": ["show_equations", "show_force_balance", "show_derived_volume", "show_derived_density"],
+            "required": [
+              "show_equations",
+              "show_force_balance",
+              "show_derived_volume",
+              "show_derived_density"
+            ],
             "additionalProperties": false,
             "properties": {
-              "show_equations": {}, "show_force_balance": {},
-              "show_derived_volume": {}, "show_derived_density": {}
+              "show_equations": {},
+              "show_force_balance": {},
+              "show_derived_volume": {},
+              "show_derived_density": {}
             }
           },
           "didactics": {
-            "required": ["model_note_it", "learning_action_it", "body_label_it", "fluid_label_it", "dynamometer_label_it"],
+            "required": [
+              "model_note_it",
+              "learning_action_it",
+              "body_label_it",
+              "fluid_label_it",
+              "dynamometer_label_it"
+            ],
             "additionalProperties": false,
             "properties": {
-              "model_note_it": {}, "learning_action_it": {}, "body_label_it": {},
-              "fluid_label_it": {}, "dynamometer_label_it": {}
+              "model_note_it": {},
+              "learning_action_it": {},
+              "body_label_it": {},
+              "fluid_label_it": {},
+              "dynamometer_label_it": {}
+            }
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {
+            "const": "hydrostatic_pressure_points"
+          },
+          "parameters": {
+            "required": [
+              "fluid_density_kg_m3",
+              "gravity_m_s2",
+              "upper_depth_m",
+              "lower_depth_m"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "fluid_density_kg_m3": {},
+              "gravity_m_s2": {},
+              "upper_depth_m": {},
+              "lower_depth_m": {}
+            }
+          },
+          "interaction": {
+            "required": [
+              "allow_play",
+              "allow_pause",
+              "allow_reset",
+              "allow_scrub",
+              "playback_duration_s"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "allow_play": {},
+              "allow_pause": {},
+              "allow_reset": {},
+              "allow_scrub": {},
+              "playback_duration_s": {}
+            }
+          },
+          "display": {
+            "required": [
+              "show_equations",
+              "show_pressure_values",
+              "show_horizontal_independence_note"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "show_equations": {},
+              "show_pressure_values": {},
+              "show_horizontal_independence_note": {}
+            }
+          },
+          "didactics": {
+            "required": [
+              "model_note_it",
+              "learning_action_it",
+              "fluid_label_it",
+              "upper_fixed_label_it",
+              "moving_point_label_it",
+              "lower_left_label_it",
+              "lower_center_label_it",
+              "lower_right_label_it",
+              "exploration_note_it"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "model_note_it": {},
+              "learning_action_it": {},
+              "fluid_label_it": {},
+              "upper_fixed_label_it": {},
+              "moving_point_label_it": {},
+              "lower_left_label_it": {},
+              "lower_center_label_it": {},
+              "lower_right_label_it": {},
+              "exploration_note_it": {}
             }
           }
         }
@@ -217,12 +578,53 @@
     ]
   },
   "constraints": [
-    {"left": "parameters.depth_moving_final_m", "operator": ">", "right": "parameters.depth_moving_initial_m", "message": "depth_moving_final_m deve essere maggiore di depth_moving_initial_m"},
-    {"left": "interaction.density_max_kg_m3", "operator": ">", "right": "interaction.density_min_kg_m3", "message": "density_max_kg_m3 deve essere maggiore di density_min_kg_m3"},
-    {"left": "parameters.submerged_fraction_final", "operator": ">", "right": "parameters.submerged_fraction_initial", "message": "submerged_fraction_final deve essere maggiore di submerged_fraction_initial"},
-    {"left": "interaction.body_density_max_kg_m3", "operator": ">", "right": "interaction.body_density_min_kg_m3", "message": "body_density_max_kg_m3 deve essere maggiore di body_density_min_kg_m3"},
-    {"left": "parameters.body_density_initial_kg_m3", "operator": ">=", "right": "interaction.body_density_min_kg_m3", "message": "body_density_initial_kg_m3 deve essere >= body_density_min_kg_m3"},
-    {"left": "parameters.body_density_initial_kg_m3", "operator": "<=", "right": "interaction.body_density_max_kg_m3", "message": "body_density_initial_kg_m3 deve essere <= body_density_max_kg_m3"},
-    {"left": "parameters.apparent_weight_fully_submerged_N", "operator": "<", "right": "parameters.weight_air_N", "message": "apparent_weight_fully_submerged_N deve essere minore di weight_air_N"}
+    {
+      "left": "parameters.depth_moving_final_m",
+      "operator": ">",
+      "right": "parameters.depth_moving_initial_m",
+      "message": "depth_moving_final_m deve essere maggiore di depth_moving_initial_m"
+    },
+    {
+      "left": "interaction.density_max_kg_m3",
+      "operator": ">",
+      "right": "interaction.density_min_kg_m3",
+      "message": "density_max_kg_m3 deve essere maggiore di density_min_kg_m3"
+    },
+    {
+      "left": "parameters.submerged_fraction_final",
+      "operator": ">",
+      "right": "parameters.submerged_fraction_initial",
+      "message": "submerged_fraction_final deve essere maggiore di submerged_fraction_initial"
+    },
+    {
+      "left": "interaction.body_density_max_kg_m3",
+      "operator": ">",
+      "right": "interaction.body_density_min_kg_m3",
+      "message": "body_density_max_kg_m3 deve essere maggiore di body_density_min_kg_m3"
+    },
+    {
+      "left": "parameters.body_density_initial_kg_m3",
+      "operator": ">=",
+      "right": "interaction.body_density_min_kg_m3",
+      "message": "body_density_initial_kg_m3 deve essere >= body_density_min_kg_m3"
+    },
+    {
+      "left": "parameters.body_density_initial_kg_m3",
+      "operator": "<=",
+      "right": "interaction.body_density_max_kg_m3",
+      "message": "body_density_initial_kg_m3 deve essere <= body_density_max_kg_m3"
+    },
+    {
+      "left": "parameters.apparent_weight_fully_submerged_N",
+      "operator": "<",
+      "right": "parameters.weight_air_N",
+      "message": "apparent_weight_fully_submerged_N deve essere minore di weight_air_N"
+    },
+    {
+      "left": "parameters.lower_depth_m",
+      "operator": ">",
+      "right": "parameters.upper_depth_m",
+      "message": "lower_depth_m deve essere maggiore di upper_depth_m"
+    }
   ]
 }

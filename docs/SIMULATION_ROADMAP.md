@@ -20,8 +20,8 @@ L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 10 | Simulazione già collegata nell'indice e coperta dalla CI |
-| `planned` | 39 | Copribile direttamente da un engine/modello pianificato |
+| `implemented` | 11 | Simulazione già collegata nell'indice e coperta dalla CI |
+| `planned` | 38 | Copribile direttamente da un engine/modello pianificato |
 | `extension` | 5 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
@@ -33,7 +33,7 @@ Gli engine attivi sono:
 - `rotational_platform` — 2 esercizi, modello `textbook_reduced_system`;
 - `ideal_gas_process` — 2 esercizi, modello `reversible_isothermal`;
 - `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
-- `fluid_statics` — 5 esercizi, modelli `hydrostatic_column`, `floating_body` e `buoyancy_apparent_weight`.
+- `fluid_statics` — 6 esercizi, modelli `hydrostatic_column`, `floating_body`, `buoyancy_apparent_weight` e `hydrostatic_pressure_points`.
 
 `fluid_statics` è il primo engine Exergo che dimostra esplicitamente **riuso sia tra configurazioni sia tra modelli fisici distinti nello stesso dominio**.
 
@@ -47,11 +47,11 @@ priority_score = incremental_exercises * didactic_value / implementation_complex
 
 dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5. Il punteggio serve a scegliere dove investire, ma non sostituisce la revisione fisica o architetturale.
 
-## Backlog ordinato dopo `buoyancy_apparent_weight`
+## Backlog ordinato dopo `hydrostatic_pressure_points`
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `fluid_statics` | estensione engine attivo | 4 | 5 | 3 | 6.67 | Pascal, punti a diversa profondità, vasi comunicanti, getti |
+| 1 | `fluid_statics` | estensione engine attivo | 3 | 5 | 3 | 5.00 | Pascal, vasi comunicanti, getti |
 | 2 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
 | 3 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
 | 4 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
@@ -110,6 +110,16 @@ m = P / g
 
 e riusa internamente `floating_body` per descrivere la crescita della spinta con la frazione di volume immerso. La vista aggiunge il terzo vettore di forza, la tensione del dinamometro, e mantiene in ogni stato il bilancio quasi-statico `T + F_A = P`.
 
+### `hydrostatic_pressure_points`
+
+Copre `FIS-FLU-PID-003` senza trasformare i valori illustrativi in dati del quesito. Il motore riusa la stessa funzione `Δp=ρgh` di `hydrostatic_column`: nello stato iniziale il punto mobile B coincide con il livello di A, quindi
+
+```text
+p_A = p_B < p_C = p_D = p_E
+```
+
+Durante l'esplorazione B scende tra i due livelli e infine raggiunge C-D-E. I punti C, D ed E restano a coordinate orizzontali diverse ma alla stessa profondità, rendendo visivamente esplicito che la pressione idrostatica non dipende dalla posizione orizzontale. Le profondità metriche e i pascal mostrati dalla vista sono dichiarati come **scala didattica**, non come dati originali dell'esercizio.
+
 ## Schema multi-model
 
 Con più modelli, il manifest di `fluid_statics` usa varianti `oneOf`: ogni modello conserva un proprio insieme stretto di parametri, controlli, opzioni di visualizzazione e testi didattici obbligatori.
@@ -125,12 +135,11 @@ Questo evita di indebolire la validazione del repository man mano che un engine 
 
 ## Prossimi modelli `fluid_statics`
 
-1. **`hydrostatic_pressure_points`** — `FIS-FLU-PID-003`;
-2. `hydraulic_press` — `FIS-FLU-PAS-001`;
-3. `communicating_vessels` — `FIS-FLU-VAS-001`;
-4. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
+1. **`hydraulic_press`** — `FIS-FLU-PAS-001`;
+2. `communicating_vessels` — `FIS-FLU-VAS-001`;
+3. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
 
-Il prossimo modello da implementare è **`hydrostatic_pressure_points`**: riusa la legge di Stevino già validata ma introduce punti mobili nello stesso fluido, preparando il passaggio dai confronti tra colonne alla lettura locale della pressione.
+Il prossimo modello da implementare è **`hydraulic_press`**: introduce la legge di Pascal e un rapporto tra aree e forze, quindi amplia `fluid_statics` senza duplicare la logica della pressione idrostatica già consolidata.
 
 ## Fasi
 

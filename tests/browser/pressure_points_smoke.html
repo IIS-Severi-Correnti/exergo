@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo pressure points smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/fluid_statics/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell">
+      <h2>Pressioni a diverse profondità</h2>
+      <div id="pressure-points" data-exergo-simulation
+        data-simulation-engine="fluid_statics"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-FLU-PID-003.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector("#result");
+    const simulation = document.querySelector("#pressure-points");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo pressure points smoke test";
+    }
+
+    function close(actual, expected, tolerance = 1e-8) {
+      if (Math.abs(actual - expected) > tolerance) {
+        throw new Error(actual + " != " + expected);
+      }
+    }
+
+    const deadline = Date.now() + 6000;
+    const timer = window.setInterval(() => {
+      if (simulation?.dataset.simulationReady !== "true") {
+        if (Date.now() > deadline) {
+          window.clearInterval(timer);
+          finish("FAIL", "inizializzazione scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(timer);
+      try {
+        const slider = simulation.querySelector('[data-simulation-action="set_progress"]');
+        const play = simulation.querySelector('[data-simulation-action="play"]');
+        const pause = simulation.querySelector('[data-simulation-action="pause"]');
+        const reset = simulation.querySelector('[data-simulation-action="reset"]');
+        const explorationNote = simulation.querySelector('[data-exploration-note]');
+
+        if (!explorationNote.textContent.includes("non sono dati del quesito teorico")) {
+          throw new Error("nota sulla scala didattica mancante");
+        }
+        close(Number(simulation.dataset.upperDepthM), 0.12);
+        close(Number(simulation.dataset.movingDepthM), 0.12);
+        close(Number(simulation.dataset.lowerDepthM), 0.28);
+        close(Number(simulation.dataset.pressureUpperPa), 1176);
+        close(Number(simulation.dataset.pressureMovingPa), 1176);
+        close(Number(simulation.dataset.pressureLowerPa), 2744);
+        if (simulation.dataset.pressureRelation !== "pA = pB < pC = pD = pE") {
+          throw new Error("relazione iniziale errata: " + simulation.dataset.pressureRelation);
+        }
+        if (simulation.dataset.movingMatchesUpper !== "true") {
+          throw new Error("B non riconosciuto sul livello di A");
+        }
+        if (play.disabled !== reducedMotion) {
+          throw new Error("semantica Play/reduced-motion errata");
+        }
+        if (!pause.disabled) {
+          throw new Error("Pausa dovrebbe essere inizialmente disabilitata");
+        }
+
+        slider.value = "500";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(simulation.dataset.movingDepthM), 0.2);
+        close(Number(simulation.dataset.pressureMovingPa), 1960);
+        if (simulation.dataset.pressureRelation !== "pA < pB < pC = pD = pE") {
+          throw new Error("relazione intermedia errata: " + simulation.dataset.pressureRelation);
+        }
+
+        slider.value = "1000";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        close(Number(simulation.dataset.movingDepthM), 0.28);
+        close(Number(simulation.dataset.pressureMovingPa), 2744);
+        if (simulation.dataset.pressureRelation !== "pA < pB = pC = pD = pE") {
+          throw new Error("relazione finale errata: " + simulation.dataset.pressureRelation);
+        }
+        if (simulation.dataset.movingMatchesLower !== "true") {
+          throw new Error("B non riconosciuto sul livello C-D-E");
+        }
+
+        reset.click();
+        close(Number(simulation.dataset.movingDepthM), 0.12);
+        if (slider.value !== "0") {
+          throw new Error("reset slider non riuscito");
+        }
+        if (simulation.dataset.pressureRelation !== "pA = pB < pC = pD = pE") {
+          throw new Error("reset della relazione non riuscito");
+        }
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error(
+            "overflow orizzontale " + document.documentElement.scrollWidth +
+            "px su viewport " + window.innerWidth + "px"
+          );
+        }
+
+        finish(
+          "PASS",
+          "A=B<C=D=E, B intermedio e B=C=D=E, reset, reduced motion=" + reducedMotion
+        );
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>

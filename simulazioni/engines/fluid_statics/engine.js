@@ -47,6 +47,10 @@ function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
+function hydrostaticGaugePressure(densityKgM3, gravityMS2, depthM) {
+  return densityKgM3 * gravityMS2 * depthM;
+}
+
 function validateCommonInteraction(interaction) {
   requireObject(interaction, "interaction");
   requireBoolean(interaction.allow_play, "allow_play");
@@ -162,6 +166,20 @@ function validateFloatingBody(parameters, interaction) {
   }
 }
 
+function validateHydrostaticPressurePoints(parameters, interaction) {
+  requireObject(parameters, "parameters");
+  validateCommonInteraction(interaction);
+  requireFiniteNumber(parameters.fluid_density_kg_m3, "fluid_density_kg_m3", {
+    positive: true,
+  });
+  requireFiniteNumber(parameters.gravity_m_s2, "gravity_m_s2", { positive: true });
+  requireFiniteNumber(parameters.upper_depth_m, "upper_depth_m", { positive: true });
+  requireFiniteNumber(parameters.lower_depth_m, "lower_depth_m", { positive: true });
+  if (parameters.lower_depth_m <= parameters.upper_depth_m) {
+    throw new RangeError("lower_depth_m deve essere maggiore di upper_depth_m");
+  }
+}
+
 function createHydrostaticColumnRuntime(parameters, interaction) {
   const movingSpan = parameters.depth_moving_final_m - parameters.depth_moving_initial_m;
   let density = parameters.fluid_density_initial_kg_m3;
@@ -169,8 +187,16 @@ function createHydrostaticColumnRuntime(parameters, interaction) {
   return Object.freeze({
     derive(progress) {
       const depthMoving = parameters.depth_moving_initial_m + progress * movingSpan;
-      const pressureReference = density * parameters.gravity_m_s2 * parameters.depth_reference_m;
-      const pressureMoving = density * parameters.gravity_m_s2 * depthMoving;
+      const pressureReference = hydrostaticGaugePressure(
+        density,
+        parameters.gravity_m_s2,
+        parameters.depth_reference_m,
+      );
+      const pressureMoving = hydrostaticGaugePressure(
+        density,
+        parameters.gravity_m_s2,
+        depthMoving,
+      );
       return Object.freeze({
         fluid_density_kg_m3: density,
         gravity_m_s2: parameters.gravity_m_s2,
@@ -212,6 +238,51 @@ function createHydrostaticColumnRuntime(parameters, interaction) {
         },
       });
     },
+  });
+}
+
+function createHydrostaticPressurePointsRuntime(parameters) {
+  const depthSpan = parameters.lower_depth_m - parameters.upper_depth_m;
+
+  return Object.freeze({
+    derive(progress) {
+      const movingDepth = parameters.upper_depth_m + progress * depthSpan;
+      const pressureUpper = hydrostaticGaugePressure(
+        parameters.fluid_density_kg_m3,
+        parameters.gravity_m_s2,
+        parameters.upper_depth_m,
+      );
+      const pressureMoving = hydrostaticGaugePressure(
+        parameters.fluid_density_kg_m3,
+        parameters.gravity_m_s2,
+        movingDepth,
+      );
+      const pressureLower = hydrostaticGaugePressure(
+        parameters.fluid_density_kg_m3,
+        parameters.gravity_m_s2,
+        parameters.lower_depth_m,
+      );
+      const depthTolerance = Math.max(1e-12, depthSpan * 1e-9);
+
+      return Object.freeze({
+        fluid_density_kg_m3: parameters.fluid_density_kg_m3,
+        gravity_m_s2: parameters.gravity_m_s2,
+        upper_depth_m: parameters.upper_depth_m,
+        moving_depth_m: movingDepth,
+        lower_depth_m: parameters.lower_depth_m,
+        gauge_pressure_upper_Pa: pressureUpper,
+        gauge_pressure_moving_Pa: pressureMoving,
+        gauge_pressure_lower_Pa: pressureLower,
+        moving_matches_upper:
+          Math.abs(movingDepth - parameters.upper_depth_m) <= depthTolerance,
+        moving_matches_lower:
+          Math.abs(movingDepth - parameters.lower_depth_m) <= depthTolerance,
+      });
+    },
+    dispatch() {
+      return false;
+    },
+    reset() {},
   });
 }
 
@@ -295,6 +366,10 @@ const MODEL_DEFINITIONS = Object.freeze({
   floating_body: Object.freeze({
     validate: validateFloatingBody,
     createRuntime: createFloatingBodyRuntime,
+  }),
+  hydrostatic_pressure_points: Object.freeze({
+    validate: validateHydrostaticPressurePoints,
+    createRuntime: createHydrostaticPressurePointsRuntime,
   }),
 });
 

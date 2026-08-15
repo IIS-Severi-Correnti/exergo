@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "hydrostatic_pressure_points",
+  "parameters": {
+    "fluid_density_kg_m3": 1000,
+    "gravity_m_s2": 9.8,
+    "upper_depth_m": 0.12,
+    "lower_depth_m": 0.28
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 6
+  },
+  "display": {
+    "show_equations": true,
+    "show_pressure_values": true,
+    "show_horizontal_independence_note": true
+  },
+  "didactics": {
+    "model_note_it": "Liquido incomprimibile e in quiete, densità uniforme e g costante. La pressione relativa segue Δp=ρgh: a uguale profondità corrisponde uguale pressione, indipendentemente dalla posizione orizzontale.",
+    "learning_action_it": "Osserva prima la disposizione del quesito, con A e B alla stessa profondità e C, D, E sul livello più basso. Poi fai scendere B e verifica quando la sua pressione smette di coincidere con A e quando diventa uguale a C, D, E.",
+    "fluid_label_it": "acqua",
+    "upper_fixed_label_it": "A",
+    "moving_point_label_it": "B",
+    "lower_left_label_it": "C",
+    "lower_center_label_it": "D",
+    "lower_right_label_it": "E",
+    "exploration_note_it": "Le profondità e le pressioni numeriche mostrate sono una scala didattica scelta per visualizzare la legge di Stevino: non sono dati del quesito teorico."
+  }
+}

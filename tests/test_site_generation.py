@@ -17,6 +17,7 @@ FLUID_HYDRO_REUSE_ID = "FIS-FLU-PID-002"
 FLUID_FLOATING_PILOT_ID = "FIS-FLU-ARC-001"
 FLUID_FLOATING_REUSE_ID = "FIS-FLU-ARC-003"
 FLUID_APPARENT_WEIGHT_ID = "FIS-FLU-ARC-002"
+FLUID_PRESSURE_POINTS_ID = "FIS-FLU-PID-003"
 
 
 class StaticSiteGenerationTests(unittest.TestCase):
@@ -64,6 +65,11 @@ class StaticSiteGenerationTests(unittest.TestCase):
             exercise
             for exercise in cls.exercises
             if exercise.exercise_id == FLUID_APPARENT_WEIGHT_ID
+        )
+        cls.fluid_pressure_points = next(
+            exercise
+            for exercise in cls.exercises
+            if exercise.exercise_id == FLUID_PRESSURE_POINTS_ID
         )
         cls.normal = next(
             exercise
@@ -114,13 +120,14 @@ class StaticSiteGenerationTests(unittest.TestCase):
             page.index("<summary>Soluzione</summary>"),
         )
 
-    def test_fluid_exercises_share_one_engine_across_three_models(self) -> None:
+    def test_fluid_exercises_share_one_engine_across_four_models(self) -> None:
         exercises = (
             self.fluid_hydro_pilot,
             self.fluid_hydro_reuse,
             self.fluid_floating_pilot,
             self.fluid_floating_reuse,
             self.fluid_apparent_weight,
+            self.fluid_pressure_points,
         )
         for exercise in exercises:
             with self.subTest(exercise=exercise.exercise_id):
@@ -134,7 +141,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                     page.index("<summary>Soluzione</summary>"),
                 )
 
-    def test_site_contains_four_engines_and_ten_configs(self) -> None:
+    def test_site_contains_four_engines_and_eleven_configs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             genera_sito.write_site(self.exercises, output)
@@ -160,6 +167,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 "engines/fluid_statics/view.js",
                 "engines/fluid_statics/floating_view.js",
                 "engines/fluid_statics/apparent_weight_view.js",
+                "engines/fluid_statics/pressure_points_view.js",
                 "engines/fluid_statics/style.css",
                 f"config/{PILOT_ID}.json",
                 f"config/{REUSE_ID}.json",
@@ -171,6 +179,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 f"config/{FLUID_FLOATING_PILOT_ID}.json",
                 f"config/{FLUID_FLOATING_REUSE_ID}.json",
                 f"config/{FLUID_APPARENT_WEIGHT_ID}.json",
+                f"config/{FLUID_PRESSURE_POINTS_ID}.json",
             }
             asset_root = output / "assets" / "simulazioni"
             actual_assets = {
@@ -191,6 +200,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 FLUID_FLOATING_PILOT_ID,
                 FLUID_FLOATING_REUSE_ID,
                 FLUID_APPARENT_WEIGHT_ID,
+                FLUID_PRESSURE_POINTS_ID,
             ):
                 with self.subTest(exercise=exercise_id):
                     self.assertTrue(
@@ -253,7 +263,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 any(path.startswith("engines/fluid_statics/") for path in actual_assets)
             )
 
-    def test_fluid_subset_copies_one_engine_and_three_models(self) -> None:
+    def test_fluid_subset_copies_one_engine_and_four_models(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             fluid_exercises = [
@@ -262,6 +272,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 self.fluid_floating_pilot,
                 self.fluid_floating_reuse,
                 self.fluid_apparent_weight,
+                self.fluid_pressure_points,
             ]
             genera_sito.write_site(fluid_exercises, output)
 
@@ -279,6 +290,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 "engines/fluid_statics/view.js",
                 "engines/fluid_statics/floating_view.js",
                 "engines/fluid_statics/apparent_weight_view.js",
+                "engines/fluid_statics/pressure_points_view.js",
                 "engines/fluid_statics/style.css",
             ):
                 self.assertIn(asset, actual_assets)
@@ -288,6 +300,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 FLUID_FLOATING_PILOT_ID,
                 FLUID_FLOATING_REUSE_ID,
                 FLUID_APPARENT_WEIGHT_ID,
+                FLUID_PRESSURE_POINTS_ID,
             ):
                 self.assertIn(f"config/{exercise_id}.json", actual_assets)
             self.assertFalse(
