@@ -14,25 +14,26 @@ L'obiettivo non è associare un'animazione a ogni esercizio. L'obiettivo è:
 
 La fonte machine-readable è [`metadata/simulation_coverage.csv`](../metadata/simulation_coverage.csv).
 
-## Fotografia v1
+## Fotografia corrente
 
-L'indice corrente contiene **58 esercizi di Fisica**.
+L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 5 | Simulazione già pubblicata e collegata nell'indice |
-| `planned` | 44 | Copribile direttamente da un engine pianificato |
+| `implemented` | 7 | Simulazione già collegata nell'indice e coperta dalla CI |
+| `planned` | 42 | Copribile direttamente da un engine/modello pianificato |
 | `extension` | 5 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
 
-Quindi **56 esercizi su 58** hanno già una traiettoria verso un modello interattivo; i due `not_required` restano intenzionalmente fuori dalla copertura con engine.
+**56 esercizi su 58** hanno una traiettoria verso un modello interattivo; i due `not_required` restano intenzionalmente fuori dalla copertura con engine.
 
 Gli engine attivi sono:
 
 - `rotational_platform` — 2 esercizi, modello `textbook_reduced_system`;
-- `ideal_gas_process` — 2 esercizi pubblicati, modello `reversible_isothermal`;
-- `one_dimensional_collision` — 1 esercizio pubblicato, modello `elastic_1d`.
+- `ideal_gas_process` — 2 esercizi, modello `reversible_isothermal`;
+- `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
+- `fluid_statics` — 2 esercizi, modello `hydrostatic_column`.
 
 ## Regola di priorità
 
@@ -42,15 +43,13 @@ Per ordinare il backlog usiamo una metrica euristica:
 priority_score = incremental_exercises * didactic_value / implementation_complexity
 ```
 
-dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5.
+dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5. Il punteggio serve a scegliere dove investire, ma non sostituisce la revisione fisica o architetturale.
 
-Il punteggio non sostituisce la revisione fisica o architetturale: serve solo a scegliere dove investire per primo.
-
-## Backlog ordinato
+## Backlog ordinato dopo `hydrostatic_column`
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `fluid_statics` | nuovo engine | 9 | 5 | 3 | 15.00 | Fluidostatica: Archimede, Stevino, Pascal, vasi comunicanti, getti |
+| 1 | `fluid_statics` | estensione engine attivo | 7 | 5 | 3 | 11.67 | Archimede, Pascal, punti a diversa profondità, vasi comunicanti, getti |
 | 2 | `dc_circuit` | nuovo engine | 5 | 4 | 3 | 6.67 | Circuito semplice, corrente e legge di Ohm |
 | 3 | `calorimetry` | nuovo engine | 5 | 4 | 3 | 6.67 | Calore specifico, riscaldamento, equilibrio e passaggi di stato |
 | 4 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
@@ -66,46 +65,48 @@ Il punteggio non sostituisce la revisione fisica o architetturale: serve solo a 
 | 14 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
 | 15 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
 
-## Prossimo motore: `fluid_statics`
+## `fluid_statics`: piano di copertura
 
-Il censimento modifica l'ordine intuitivo iniziale: **fluidostatica è il miglior prossimo investimento**, perché un unico engine può coprire 9 esercizi con complessità moderata.
+Il modello `hydrostatic_column` copre:
 
-Modelli previsti:
+- `FIS-FLU-PID-001`: problema numerico con due recipienti, inclusa la dimostrazione che il raggio non influenza la pressione idrostatica;
+- `FIS-FLU-PID-002`: riuso dello stesso modello come esploratore della legge `Δp=ρgh`, con valori numerici dichiarati esplicitamente come scala didattica e non come dati del quesito.
 
-- `floating_body`
-- `buoyancy_apparent_weight`
-- `hydrostatic_column`
-- `hydrostatic_pressure_points`
-- `hydraulic_press`
-- `communicating_vessels`
-- `orifice_outflow`
+Modelli successivi previsti nello stesso engine:
 
-Il primo pilot dovrebbe essere `FIS-FLU-ARC-001` oppure `FIS-FLU-PID-001`: entrambi hanno dati semplici, grandezze fisiche ben definite e una resa visuale forte. La scelta finale va fatta dopo l'audit dei testi completi e della possibilità di riuso del primo modello.
+1. `floating_body` — `FIS-FLU-ARC-001` e `FIS-FLU-ARC-003`;
+2. `buoyancy_apparent_weight` — `FIS-FLU-ARC-002`;
+3. `hydrostatic_pressure_points` — `FIS-FLU-PID-003`;
+4. `hydraulic_press` — `FIS-FLU-PAS-001`;
+5. `communicating_vessels` — `FIS-FLU-VAS-001`;
+6. `orifice_outflow` — `FIS-FLU-PID-004`, mantenuto separato dalla parte strettamente idrostatica perché introduce il moto del fluido.
+
+Il prossimo modello da implementare è **`floating_body`**, perché consente subito un secondo test di riuso con due esercizi reali e introduce un principio fisico diverso (Archimede) senza creare un nuovo engine.
 
 ## Fasi
 
 ### Fase A — massima copertura
 
-1. `fluid_statics`
-2. `dc_circuit`
-3. `calorimetry`
-4. estensione `ideal_gas_process`
-5. `ray_optics`
-6. `wave_1d`
-7. `newtonian_particle`
+1. completare `fluid_statics`;
+2. `dc_circuit`;
+3. `calorimetry`;
+4. estendere `ideal_gas_process`;
+5. `ray_optics`;
+6. `wave_1d`;
+7. `newtonian_particle`.
 
 ### Fase B — elettromagnetismo
 
-8. `electrostatics_2d`
-9. `magnetic_interaction_2d`
-10. `electromagnetic_induction`
+8. `electrostatics_2d`;
+9. `magnetic_interaction_2d`;
+10. `electromagnetic_induction`.
 
 ### Fase C — modelli specialistici e riuso avanzato
 
-11. estensione `one_dimensional_collision`
-12. `thermal_expansion`
-13. `momentum_system`
-14. `heat_engine`
+11. estendere `one_dimensional_collision`;
+12. `thermal_expansion`;
+13. `momentum_system`;
+14. `heat_engine`.
 
 ### Fase D — problemi compositi
 
