@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "engine": "dc_circuit",
+  "model": "charge_flow",
+  "parameters": {"charge_final_C": 1.0, "time_interval_s": 1.0},
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 4},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "learning_action_it": "Varia la carica trasferita nella finestra di un secondo e osserva il rapporto I = ΔQ/Δt.",
+    "model_note_it": "La scala 1 C in 1 s è scelta esclusivamente per visualizzare la definizione SI di ampere (1 A = 1 C/s); non è un dato numerico del quesito. Le particelle mostrate sono simboliche."
+  }
+}
