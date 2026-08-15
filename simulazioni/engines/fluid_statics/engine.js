@@ -198,6 +198,16 @@ function validateHydraulicPress(parameters, interaction) {
   }
 }
 
+
+function validateCommunicatingVessels(parameters, interaction) {
+  requireObject(parameters, "parameters");
+  validateCommonInteraction(interaction);
+  requireFiniteNumber(parameters.branch_count, "branch_count", { minimum: 2, maximum: 6 });
+  if (!Number.isInteger(parameters.branch_count)) {
+    throw new RangeError("branch_count deve essere un intero");
+  }
+}
+
 function createHydrostaticColumnRuntime(parameters, interaction) {
   const movingSpan = parameters.depth_moving_final_m - parameters.depth_moving_initial_m;
   let density = parameters.fluid_density_initial_kg_m3;
@@ -337,6 +347,44 @@ function createHydraulicPressRuntime(parameters) {
   });
 }
 
+
+function createCommunicatingVesselsRuntime(parameters) {
+  const center = (parameters.branch_count - 1) / 2;
+  const scale = Math.max(center, 0.5);
+  const pattern = Object.freeze(
+    Array.from(
+      { length: parameters.branch_count },
+      (_, index) => (index - center) / scale,
+    ),
+  );
+
+  return Object.freeze({
+    derive(progress) {
+      const imbalanceFraction = 1 - progress;
+      const levelOffsets = Object.freeze(
+        pattern.map((value) => value * imbalanceFraction),
+      );
+      const minimumOffset = Math.min(...levelOffsets);
+      const maximumOffset = Math.max(...levelOffsets);
+      const pressureSpread = maximumOffset - minimumOffset;
+      const tolerance = 1e-12;
+
+      return Object.freeze({
+        branch_count: parameters.branch_count,
+        imbalance_fraction: imbalanceFraction,
+        level_offsets_relative: levelOffsets,
+        pressure_head_offsets_relative: levelOffsets,
+        pressure_spread_relative: pressureSpread,
+        equilibrium_reached: pressureSpread <= tolerance,
+      });
+    },
+    dispatch() {
+      return false;
+    },
+    reset() {},
+  });
+}
+
 function floatingRegime(bodyDensity, fluidDensity) {
   const scale = Math.max(bodyDensity, fluidDensity, 1);
   const tolerance = scale * 1e-12;
@@ -425,6 +473,10 @@ const MODEL_DEFINITIONS = Object.freeze({
   hydraulic_press: Object.freeze({
     validate: validateHydraulicPress,
     createRuntime: createHydraulicPressRuntime,
+  }),
+  communicating_vessels: Object.freeze({
+    validate: validateCommunicatingVessels,
+    createRuntime: createCommunicatingVesselsRuntime,
   }),
 });
 

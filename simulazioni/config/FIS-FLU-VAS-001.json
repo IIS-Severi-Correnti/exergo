@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "communicating_vessels",
+  "parameters": {
+    "branch_count": 4
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 5.0
+  },
+  "display": {
+    "show_equations": true,
+    "show_pressure_comparison": true,
+    "show_shape_independence_note": true
+  },
+  "didactics": {
+    "model_note_it": "Confronto schematico di stati idrostatici nei vasi comunicanti. Gli scarti di livello sono normalizzati e non rappresentano quote metriche; il playback non descrive il tempo né un travaso volume-conservativo.",
+    "learning_action_it": "Riduci il dislivello schematico e osserva che l'equilibrio è possibile solo quando, alla stessa quota di collegamento, le pressioni coincidono e i livelli dello stesso liquido diventano uguali.",
+    "fluid_label_it": "stesso liquido",
+    "exploration_note_it": "La forma dei quattro recipienti è volutamente diversa. La coordinata di esplorazione confronta stati, non ricostruisce la dinamica reale del fluido."
+  }
+}
