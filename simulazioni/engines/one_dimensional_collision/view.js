@@ -49,6 +49,13 @@ function arrowEndpoint(originX, velocity, maxAbsVelocity) {
   return originX + length;
 }
 
+function updateVelocityArrow(arrow, velocity, maxAbsVelocity, enabled) {
+  const visible = enabled && Math.abs(velocity) > 1e-9;
+  arrow.setAttribute("visibility", visible ? "visible" : "hidden");
+  arrow.setAttribute("x1", "0");
+  arrow.setAttribute("x2", String(arrowEndpoint(0, velocity, maxAbsVelocity)));
+}
+
 export function createSimulationView({ container, config }) {
   instanceCount += 1;
   const titleId = `collision-title-${instanceCount}`;
@@ -182,10 +189,6 @@ export function createSimulationView({ container, config }) {
     !config.interaction.allow_reference_frame_change;
   container.querySelector('[data-display="invariants"]').hidden = !config.display.show_invariants;
   container.querySelector('[data-display="equations"]').hidden = !config.display.show_equations;
-  if (!config.display.show_velocity_vectors) {
-    arrow1.hidden = true;
-    arrow2.hidden = true;
-  }
 
   return Object.freeze({
     get motionAllowed() {
@@ -249,15 +252,17 @@ export function createSimulationView({ container, config }) {
         Math.abs(state.velocity_1_current_m_s),
         Math.abs(state.velocity_2_current_m_s),
       );
-      arrow1.setAttribute("x1", "0");
-      arrow1.setAttribute(
-        "x2",
-        String(arrowEndpoint(0, state.velocity_1_current_m_s, maxAbsCurrent)),
+      updateVelocityArrow(
+        arrow1,
+        state.velocity_1_current_m_s,
+        maxAbsCurrent,
+        config.display.show_velocity_vectors,
       );
-      arrow2.setAttribute("x1", "0");
-      arrow2.setAttribute(
-        "x2",
-        String(arrowEndpoint(0, state.velocity_2_current_m_s, maxAbsCurrent)),
+      updateVelocityArrow(
+        arrow2,
+        state.velocity_2_current_m_s,
+        maxAbsCurrent,
+        config.display.show_velocity_vectors,
       );
 
       container.querySelector('[data-value="velocity-1-current"]').textContent =
