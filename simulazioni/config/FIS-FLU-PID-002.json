@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "hydrostatic_column",
+  "parameters": {
+    "fluid_density_initial_kg_m3": 1000,
+    "gravity_m_s2": 9.8,
+    "depth_reference_m": 0.1,
+    "depth_moving_initial_m": 0.05,
+    "depth_moving_final_m": 0.4
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "allow_density_change": true,
+    "playback_duration_s": 6,
+    "density_min_kg_m3": 500,
+    "density_max_kg_m3": 1500
+  },
+  "display": {
+    "show_equations": true,
+    "show_pressure_ratio": true,
+    "show_vessel_width_note": false
+  },
+  "didactics": {
+    "model_note_it": "Liquido incomprimibile e in quiete, densità uniforme e g costante. Il modello visualizza la pressione relativa Δp=ρgh; la pressione assoluta si ottiene aggiungendo simbolicamente la pressione di superficie p₀.",
+    "learning_action_it": "Varia profondità e densità e osserva come cambia Δp. Cerca di riconoscere la proporzionalità diretta sia rispetto a h sia rispetto a ρ.",
+    "column_1_label_it": "Profondità di riferimento",
+    "column_2_label_it": "Profondità esplorata",
+    "exploration_note_it": "I valori numerici di densità e profondità mostrati qui costituiscono una scala esplorativa scelta per visualizzare la legge: non sono dati del quesito teorico."
+  }
+}
