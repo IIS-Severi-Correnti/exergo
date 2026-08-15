@@ -248,3 +248,92 @@
   font-size: 16px;
   font-weight: 700;
 }
+
+/* Hydraulic press ------------------------------------------------------- */
+.hydraulic-press-svg {
+  max-width: 820px;
+}
+
+.hydraulic-fluid {
+  fill: #5ba7d8;
+  fill-opacity: 0.28;
+  stroke: none;
+}
+
+.hydraulic-chamber {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+}
+
+.hydraulic-piston {
+  stroke: currentColor;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.hydraulic-piston-rod {
+  fill: currentColor;
+  opacity: 0.78;
+}
+
+.hydraulic-car-body {
+  fill: #d69a4b;
+  fill-opacity: 0.78;
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+
+.hydraulic-wheel {
+  fill: currentColor;
+}
+
+.hydraulic-force {
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.hydraulic-force-input {
+  stroke: #a64a44;
+}
+
+.hydraulic-force-output {
+  stroke: #287fae;
+}
+
+.hydraulic-force-weight {
+  stroke: #7c4a88;
+}
+
+.hydraulic-force-text,
+.hydraulic-label,
+.hydraulic-ratio-label {
+  fill: currentColor;
+  font-family: system-ui, sans-serif;
+}
+
+.hydraulic-force-text {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hydraulic-label {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.hydraulic-ratio-label {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.hydraulic-load-balanced {
+  transform: translateY(-5px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hydraulic-load-balanced {
+    transition: transform 160ms ease-out;
+  }
+}
+

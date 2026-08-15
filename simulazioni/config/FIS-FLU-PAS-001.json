@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "engine": "fluid_statics",
+  "model": "hydraulic_press",
+  "parameters": {
+    "small_piston_force_N": 140,
+    "load_mass_kg": 3800,
+    "gravity_m_s2": 9.8
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 6
+  },
+  "display": {
+    "show_equations": true,
+    "show_force_balance": true,
+    "show_area_ratio": true,
+    "show_pressure_equality_note": true
+  },
+  "didactics": {
+    "model_note_it": "Torchio idraulico ideale: fluido incomprimibile, pistoni senza attrito e differenze di quota trascurate. La vista usa soltanto il rapporto A₂/A₁: le larghezze disegnate dei pistoni sono schematiche e non rappresentano aree assolute. Il cursore modifica un parametro di progetto e non rappresenta lo scorrere del tempo.",
+    "learning_action_it": "Aumenta il rapporto A₂/A₁ e osserva come cresce F₂ mantenendo la stessa pressione sui due pistoni. Individua il rapporto minimo che permette di equilibrare il peso dell'automobile.",
+    "small_piston_label_it": "Pistone piccolo",
+    "large_piston_label_it": "Pistone grande",
+    "load_label_it": "Automobile"
+  }
+}
