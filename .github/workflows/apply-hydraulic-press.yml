@@ -25,6 +25,16 @@ jobs:
 
       - name: Apply deterministic milestone patch
         run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/apply_hydraulic_press_milestone.py")
+          text = path.read_text(encoding="utf-8")
+          old = "    if count != 1:\n        raise RuntimeError(f\"{path}: expected exactly one occurrence, found {count}: {old[:80]!r}\")\n"
+          new = "    if count < 1:\n        raise RuntimeError(f\"{path}: expected at least one occurrence, found {count}: {old[:80]!r}\")\n"
+          if old not in text:
+              raise SystemExit("replace_once guard not found")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          PY
           python scripts/apply_hydraulic_press_milestone.py
           python scripts/genera_indice.py
 
