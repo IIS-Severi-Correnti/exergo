@@ -59,6 +59,8 @@
         const learningAction = simulation.querySelector('[data-learning-action]');
         const object1 = simulation.querySelector('[data-object="1"]');
         const object2 = simulation.querySelector('[data-object="2"]');
+        const arrow1 = simulation.querySelector('[data-arrow="1"]');
+        const arrow2 = simulation.querySelector('[data-arrow="2"]');
 
         if (!learningAction.textContent.includes("centro di massa")) {
           throw new Error("istruzione didattica mancante");
@@ -68,6 +70,12 @@
         }
         close(Number(simulation.dataset.velocity1Ms), 5.2);
         close(Number(simulation.dataset.velocity2Ms), 0);
+        if (arrow1.getAttribute("visibility") !== "visible") {
+          throw new Error("freccia della palla 1 iniziale non visibile");
+        }
+        if (arrow2.getAttribute("visibility") !== "hidden") {
+          throw new Error("velocita nulla della palla 2 mostra una freccia");
+        }
         if (simulation.dataset.momentumConserved !== "true") {
           throw new Error("quantita di moto non conservata");
         }
@@ -89,6 +97,10 @@
         }
         close(Number(simulation.dataset.velocity1Ms), 2.6);
         close(Number(simulation.dataset.velocity2Ms), -2.6);
+        if (arrow1.getAttribute("visibility") !== "visible" ||
+            arrow2.getAttribute("visibility") !== "visible") {
+          throw new Error("nel frame CM entrambe le frecce devono essere visibili");
+        }
         if (centerFrame.disabled !== true || tableFrame.disabled !== false) {
           throw new Error("controlli frame non aggiornati");
         }
@@ -125,6 +137,10 @@
         }
         close(Number(simulation.dataset.velocity1Ms), 5.2);
         close(Number(simulation.dataset.velocity2Ms), 0);
+        if (arrow1.getAttribute("visibility") !== "visible" ||
+            arrow2.getAttribute("visibility") !== "hidden") {
+          throw new Error("reset della visibilita delle frecce");
+        }
 
         if (!reducedMotion) {
           play.click();
@@ -143,7 +159,7 @@
 
         finish(
           "PASS",
-          "urto elastico, frame tavolo/CM, invarianti, reset, reduced motion=" + reducedMotion
+          "urto elastico, frame tavolo/CM, vettori, invarianti, reset, reduced motion=" + reducedMotion
         );
       } catch (error) {
         finish("FAIL", error.message);
