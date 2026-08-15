@@ -28,7 +28,10 @@
 .fluid-surface-label,
 .fluid-column-label,
 .fluid-depth-label,
-.fluid-pressure-label {
+.fluid-pressure-label,
+.fluid-floating-body-label,
+.fluid-force-label,
+.fluid-floating-fraction-label {
   fill: currentColor;
   font-family: system-ui, sans-serif;
 }
@@ -38,17 +41,20 @@
   opacity: 0.7;
 }
 
-.fluid-column-label {
+.fluid-column-label,
+.fluid-floating-body-label {
   font-size: 15px;
   font-weight: 700;
 }
 
 .fluid-depth-label,
-.fluid-pressure-label {
+.fluid-pressure-label,
+.fluid-floating-fraction-label {
   font-size: 13px;
 }
 
-.fluid-vessel-outline {
+.fluid-vessel-outline,
+.fluid-floating-tank {
   fill: none;
   stroke: currentColor;
   stroke-width: 4;
@@ -56,7 +62,8 @@
   stroke-linejoin: round;
 }
 
-.fluid-water {
+.fluid-water,
+.fluid-floating-water {
   fill: #5ba7d8;
   fill-opacity: 0.28;
 }
@@ -80,6 +87,53 @@
 .fluid-pressure-bar {
   fill: #d77724;
   opacity: 0.82;
+}
+
+.fluid-floating-body {
+  fill: #d69a4b;
+  fill-opacity: 0.72;
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+
+.fluid-floating-water-overlay {
+  fill: #5ba7d8;
+  fill-opacity: 0.34;
+  pointer-events: none;
+}
+
+.fluid-force-arrow {
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.fluid-force-weight {
+  stroke: #a64a44;
+}
+
+.fluid-force-buoyancy {
+  stroke: #287fae;
+}
+
+.fluid-force-weight-head {
+  fill: #a64a44;
+}
+
+.fluid-force-buoyancy-head {
+  fill: #287fae;
+}
+
+.fluid-force-weight-label {
+  fill: #a64a44;
+}
+
+.fluid-force-buoyancy-label {
+  fill: #287fae;
+}
+
+.fluid-force-label {
+  font-size: 15px;
+  font-weight: 750;
 }
 
 .fluid-statics-panel {

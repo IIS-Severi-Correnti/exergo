@@ -26,7 +26,7 @@ registerSimulationEngine("one_dimensional_collision", {
 
 registerSimulationEngine("fluid_statics", {
   loadEngine: () => import("../engines/fluid_statics/engine.js"),
-  loadView: () => import("../engines/fluid_statics/view.js"),
+  loadView: () => import("../engines/fluid_statics/multi_view.js"),
 });
 
 export async function loadSimulationEngine(name) {
