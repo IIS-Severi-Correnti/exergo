@@ -35,7 +35,7 @@ jobs:
             sleep 0.25
           done
 
-          for smoke in expansion_smoke gas_expansion_smoke ray_optics_smoke; do
+          for smoke in expansion_smoke gas_expansion_smoke ray_optics_smoke wave_smoke; do
             google-chrome --headless=new --no-sandbox --disable-gpu \
               --virtual-time-budget=10000 --dump-dom \
               "http://127.0.0.1:8765/tests/browser/${smoke}.html" \
@@ -120,6 +120,21 @@ jobs:
             --virtual-time-budget=2500 --window-size=430,3300 \
             --screenshot=expansion-browser-artifacts/fis-ott-spe-001-mobile.png \
             http://127.0.0.1:8765/_site/esercizi/fis-ott-spe-001/
+
+          for route in fis-ond-dop-001 fis-ond-dop-002 fis-ond-cor-001 fis-ond-mec-001 fis-ond-suo-001; do
+            google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --virtual-time-budget=2500 --window-size=1440,2500 \
+              --screenshot="expansion-browser-artifacts/${route}-desktop.png" \
+              "http://127.0.0.1:8765/_site/esercizi/${route}/"
+          done
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+            --virtual-time-budget=2500 --window-size=430,3300 \
+            --screenshot=expansion-browser-artifacts/fis-ond-dop-002-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-ond-dop-002/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+            --virtual-time-budget=2500 --window-size=430,3300 \
+            --screenshot=expansion-browser-artifacts/fis-ond-suo-001-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-ond-suo-001/
       - name: Upload expansion browser artifacts
         if: always()
         uses: actions/upload-artifact@v4
