@@ -1,0 +1,66 @@
+name: Sync ray optics metadata
+
+on:
+  push:
+    branches:
+      - feature/ray-optics-engine-v1
+    paths:
+      - .github/workflows/sync-ray-optics-metadata.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feature/ray-optics-engine-v1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Link exercises and coverage
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          paths = [
+              'esercizi/fisica/ottica/riflessione/FIS-OTT-RFL-001.tex',
+              'esercizi/fisica/ottica/rifrazione/FIS-OTT-RIF-001.tex',
+              'esercizi/fisica/ottica/rifrazione/FIS-OTT-RIF-002.tex',
+              'esercizi/fisica/ottica/rifrazione/FIS-OTT-RIF-003.tex',
+              'esercizi/fisica/ottica/specchi/FIS-OTT-SPE-001.tex',
+          ]
+          for raw in paths:
+              path = Path(raw)
+              text = path.read_text(encoding='utf-8')
+              if '% Simulazione:' in text:
+                  raise SystemExit(f'{raw}: simulation metadata already present')
+              marker = '% Licenza: CC-BY-SA-4.0\n'
+              if marker not in text:
+                  raise SystemExit(f'{raw}: license marker not found')
+              path.write_text(text.replace(marker, marker + '% Simulazione: ray_optics\n', 1), encoding='utf-8')
+
+          coverage = Path('metadata/simulation_coverage.csv')
+          text = coverage.read_text(encoding='utf-8')
+          ids = ['FIS-OTT-RFL-001', 'FIS-OTT-RIF-001', 'FIS-OTT-RIF-002', 'FIS-OTT-RIF-003', 'FIS-OTT-SPE-001']
+          for exercise_id in ids:
+              prefix = exercise_id + ',planned,ray_optics,'
+              replacement = exercise_id + ',implemented,ray_optics,'
+              if prefix not in text:
+                  raise SystemExit(f'{exercise_id}: planned coverage row not found')
+              text = text.replace(prefix, replacement, 1)
+          coverage.write_text(text, encoding='utf-8')
+          PY
+      - name: Regenerate index
+        run: python scripts/genera_indice.py
+      - name: Remove temporary workflow and commit
+        run: |
+          set -euo pipefail
+          rm .github/workflows/sync-ray-optics-metadata.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/sync-ray-optics-metadata.yml esercizi/fisica/ottica metadata/indice_esercizi.csv metadata/simulation_coverage.csv
+          git commit -m 'Link all optics exercises to ray optics engine'
+          git push origin HEAD:feature/ray-optics-engine-v1
