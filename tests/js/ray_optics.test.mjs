@@ -71,6 +71,7 @@ test("total_internal_reflection calcola correttamente il massimo n2 come caso li
   close(final.refractive_index_2_max, 1.333 * Math.sin(75 * Math.PI / 180), 1e-12);
   close(final.critical_angle_deg, 75, 1e-10);
   assert.equal(final.limiting_refraction_angle_deg, 90);
+  assert.ok(final.refractive_index_2_max < final.refractive_index_1, "il mezzo di uscita limite deve avere indice minore di n1");
 });
 
 test("concave_mirror ricava p e q da f e ingrandimento positivo", () => {
@@ -83,6 +84,7 @@ test("concave_mirror ricava p e q da f e ingrandimento positivo", () => {
   close(final.image_distance_m, -0.24, 1e-12);
   assert.equal(final.image_virtual, true);
   assert.equal(final.image_upright, true);
+  assert.ok(final.object_distance_m < final.focal_length_m, "un'immagine virtuale diritta ingrandita richiede l'oggetto dentro la focale");
 });
 
 test("concave_mirror non e hardcoded sul caso 12 cm e M=3", () => {
@@ -94,6 +96,7 @@ test("concave_mirror non e hardcoded sul caso 12 cm e M=3", () => {
   close(state.object_distance_m, 0.10, 1e-12);
   close(state.image_distance_m, -0.20, 1e-12);
   close(1 / state.focal_length_m, 1 / state.object_distance_m + 1 / state.image_distance_m, 1e-12);
+  assert.ok(state.object_distance_m < state.focal_length_m);
 });
 
 test("lifecycle comune funziona anche per costruzioni geometriche", () => {
