@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "engine": "ray_optics",
+  "model": "concave_mirror",
+  "parameters": {
+    "focal_length_m": 0.12,
+    "magnification": 3
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 6},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "Lo specchio è trattato nel regime paraassiale degli specchi sferici. Il cursore rivela in sequenza oggetto/fuoco, raggi principali ed estensioni retrograde fino all'immagine virtuale; non rappresenta la propagazione temporale della luce. Le distanze derivano soltanto da f=12 cm e M=+3.",
+    "learning_action_it": "completa la costruzione dei raggi e verifica che lo spillo debba stare a 8 cm dallo specchio, tra vertice e fuoco, con immagine virtuale diritta a q=-24 cm.",
+    "slider_label_it": "Costruzione geometrica dei raggi principali"
+  }
+}
