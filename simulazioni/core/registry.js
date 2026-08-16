@@ -44,6 +44,11 @@ registerSimulationEngine("ray_optics", {
   loadView: () => import("../engines/ray_optics/view.js"),
 });
 
+registerSimulationEngine("wave_1d", {
+  loadEngine: () => import("../engines/wave_1d/engine.js"),
+  loadView: () => import("../engines/wave_1d/view.js"),
+});
+
 export async function loadSimulationEngine(name) {
   const loaders = registry.get(name);
   if (!loaders) {
