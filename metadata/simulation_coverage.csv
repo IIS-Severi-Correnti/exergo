@@ -32,11 +32,11 @@ FIS-OND-DOP-001,planned,wave_1d,doppler_observer_moving,P1,Fronti d'onda e osser
 FIS-OND-DOP-002,planned,wave_1d,doppler_source_moving,P1,La sorgente mobile può usare lo stesso motore con un modello Doppler complementare.
 FIS-OND-MEC-001,planned,wave_1d,mechanical_wave_energy,P2,"Ampiezza, lavoro/potenza e propagazione possono sostenere la modellizzazione sperimentale proposta."
 FIS-OND-SUO-001,planned,wave_1d,echo_time_of_flight,P1,"Emissione, riflessione e tempo di volo permettono di visualizzare il principio del sonar."
-FIS-OTT-RFL-001,planned,ray_optics,total_internal_reflection,P0,Angolo di incidenza e indici di rifrazione possono mostrare direttamente la soglia di riflessione totale.
-FIS-OTT-RIF-001,planned,ray_optics,single_interface_refraction,P1,Indice e velocità della luce possono essere collegati nello stesso modello di mezzo trasparente.
-FIS-OTT-RIF-002,planned,ray_optics,snell_refraction,P0,Un raggio manipolabile rende immediata la legge di Snell e il calcolo della velocità nel mezzo.
-FIS-OTT-RIF-003,planned,ray_optics,parallel_slab,P0,Una lastra a facce parallele permette di vedere rifrazione e spostamento laterale.
-FIS-OTT-SPE-001,planned,ray_optics,concave_mirror,P0,Diagramma dei raggi e posizione dell'immagine sono un caso classico ad alto valore didattico.
+FIS-OTT-RFL-001,implemented,ray_optics,total_internal_reflection,P0,Angolo di incidenza e indici di rifrazione possono mostrare direttamente la soglia di riflessione totale.
+FIS-OTT-RIF-001,implemented,ray_optics,single_interface_refraction,P1,Indice e velocità della luce possono essere collegati nello stesso modello di mezzo trasparente.
+FIS-OTT-RIF-002,implemented,ray_optics,snell_refraction,P0,Un raggio manipolabile rende immediata la legge di Snell e il calcolo della velocità nel mezzo.
+FIS-OTT-RIF-003,implemented,ray_optics,parallel_slab,P0,Una lastra a facce parallele permette di vedere rifrazione e spostamento laterale.
+FIS-OTT-SPE-001,implemented,ray_optics,concave_mirror,P0,Diagramma dei raggi e posizione dell'immagine sono un caso classico ad alto valore didattico.
 FIS-ROT-ANG-001,implemented,rotational_platform,textbook_reduced_system,P0,Simulazione già pubblicata e verificata.
 FIS-ROT-ANG-002,implemented,rotational_platform,textbook_reduced_system,P0,"Seconda configurazione reale dello stesso motore, già pubblicata e verificata."
 FIS-TER-CAL-001,implemented,calorimetry,sensible_heat_compare,P1,Confrontare materiali a parità di calore rende visibile il ruolo del calore specifico.
