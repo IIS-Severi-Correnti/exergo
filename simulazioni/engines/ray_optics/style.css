@@ -1,0 +1,101 @@
+.ray-optics-figure {
+  margin: 0 0 16px;
+  padding: 10px;
+  border: 1px solid rgb(var(--teal-rgb) / 0.22);
+  border-radius: 8px;
+  background: rgb(var(--teal-rgb) / 0.045);
+}
+
+.ray-optics-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 260px;
+}
+
+.ray-optics-figure figcaption {
+  margin: 6px 4px 2px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.ray-medium { stroke: rgb(var(--ink-rgb) / 0.16); stroke-width: 1; }
+.ray-medium-a { fill: rgb(var(--paper-rgb) / 0.78); }
+.ray-medium-b { fill: rgb(var(--teal-rgb) / 0.10); }
+.ray-slab { fill: rgb(var(--teal-rgb) / 0.13); stroke: rgb(var(--teal-rgb) / 0.55); stroke-width: 3; }
+.ray-interface, .ray-axis { stroke: var(--ink); stroke-width: 2.5; }
+.ray-normal { stroke: rgb(var(--ink-rgb) / 0.42); stroke-width: 2; stroke-dasharray: 7 6; }
+.ray-light, .ray-reflected, .ray-limit { stroke: var(--amber); stroke-width: 5; fill: none; stroke-linecap: round; }
+.ray-refracted { stroke: var(--teal); }
+.ray-reflected { stroke: #a0442d; }
+.ray-limit { stroke: var(--teal); stroke-dasharray: 11 5; }
+.ray-light-secondary { opacity: 0.75; }
+.ray-construction { stroke: rgb(var(--teal-rgb) / 0.65); stroke-width: 2.5; stroke-dasharray: 8 6; fill: none; }
+.ray-displacement-guide { stroke: #a0442d; stroke-width: 3; stroke-dasharray: 4 4; }
+.ray-wavefront { stroke: rgb(var(--ink-rgb) / 0.32); stroke-width: 2; }
+.ray-wavefront-medium { stroke: rgb(var(--teal-rgb) / 0.62); }
+.ray-hit { fill: var(--amber); stroke: var(--ink); stroke-width: 2; }
+.ray-focus { fill: var(--teal); }
+.ray-mirror { fill: none; stroke: var(--ink); stroke-width: 7; stroke-linecap: round; }
+.ray-object .ray-arrow-line, .ray-image .ray-arrow-line { stroke: var(--ink); stroke-width: 4; }
+.ray-image .ray-arrow-line { stroke: var(--teal); }
+.ray-arrow-head { fill: var(--ink); }
+.ray-image .ray-arrow-head { fill: var(--teal); }
+.ray-object text, .ray-image text, .ray-medium-label, .ray-angle-label, .ray-point-label, .ray-scene-note {
+  fill: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+.ray-medium-label { font-size: 15px; font-weight: 750; }
+.ray-angle-label { font-size: 14px; font-weight: 800; fill: var(--teal); }
+.ray-point-label { font-size: 14px; font-weight: 800; }
+.ray-scene-note { font-size: 13px; fill: var(--muted); }
+.ray-object text, .ray-image text { font-size: 13px; font-weight: 800; }
+
+.ray-optics-panel {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.82fr) minmax(330px, 1.18fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.ray-optics-scrubber,
+.ray-optics-panel .simulation-controls { grid-column: 1; }
+.ray-optics-values,
+.ray-optics-panel .simulation-equations,
+.ray-optics-panel .simulation-status,
+.ray-optics-panel .simulation-model-note,
+.ray-optics-panel .simulation-error { grid-column: 2; }
+
+.ray-optics-scrubber {
+  padding: 12px;
+  background: rgb(var(--paper-rgb) / 0.84);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.ray-optics-scrubber label, .ray-optics-slider-scale {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ray-optics-scrubber label { margin-bottom: 8px; font-weight: 800; }
+.ray-optics-scrubber output { color: var(--teal); font-family: "SFMono-Regular", Consolas, monospace; }
+.ray-optics-scrubber input[type="range"] { min-height: 34px; padding: 0; accent-color: var(--teal); cursor: ew-resize; }
+.ray-optics-slider-scale { color: var(--muted); font-size: 0.76rem; }
+
+@media (max-width: 860px) {
+  .ray-optics-panel { grid-template-columns: 1fr; }
+  .ray-optics-scrubber,
+  .ray-optics-panel .simulation-controls,
+  .ray-optics-values,
+  .ray-optics-panel .simulation-equations,
+  .ray-optics-panel .simulation-status,
+  .ray-optics-panel .simulation-model-note,
+  .ray-optics-panel .simulation-error { grid-column: 1; }
+}
+
+@media (max-width: 480px) {
+  .ray-optics-figure { padding: 5px; }
+  .ray-optics-svg { min-height: 210px; }
+  .ray-optics-slider-scale { font-size: 0.72rem; }
+}
