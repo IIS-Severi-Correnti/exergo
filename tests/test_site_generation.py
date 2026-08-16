@@ -41,6 +41,13 @@ CALORIMETRY_EXPANSION_IDS = (
     "FIS-TER-EQ-002",
     "FIS-TER-PAS-001",
 )
+OPTICS_IDS = (
+    "FIS-OTT-RFL-001",
+    "FIS-OTT-RIF-001",
+    "FIS-OTT-RIF-002",
+    "FIS-OTT-RIF-003",
+    "FIS-OTT-SPE-001",
+)
 
 
 class StaticSiteGenerationTests(unittest.TestCase):
@@ -61,12 +68,9 @@ class StaticSiteGenerationTests(unittest.TestCase):
         cls.fluid_hydraulic_press = by_id[FLUID_HYDRAULIC_PRESS_ID]
         cls.fluid_communicating_vessels = by_id[FLUID_COMMUNICATING_VESSELS_ID]
         cls.dc_exercises = tuple(by_id[exercise_id] for exercise_id in DC_EXPANSION_IDS)
-        cls.calorimetry_exercises = tuple(
-            by_id[exercise_id] for exercise_id in CALORIMETRY_EXPANSION_IDS
-        )
-        cls.normal = next(
-            exercise for exercise in cls.exercises if exercise.simulation_config is None
-        )
+        cls.calorimetry_exercises = tuple(by_id[exercise_id] for exercise_id in CALORIMETRY_EXPANSION_IDS)
+        cls.optics_exercises = tuple(by_id[exercise_id] for exercise_id in OPTICS_IDS)
+        cls.normal = next(exercise for exercise in cls.exercises if exercise.simulation_config is None)
 
     def test_normal_exercise_does_not_load_simulation_assets(self) -> None:
         page = genera_sito.render_exercise_page(self.normal)
@@ -132,68 +136,42 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 self.assertIn("engines/calorimetry/style.css", page)
                 self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))
 
-    def test_site_contains_six_engines_and_twenty_seven_configs(self) -> None:
+    def test_all_five_optics_exercises_share_ray_optics_engine(self) -> None:
+        for exercise in self.optics_exercises:
+            with self.subTest(exercise=exercise.exercise_id):
+                page = genera_sito.render_exercise_page(exercise)
+                self.assertIn('data-simulation-engine="ray_optics"', page)
+                self.assertIn("engines/ray_optics/style.css", page)
+                self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))
+
+    def test_site_contains_seven_engines_and_thirty_two_configs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             genera_sito.write_site(self.exercises, output)
-
             expected_assets = {
-                "core/runtime.js",
-                "core/controls.js",
-                "core/registry.js",
-                "core/simulation.css",
-                "engines/rotational_platform/engine.js",
-                "engines/rotational_platform/view.js",
-                "engines/rotational_platform/style.css",
-                "engines/ideal_gas_process/engine.js",
-                "engines/ideal_gas_process/view.js",
-                "engines/ideal_gas_process/style.css",
-                "engines/one_dimensional_collision/engine.js",
-                "engines/one_dimensional_collision/view.js",
-                "engines/one_dimensional_collision/style.css",
-                "engines/fluid_statics/multi_engine.js",
-                "engines/fluid_statics/engine.js",
-                "engines/fluid_statics/apparent_weight_engine.js",
-                "engines/fluid_statics/multi_view.js",
-                "engines/fluid_statics/view.js",
-                "engines/fluid_statics/floating_view.js",
-                "engines/fluid_statics/apparent_weight_view.js",
-                "engines/fluid_statics/pressure_points_view.js",
-                "engines/fluid_statics/hydraulic_press_view.js",
-                "engines/fluid_statics/communicating_vessels_view.js",
-                "engines/fluid_statics/style.css",
-                "engines/dc_circuit/engine.js",
-                "engines/dc_circuit/view.js",
-                "engines/dc_circuit/style.css",
-                "engines/calorimetry/engine.js",
-                "engines/calorimetry/view.js",
-                "engines/calorimetry/style.css",
+                "core/runtime.js", "core/controls.js", "core/registry.js", "core/simulation.css",
+                "engines/rotational_platform/engine.js", "engines/rotational_platform/view.js", "engines/rotational_platform/style.css",
+                "engines/ideal_gas_process/engine.js", "engines/ideal_gas_process/view.js", "engines/ideal_gas_process/style.css",
+                "engines/one_dimensional_collision/engine.js", "engines/one_dimensional_collision/view.js", "engines/one_dimensional_collision/style.css",
+                "engines/fluid_statics/multi_engine.js", "engines/fluid_statics/engine.js", "engines/fluid_statics/apparent_weight_engine.js",
+                "engines/fluid_statics/multi_view.js", "engines/fluid_statics/view.js", "engines/fluid_statics/floating_view.js",
+                "engines/fluid_statics/apparent_weight_view.js", "engines/fluid_statics/pressure_points_view.js",
+                "engines/fluid_statics/hydraulic_press_view.js", "engines/fluid_statics/communicating_vessels_view.js", "engines/fluid_statics/style.css",
+                "engines/dc_circuit/engine.js", "engines/dc_circuit/view.js", "engines/dc_circuit/style.css",
+                "engines/calorimetry/engine.js", "engines/calorimetry/view.js", "engines/calorimetry/style.css",
+                "engines/ray_optics/engine.js", "engines/ray_optics/view.js", "engines/ray_optics/style.css",
             }
             simulated_ids = (
-                PILOT_ID,
-                REUSE_ID,
-                *ALL_GAS_IDS,
-                COLLISION_PILOT_ID,
-                FLUID_HYDRO_PILOT_ID,
-                FLUID_HYDRO_REUSE_ID,
-                FLUID_FLOATING_PILOT_ID,
-                FLUID_FLOATING_REUSE_ID,
-                FLUID_APPARENT_WEIGHT_ID,
-                FLUID_PRESSURE_POINTS_ID,
-                FLUID_HYDRAULIC_PRESS_ID,
-                FLUID_COMMUNICATING_VESSELS_ID,
-                *DC_EXPANSION_IDS,
-                *CALORIMETRY_EXPANSION_IDS,
+                PILOT_ID, REUSE_ID, *ALL_GAS_IDS, COLLISION_PILOT_ID,
+                FLUID_HYDRO_PILOT_ID, FLUID_HYDRO_REUSE_ID, FLUID_FLOATING_PILOT_ID,
+                FLUID_FLOATING_REUSE_ID, FLUID_APPARENT_WEIGHT_ID, FLUID_PRESSURE_POINTS_ID,
+                FLUID_HYDRAULIC_PRESS_ID, FLUID_COMMUNICATING_VESSELS_ID,
+                *DC_EXPANSION_IDS, *CALORIMETRY_EXPANSION_IDS, *OPTICS_IDS,
             )
             for exercise_id in simulated_ids:
                 expected_assets.add(f"config/{exercise_id}.json")
-
             asset_root = output / "assets" / "simulazioni"
-            actual_assets = {
-                path.relative_to(asset_root).as_posix()
-                for path in asset_root.rglob("*")
-                if path.is_file()
-            }
+            actual_assets = {path.relative_to(asset_root).as_posix() for path in asset_root.rglob("*") if path.is_file()}
             self.assertEqual(actual_assets, expected_assets)
             self.assertTrue((output / "index.html").is_file())
             for exercise_id in simulated_ids:
@@ -206,74 +184,59 @@ class StaticSiteGenerationTests(unittest.TestCase):
         output = Path(temporary_directory.name) / "site"
         genera_sito.write_site(exercises, output)
         asset_root = output / "assets" / "simulazioni"
-        return {
-            path.relative_to(asset_root).as_posix()
-            for path in asset_root.rglob("*")
-            if path.is_file()
-        }
+        return {path.relative_to(asset_root).as_posix() for path in asset_root.rglob("*") if path.is_file()}
 
     def test_gas_subset_copies_only_ideal_gas_engine_and_all_six_configs(self) -> None:
         actual_assets = self._asset_set(self.gas_exercises)
-        for asset in (
-            "engines/ideal_gas_process/engine.js",
-            "engines/ideal_gas_process/view.js",
-            "engines/ideal_gas_process/style.css",
-        ):
+        for asset in ("engines/ideal_gas_process/engine.js", "engines/ideal_gas_process/view.js", "engines/ideal_gas_process/style.css"):
             self.assertIn(asset, actual_assets)
         for exercise_id in ALL_GAS_IDS:
             self.assertIn(f"config/{exercise_id}.json", actual_assets)
         self.assertFalse(any(path.startswith("engines/dc_circuit/") for path in actual_assets))
         self.assertFalse(any(path.startswith("engines/calorimetry/") for path in actual_assets))
         self.assertFalse(any(path.startswith("engines/fluid_statics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
 
     def test_collision_subset_copies_only_collision_engine(self) -> None:
         actual_assets = self._asset_set([self.collision_pilot])
         self.assertIn("engines/one_dimensional_collision/engine.js", actual_assets)
         self.assertIn(f"config/{COLLISION_PILOT_ID}.json", actual_assets)
-        self.assertFalse(any(path.startswith("engines/dc_circuit/") for path in actual_assets))
-        self.assertFalse(any(path.startswith("engines/calorimetry/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
 
     def test_fluid_subset_copies_one_engine_and_six_models(self) -> None:
         actual_assets = self._asset_set([
-            self.fluid_hydro_pilot,
-            self.fluid_hydro_reuse,
-            self.fluid_floating_pilot,
-            self.fluid_floating_reuse,
-            self.fluid_apparent_weight,
-            self.fluid_pressure_points,
-            self.fluid_hydraulic_press,
-            self.fluid_communicating_vessels,
+            self.fluid_hydro_pilot, self.fluid_hydro_reuse, self.fluid_floating_pilot,
+            self.fluid_floating_reuse, self.fluid_apparent_weight, self.fluid_pressure_points,
+            self.fluid_hydraulic_press, self.fluid_communicating_vessels,
         ])
         self.assertIn("engines/fluid_statics/multi_engine.js", actual_assets)
         self.assertIn("engines/fluid_statics/communicating_vessels_view.js", actual_assets)
-        self.assertFalse(any(path.startswith("engines/dc_circuit/") for path in actual_assets))
-        self.assertFalse(any(path.startswith("engines/calorimetry/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
 
     def test_dc_subset_is_self_contained(self) -> None:
         actual_assets = self._asset_set(self.dc_exercises)
-        for asset in (
-            "engines/dc_circuit/engine.js",
-            "engines/dc_circuit/view.js",
-            "engines/dc_circuit/style.css",
-        ):
+        for asset in ("engines/dc_circuit/engine.js", "engines/dc_circuit/view.js", "engines/dc_circuit/style.css"):
             self.assertIn(asset, actual_assets)
         for exercise_id in DC_EXPANSION_IDS:
             self.assertIn(f"config/{exercise_id}.json", actual_assets)
-        self.assertFalse(any(path.startswith("engines/calorimetry/") for path in actual_assets))
-        self.assertFalse(any(path.startswith("engines/fluid_statics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
 
     def test_calorimetry_subset_is_self_contained(self) -> None:
         actual_assets = self._asset_set(self.calorimetry_exercises)
-        for asset in (
-            "engines/calorimetry/engine.js",
-            "engines/calorimetry/view.js",
-            "engines/calorimetry/style.css",
-        ):
+        for asset in ("engines/calorimetry/engine.js", "engines/calorimetry/view.js", "engines/calorimetry/style.css"):
             self.assertIn(asset, actual_assets)
         for exercise_id in CALORIMETRY_EXPANSION_IDS:
             self.assertIn(f"config/{exercise_id}.json", actual_assets)
-        self.assertFalse(any(path.startswith("engines/dc_circuit/") for path in actual_assets))
-        self.assertFalse(any(path.startswith("engines/fluid_statics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
+
+    def test_ray_optics_subset_is_self_contained(self) -> None:
+        actual_assets = self._asset_set(self.optics_exercises)
+        for asset in ("engines/ray_optics/engine.js", "engines/ray_optics/view.js", "engines/ray_optics/style.css"):
+            self.assertIn(asset, actual_assets)
+        for exercise_id in OPTICS_IDS:
+            self.assertIn(f"config/{exercise_id}.json", actual_assets)
+        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision"):
+            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))
 
 
 if __name__ == "__main__":
