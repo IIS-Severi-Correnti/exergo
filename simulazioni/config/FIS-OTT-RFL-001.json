@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "engine": "ray_optics",
+  "model": "total_internal_reflection",
+  "parameters": {
+    "refractive_index_1": 1.333,
+    "incidence_angle_deg": 75
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 5},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "Il modello rappresenta il caso limite che determina il massimo indice del secondo mezzo: a n₂,max il raggio rifratto sarebbe radente all'interfaccia (r=90°). Per qualunque n₂ inferiore, l'angolo limite è minore di 75° e si ha riflessione totale. Il cursore rivela la costruzione, non modifica i dati fisici.",
+    "learning_action_it": "segui la costruzione del caso limite e verifica che n₂,max=n₁ sin75° sia circa 1,288; valori inferiori soddisfano la condizione di riflessione totale.",
+    "slider_label_it": "Costruzione della condizione limite"
+  }
+}
