@@ -28,25 +28,20 @@ jobs:
           wave = anchor + '''WAVE_IDS = (\n    "FIS-OND-DOP-001",\n    "FIS-OND-DOP-002",\n    "FIS-OND-COR-001",\n    "FIS-OND-MEC-001",\n    "FIS-OND-SUO-001",\n)\n'''
           if anchor not in text: raise SystemExit('OPTICS_IDS anchor missing')
           text = text.replace(anchor, wave, 1)
-
           anchor = '        cls.optics_exercises = tuple(by_id[exercise_id] for exercise_id in OPTICS_IDS)\n'
           if anchor not in text: raise SystemExit('optics setUp anchor missing')
           text = text.replace(anchor, anchor + '        cls.wave_exercises = tuple(by_id[exercise_id] for exercise_id in WAVE_IDS)\n', 1)
-
           anchor = '''    def test_all_five_optics_exercises_share_ray_optics_engine(self) -> None:\n        for exercise in self.optics_exercises:\n            with self.subTest(exercise=exercise.exercise_id):\n                page = genera_sito.render_exercise_page(exercise)\n                self.assertIn('data-simulation-engine="ray_optics"', page)\n                self.assertIn("engines/ray_optics/style.css", page)\n                self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))\n\n'''
           addition = anchor + '''    def test_all_five_wave_exercises_share_wave_engine(self) -> None:\n        for exercise in self.wave_exercises:\n            with self.subTest(exercise=exercise.exercise_id):\n                page = genera_sito.render_exercise_page(exercise)\n                self.assertIn('data-simulation-engine="wave_1d"', page)\n                self.assertIn("engines/wave_1d/style.css", page)\n                self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))\n\n'''
           if anchor not in text: raise SystemExit('optics page test anchor missing')
           text = text.replace(anchor, addition, 1)
           text = text.replace('def test_site_contains_seven_engines_and_thirty_two_configs', 'def test_site_contains_eight_engines_and_thirty_seven_configs', 1)
-
           anchor = '                "engines/ray_optics/engine.js", "engines/ray_optics/view.js", "engines/ray_optics/style.css",\n'
           if anchor not in text: raise SystemExit('ray asset anchor missing')
           text = text.replace(anchor, anchor + '                "engines/wave_1d/engine.js", "engines/wave_1d/view.js", "engines/wave_1d/style.css",\n', 1)
-
           anchor = '                *DC_EXPANSION_IDS, *CALORIMETRY_EXPANSION_IDS, *OPTICS_IDS,\n'
           if anchor not in text: raise SystemExit('simulated ids anchor missing')
           text = text.replace(anchor, '                *DC_EXPANSION_IDS, *CALORIMETRY_EXPANSION_IDS, *OPTICS_IDS, *WAVE_IDS,\n', 1)
-
           anchor = '''    def test_ray_optics_subset_is_self_contained(self) -> None:\n        actual_assets = self._asset_set(self.optics_exercises)\n        for asset in ("engines/ray_optics/engine.js", "engines/ray_optics/view.js", "engines/ray_optics/style.css"):\n            self.assertIn(asset, actual_assets)\n        for exercise_id in OPTICS_IDS:\n            self.assertIn(f"config/{exercise_id}.json", actual_assets)\n        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision"):\n            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))\n'''
           replacement = '''    def test_ray_optics_subset_is_self_contained(self) -> None:\n        actual_assets = self._asset_set(self.optics_exercises)\n        for asset in ("engines/ray_optics/engine.js", "engines/ray_optics/view.js", "engines/ray_optics/style.css"):\n            self.assertIn(asset, actual_assets)\n        for exercise_id in OPTICS_IDS:\n            self.assertIn(f"config/{exercise_id}.json", actual_assets)\n        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision", "wave_1d"):\n            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))\n\n    def test_wave_subset_is_self_contained(self) -> None:\n        actual_assets = self._asset_set(self.wave_exercises)\n        for asset in ("engines/wave_1d/engine.js", "engines/wave_1d/view.js", "engines/wave_1d/style.css"):\n            self.assertIn(asset, actual_assets)\n        for exercise_id in WAVE_IDS:\n            self.assertIn(f"config/{exercise_id}.json", actual_assets)\n        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision", "ray_optics"):\n            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))\n'''
           if anchor not in text: raise SystemExit('ray subset anchor missing')
@@ -71,6 +66,6 @@ jobs:
           rm .github/workflows/integrate-wave-qa.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add .github/workflows/integrate-wave-qa.yml .github/workflows/validate-expansion-browser.yml tests/test_site_generation.py
+          git add -A
           git commit -m 'Integrate wave engine into static and browser QA'
           git push origin HEAD:feature/wave-1d-engine-v1
