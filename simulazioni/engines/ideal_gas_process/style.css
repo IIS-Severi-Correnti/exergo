@@ -28,6 +28,10 @@
   margin-bottom: 16px;
 }
 
+.ideal-gas-visuals:has(> .ideal-gas-figure[hidden]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .ideal-gas-figure {
   min-width: 0;
   margin: 0;
