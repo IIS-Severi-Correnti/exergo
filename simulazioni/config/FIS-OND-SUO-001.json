@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "engine": "wave_1d",
+  "model": "echo_time_of_flight",
+  "parameters": {},
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 7},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "Il testo non fornisce valori numerici di velocità o intervallo di tempo. Qui il cursore rappresenta realmente il tempo normalizzato t/Δt dell'intero viaggio: a t/Δt=0,5 il segnale raggiunge l'ostacolo e a 1 torna al sonar. Le distanze sono normalizzate e non costituiscono dati metrici del quesito.",
+    "learning_action_it": "segui l'impulso in andata e ritorno e osserva perché il cammino totale è 2d, da cui d=vΔt/2.",
+    "slider_label_it": "Tempo normalizzato t/Δt dell'eco sonar"
+  }
+}
