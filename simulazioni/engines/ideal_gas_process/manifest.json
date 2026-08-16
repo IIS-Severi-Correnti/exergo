@@ -1,149 +1,143 @@
 {
   "manifest_version": 1,
   "engine": "ideal_gas_process",
-  "label": "Trasformazione di gas perfetto",
+  "label": "Trasformazioni di gas perfetto",
   "entry_points": {
     "engine": "engine.js",
     "view": "view.js",
     "style": "style.css"
   },
-  "supported_schema_versions": [
-    1
-  ],
+  "supported_schema_versions": [1],
   "supported_models": [
-    "reversible_isothermal"
+    "reversible_isothermal",
+    "process_comparison",
+    "piecewise_isobaric_isothermal",
+    "thermodynamic_cycle",
+    "isochoric_monoatomic"
   ],
   "config_schema": {
     "type": "object",
     "additionalProperties": false,
-    "required": [
-      "schema_version",
-      "engine",
-      "model",
-      "parameters",
-      "interaction",
-      "display",
-      "didactics"
-    ],
+    "required": ["schema_version", "engine", "model", "parameters", "interaction", "display", "didactics"],
     "properties": {
-      "schema_version": {
-        "type": "integer",
-        "const": 1
-      },
-      "engine": {
-        "type": "string",
-        "const": "ideal_gas_process"
-      },
+      "schema_version": {"type": "integer", "const": 1},
+      "engine": {"type": "string", "const": "ideal_gas_process"},
       "model": {
         "type": "string",
-        "enum": [
-          "reversible_isothermal"
-        ]
+        "enum": ["reversible_isothermal", "process_comparison", "piecewise_isobaric_isothermal", "thermodynamic_cycle", "isochoric_monoatomic"]
       },
       "parameters": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "amount_mol",
-          "temperature_K",
-          "volume_initial_m3",
-          "volume_final_m3"
-        ],
         "properties": {
-          "amount_mol": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
-          "temperature_K": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
-          "volume_initial_m3": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
-          "volume_final_m3": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          }
+          "amount_mol": {"type": "number", "exclusiveMinimum": 0},
+          "temperature_K": {"type": "number", "exclusiveMinimum": 0},
+          "volume_initial_m3": {"type": "number", "exclusiveMinimum": 0},
+          "volume_final_m3": {"type": "number", "exclusiveMinimum": 0},
+          "temperature_initial_K": {"type": "number", "exclusiveMinimum": 0},
+          "expansion_ratio": {"type": "number", "exclusiveMinimum": 1},
+          "default_process": {"type": "string", "enum": ["isochoric", "isobaric", "isothermal"]},
+          "volume_A_m3": {"type": "number", "exclusiveMinimum": 0},
+          "volume_compression_m3": {"type": "number", "exclusiveMinimum": 0},
+          "temperature_A_K": {"type": "number", "exclusiveMinimum": 0},
+          "pressure_C_over_B_ratio": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+          "volume_low_ratio": {"type": "number", "exclusiveMinimum": 0},
+          "volume_high_ratio": {"type": "number", "exclusiveMinimum": 0},
+          "pressure_low_ratio": {"type": "number", "exclusiveMinimum": 0},
+          "pressure_high_ratio": {"type": "number", "exclusiveMinimum": 0},
+          "orientation": {"type": "string", "enum": ["clockwise", "counterclockwise"]},
+          "volume_m3": {"type": "number", "exclusiveMinimum": 0},
+          "pressure_increase_final_Pa": {"type": "number", "exclusiveMinimum": 0}
         }
       },
       "interaction": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "allow_play",
-          "allow_pause",
-          "allow_reset",
-          "allow_scrub",
-          "playback_duration_s"
-        ],
+        "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "playback_duration_s"],
         "properties": {
-          "allow_play": {
-            "type": "boolean"
-          },
-          "allow_pause": {
-            "type": "boolean"
-          },
-          "allow_reset": {
-            "type": "boolean"
-          },
-          "allow_scrub": {
-            "type": "boolean"
-          },
-          "playback_duration_s": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          }
+          "allow_play": {"type": "boolean"},
+          "allow_pause": {"type": "boolean"},
+          "allow_reset": {"type": "boolean"},
+          "allow_scrub": {"type": "boolean"},
+          "playback_duration_s": {"type": "number", "exclusiveMinimum": 0}
         }
       },
       "display": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "show_piston",
-          "show_pv_diagram",
-          "show_work_area",
-          "show_equations",
-          "show_energy_values"
-        ],
+        "required": ["show_piston", "show_pv_diagram", "show_work_area", "show_equations", "show_energy_values"],
         "properties": {
-          "show_piston": {
-            "type": "boolean"
-          },
-          "show_pv_diagram": {
-            "type": "boolean"
-          },
-          "show_work_area": {
-            "type": "boolean"
-          },
-          "show_equations": {
-            "type": "boolean"
-          },
-          "show_energy_values": {
-            "type": "boolean"
-          }
+          "show_piston": {"type": "boolean"},
+          "show_pv_diagram": {"type": "boolean"},
+          "show_work_area": {"type": "boolean"},
+          "show_equations": {"type": "boolean"},
+          "show_energy_values": {"type": "boolean"},
+          "show_process_selector": {"type": "boolean"}
         }
       },
       "didactics": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "model_note_it",
-          "learning_action_it"
-        ],
+        "required": ["model_note_it", "learning_action_it"],
         "properties": {
-          "model_note_it": {
-            "type": "string",
-            "minLength": 1
-          },
-          "learning_action_it": {
-            "type": "string",
-            "minLength": 1
+          "model_note_it": {"type": "string", "minLength": 1},
+          "learning_action_it": {"type": "string", "minLength": 1},
+          "slider_label_it": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "oneOf": [
+      {
+        "properties": {
+          "model": {"const": "reversible_isothermal"},
+          "parameters": {
+            "required": ["amount_mol", "temperature_K", "volume_initial_m3", "volume_final_m3"],
+            "additionalProperties": false,
+            "properties": {"amount_mol": {}, "temperature_K": {}, "volume_initial_m3": {}, "volume_final_m3": {}}
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {"const": "process_comparison"},
+          "parameters": {
+            "required": ["amount_mol", "temperature_initial_K", "volume_initial_m3", "expansion_ratio", "default_process"],
+            "additionalProperties": false,
+            "properties": {"amount_mol": {}, "temperature_initial_K": {}, "volume_initial_m3": {}, "expansion_ratio": {}, "default_process": {}}
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {"const": "piecewise_isobaric_isothermal"},
+          "parameters": {
+            "required": ["volume_A_m3", "volume_compression_m3", "temperature_A_K", "pressure_C_over_B_ratio"],
+            "additionalProperties": false,
+            "properties": {"volume_A_m3": {}, "volume_compression_m3": {}, "temperature_A_K": {}, "pressure_C_over_B_ratio": {}}
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {"const": "thermodynamic_cycle"},
+          "parameters": {
+            "required": ["volume_low_ratio", "volume_high_ratio", "pressure_low_ratio", "pressure_high_ratio", "orientation"],
+            "additionalProperties": false,
+            "properties": {"volume_low_ratio": {}, "volume_high_ratio": {}, "pressure_low_ratio": {}, "pressure_high_ratio": {}, "orientation": {}}
+          }
+        }
+      },
+      {
+        "properties": {
+          "model": {"const": "isochoric_monoatomic"},
+          "parameters": {
+            "required": ["volume_m3", "pressure_increase_final_Pa"],
+            "additionalProperties": false,
+            "properties": {"volume_m3": {}, "pressure_increase_final_Pa": {}}
           }
         }
       }
-    }
+    ]
   },
   "constraints": [
     {
@@ -151,6 +145,24 @@
       "operator": ">",
       "right": "parameters.volume_initial_m3",
       "message": "volume_final_m3 deve essere maggiore di volume_initial_m3 per reversible_isothermal"
+    },
+    {
+      "left": "parameters.volume_A_m3",
+      "operator": ">",
+      "right": "parameters.volume_compression_m3",
+      "message": "volume_A_m3 deve essere maggiore di volume_compression_m3"
+    },
+    {
+      "left": "parameters.volume_high_ratio",
+      "operator": ">",
+      "right": "parameters.volume_low_ratio",
+      "message": "volume_high_ratio deve essere maggiore di volume_low_ratio"
+    },
+    {
+      "left": "parameters.pressure_high_ratio",
+      "operator": ">",
+      "right": "parameters.pressure_low_ratio",
+      "message": "pressure_high_ratio deve essere maggiore di pressure_low_ratio"
     }
   ]
 }
