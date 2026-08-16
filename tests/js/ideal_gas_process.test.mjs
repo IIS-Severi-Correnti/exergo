@@ -145,6 +145,10 @@ test("thermodynamic_cycle chiude il percorso e rende Qnet=Lnet in coordinate nor
   const quarter = engine.setProgress(0.25);
   closeTo(quarter.volume_ratio, 1);
   closeTo(quarter.pressure_ratio, 2);
+  assert.equal(quarter.phase, "B→C");
+
+  const fourthSide = engine.setProgress(0.875);
+  assert.equal(fourthSide.phase, "D→A");
 
   const final = engine.setProgress(1);
   closeTo(final.volume_ratio, 1);
@@ -154,7 +158,7 @@ test("thermodynamic_cycle chiude il percorso e rende Qnet=Lnet in coordinate nor
   assert.equal(final.cycle_net_heat_normalized, 1);
 });
 
-test("thermodynamic_cycle cambia segno del lavoro invertendo l'orientazione", () => {
+test("thermodynamic_cycle cambia segno del lavoro e le etichette invertendo l'orientazione", () => {
   const engine = createSimulationEngine(createConfig("thermodynamic_cycle", {
     volume_low_ratio: 2,
     volume_high_ratio: 5,
@@ -163,6 +167,8 @@ test("thermodynamic_cycle cambia segno del lavoro invertendo l'orientazione", ()
     orientation: "counterclockwise",
   }));
   closeTo(engine.getState().cycle_net_work_normalized, -7.5);
+  assert.equal(engine.setProgress(0.125).phase, "A→D");
+  assert.equal(engine.setProgress(0.875).phase, "B→A");
 });
 
 test("isochoric_monoatomic usa solo V e Delta p e arriva a 252 J", () => {
