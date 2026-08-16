@@ -39,6 +39,11 @@ registerSimulationEngine("calorimetry", {
   loadView: () => import("../engines/calorimetry/view.js"),
 });
 
+registerSimulationEngine("ray_optics", {
+  loadEngine: () => import("../engines/ray_optics/engine.js"),
+  loadView: () => import("../engines/ray_optics/view.js"),
+});
+
 export async function loadSimulationEngine(name) {
   const loaders = registry.get(name);
   if (!loaders) {
