@@ -9,6 +9,24 @@ L'obiettivo iniziale e un MVP semplice: file ordinati, tassonomia coerente,
 indice CSV generato automaticamente e pochi script Python senza dipendenze
 esterne.
 
+## Stato del progetto
+
+Versione corrente: **0.1.0-beta.1**.
+
+Il checkpoint di stabilizzazione del 16 agosto 2026 include 58 esercizi di
+Fisica classificati, 37 simulazioni implementate attraverso 8 engine
+riutilizzabili, validazione automatica dell'archivio, QA browser e pubblicazione
+GitHub Pages.
+
+La versione resta **beta**: la roadmap non e completa e prima di una release
+stabile devono essere consolidati almeno protezione di `main`, licenza del
+codice/provenienza dei materiali, pulizia dei branch remoti e una prima
+validazione didattica documentata con utenti reali.
+
+Vedi [CHANGELOG.md](CHANGELOG.md) e
+[docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md) per baseline e criteri di
+release.
+
 ## Struttura del repository
 
 ```text
@@ -270,8 +288,12 @@ Prima di pubblicare materiali derivati da verifiche reali, eliminare:
 
 ## Licenza
 
-Licenza consigliata: CC BY-SA 4.0.
+I file che dichiarano esplicitamente `% Licenza: CC-BY-SA-4.0` sono presentati
+come materiali destinati alla distribuzione con licenza Creative Commons
+Attribution-ShareAlike 4.0 International. I file senza una dichiarazione di
+licenza esplicita non devono essere automaticamente considerati coperti dalla
+stessa licenza.
 
-Il file `LICENSE` contiene per ora un riferimento placeholder. Prima della
-pubblicazione definitiva va confermato che tutti i materiali possano essere
-rilasciati con questa licenza.
+La licenza del codice del repository e la provenienza dei materiali importati
+restano oggetto di revisione prima della prima release stabile. Vedi `LICENSE`
+e il processo di release per i dettagli.
