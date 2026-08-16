@@ -308,6 +308,9 @@ function createThermodynamicCycleModel(parameters) {
   const C = [parameters.volume_high_ratio, parameters.pressure_high_ratio];
   const D = [parameters.volume_high_ratio, parameters.pressure_low_ratio];
   const path = parameters.orientation === "clockwise" ? [A, B, C, D, A] : [A, D, C, B, A];
+  const segmentLabels = parameters.orientation === "clockwise"
+    ? ["A→B", "B→C", "C→D", "D→A"]
+    : ["A→D", "D→C", "C→B", "B→A"];
   const netWork = (parameters.volume_high_ratio - parameters.volume_low_ratio) *
     (parameters.pressure_high_ratio - parameters.pressure_low_ratio) *
     (parameters.orientation === "clockwise" ? 1 : -1);
@@ -324,7 +327,7 @@ function createThermodynamicCycleModel(parameters) {
         start[0] + (end[0] - start[0]) * local,
         start[1] + (end[1] - start[1]) * local,
       ],
-      phase: `${String.fromCharCode(65 + segment)}→${String.fromCharCode(66 + segment)}`,
+      phase: segmentLabels[segment],
     };
   }
 
