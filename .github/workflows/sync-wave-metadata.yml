@@ -1,0 +1,66 @@
+name: Sync wave metadata
+
+on:
+  push:
+    branches:
+      - feature/wave-1d-engine-v1
+    paths:
+      - .github/workflows/sync-wave-metadata.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feature/wave-1d-engine-v1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Link exercises and coverage
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          paths = [
+              'esercizi/fisica/onde/effetto_doppler/FIS-OND-DOP-001.tex',
+              'esercizi/fisica/onde/effetto_doppler/FIS-OND-DOP-002.tex',
+              'esercizi/fisica/onde/onde_su_corde/FIS-OND-COR-001.tex',
+              'esercizi/fisica/onde/onde_meccaniche/FIS-OND-MEC-001.tex',
+              'esercizi/fisica/onde/suono/FIS-OND-SUO-001.tex',
+          ]
+          for raw in paths:
+              path = Path(raw)
+              text = path.read_text(encoding='utf-8')
+              if '% Simulazione:' in text:
+                  raise SystemExit(f'{raw}: simulation metadata already present')
+              marker = '% Licenza: CC-BY-SA-4.0\n'
+              if marker not in text:
+                  raise SystemExit(f'{raw}: license marker not found')
+              path.write_text(text.replace(marker, marker + '% Simulazione: wave_1d\n', 1), encoding='utf-8')
+
+          coverage = Path('metadata/simulation_coverage.csv')
+          text = coverage.read_text(encoding='utf-8')
+          ids = ['FIS-OND-DOP-001', 'FIS-OND-DOP-002', 'FIS-OND-COR-001', 'FIS-OND-MEC-001', 'FIS-OND-SUO-001']
+          for exercise_id in ids:
+              prefix = exercise_id + ',planned,wave_1d,'
+              replacement = exercise_id + ',implemented,wave_1d,'
+              if prefix not in text:
+                  raise SystemExit(f'{exercise_id}: planned coverage row not found')
+              text = text.replace(prefix, replacement, 1)
+          coverage.write_text(text, encoding='utf-8')
+          PY
+      - name: Regenerate index
+        run: python scripts/genera_indice.py
+      - name: Remove temporary workflow and commit
+        run: |
+          set -euo pipefail
+          rm .github/workflows/sync-wave-metadata.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/sync-wave-metadata.yml esercizi/fisica/onde metadata/indice_esercizi.csv metadata/simulation_coverage.csv
+          git commit -m 'Link all wave exercises to wave engine'
+          git push origin HEAD:feature/wave-1d-engine-v1
