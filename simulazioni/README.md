@@ -37,7 +37,8 @@ simulazioni/
 |   |-- fluid_statics/
 |   |-- dc_circuit/
 |   |-- calorimetry/
-|   -- ray_optics/
+|   |-- ray_optics/
+|   -- wave_1d/
 |-- config/
 |   -- <EXERCISE-ID>.json
 -- README.md
@@ -190,6 +191,18 @@ Serve tutti i cinque esercizi di ottica geometrica presenti nell'archivio con ci
 
 Il motore distingue sweep fisici e costruzioni geometriche. Nei primi tre modelli il cursore varia una grandezza fisica fino ai dati reali dell'esercizio; per riflessione totale e specchio il cursore rivela invece una costruzione, senza fingere che rappresenti il tempo. Il caso limite della riflessione totale è trattato esplicitamente: a `n2,max` il raggio rifratto è radente (`r=90°`); la riflessione totale vera si ha per indici inferiori.
 
+### `wave_1d`
+
+Serve tutti i cinque esercizi sulle onde presenti nell'archivio con cinque modelli:
+
+- `doppler_observer_moving`: osservatore mobile verso una sorgente ferma;
+- `doppler_source_moving`: sorgente mobile descritta tramite i rapporti adimensionali `v_s/v` e `f'/f`;
+- `string_mode`: frequenza fondamentale di una corda a lunghezza e tensione fissate, con `f/f0=1/sqrt(mu/mu0)`;
+- `mechanical_wave_energy`: misura normalizzata dell'energia tramite `E/Eref=(A/Aref)^2`;
+- `echo_time_of_flight`: principio del sonar con tempo normalizzato dell'intero viaggio di andata e ritorno.
+
+Il motore distingue le grandezze realmente disponibili dai casi solo qualitativi. `FIS-OND-DOP-001` usa i dati reali `960 Hz`, `+95 Hz`, `343 m/s`; `FIS-OND-DOP-002` resta interamente adimensionale e mostra il raddoppio a `v_s/v=0,5`. Per corda ed energia dell'onda si usano rapporti dichiaratamente illustrativi o normalizzati, senza trasformarli in misure dell'esercizio. Nel modello sonar, invece, il cursore rappresenta davvero `t/Delta t`: a metà tempo il segnale raggiunge l'ostacolo e al termine torna al sonar.
+
 ## Associare una simulazione a un esercizio
 
 Nel blocco iniziale del `.tex` aggiungere:
@@ -263,11 +276,11 @@ python scripts/genera_sito.py --output _site
 La CI aggiunge smoke test Chrome, `prefers-reduced-motion`, viewport mobile e
 screenshot di revisione. `validate-expansion-browser.yml` mantiene una matrice
 visuale dedicata ai domini aggiunti o estesi di recente, inclusi circuiti,
-calorimetria, gas perfetti e ottica geometrica.
+calorimetria, gas perfetti, ottica geometrica e onde.
 
 ## Stato del catalogo simulato
 
-Con il completamento del dominio gas, Exergo pubblica **32 esercizi di Fisica
-con simulazione** attraverso **7 engine**. La fonte machine-readable per la
+Con il completamento del dominio gas, Exergo pubblica **37 esercizi di Fisica
+con simulazione** attraverso **8 engine**. La fonte machine-readable per la
 copertura resta `metadata/simulation_coverage.csv`; la roadmap e mantenuta in
 `docs/SIMULATION_ROADMAP.md`.
