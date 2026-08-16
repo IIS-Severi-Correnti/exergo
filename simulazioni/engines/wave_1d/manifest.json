@@ -1,0 +1,73 @@
+{
+  "manifest_version": 1,
+  "engine": "wave_1d",
+  "label": "Onde in una dimensione",
+  "entry_points": {"engine": "engine.js", "view": "view.js", "style": "style.css"},
+  "supported_schema_versions": [1],
+  "supported_models": [
+    "doppler_observer_moving",
+    "doppler_source_moving",
+    "string_mode",
+    "mechanical_wave_energy",
+    "echo_time_of_flight"
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["schema_version", "engine", "model", "parameters", "interaction", "display", "didactics"],
+    "properties": {
+      "schema_version": {"type": "integer", "const": 1},
+      "engine": {"type": "string", "const": "wave_1d"},
+      "model": {"type": "string", "enum": ["doppler_observer_moving", "doppler_source_moving", "string_mode", "mechanical_wave_energy", "echo_time_of_flight"]},
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "emitted_frequency_Hz": {"type": "number", "exclusiveMinimum": 0},
+          "frequency_increase_Hz": {"type": "number", "exclusiveMinimum": 0},
+          "wave_speed_m_s": {"type": "number", "exclusiveMinimum": 0},
+          "target_frequency_ratio": {"type": "number", "exclusiveMinimum": 1},
+          "linear_density_ratio_final": {"type": "number", "exclusiveMinimum": 1}
+        }
+      },
+      "interaction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "playback_duration_s"],
+        "properties": {
+          "allow_play": {"type": "boolean"},
+          "allow_pause": {"type": "boolean"},
+          "allow_reset": {"type": "boolean"},
+          "allow_scrub": {"type": "boolean"},
+          "playback_duration_s": {"type": "number", "exclusiveMinimum": 0}
+        }
+      },
+      "display": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["show_equations", "show_values"],
+        "properties": {
+          "show_equations": {"type": "boolean"},
+          "show_values": {"type": "boolean"}
+        }
+      },
+      "didactics": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["model_note_it", "learning_action_it", "slider_label_it"],
+        "properties": {
+          "model_note_it": {"type": "string", "minLength": 1},
+          "learning_action_it": {"type": "string", "minLength": 1},
+          "slider_label_it": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "oneOf": [
+      {"properties": {"model": {"const": "doppler_observer_moving"}, "parameters": {"required": ["emitted_frequency_Hz", "frequency_increase_Hz", "wave_speed_m_s"], "additionalProperties": false, "properties": {"emitted_frequency_Hz": {}, "frequency_increase_Hz": {}, "wave_speed_m_s": {}}}}},
+      {"properties": {"model": {"const": "doppler_source_moving"}, "parameters": {"required": ["target_frequency_ratio"], "additionalProperties": false, "properties": {"target_frequency_ratio": {}}}}},
+      {"properties": {"model": {"const": "string_mode"}, "parameters": {"required": ["linear_density_ratio_final"], "additionalProperties": false, "properties": {"linear_density_ratio_final": {}}}}},
+      {"properties": {"model": {"const": "mechanical_wave_energy"}, "parameters": {"required": [], "additionalProperties": false, "properties": {}}}},
+      {"properties": {"model": {"const": "echo_time_of_flight"}, "parameters": {"required": [], "additionalProperties": false, "properties": {}}}}
+    ]
+  }
+}
