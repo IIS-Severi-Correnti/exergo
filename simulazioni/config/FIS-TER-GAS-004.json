@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "engine": "ideal_gas_process",
+  "model": "thermodynamic_cycle",
+  "parameters": {
+    "volume_low_ratio": 1,
+    "volume_high_ratio": 2,
+    "pressure_low_ratio": 1,
+    "pressure_high_ratio": 2,
+    "orientation": "clockwise"
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 8
+  },
+  "display": {
+    "show_piston": false,
+    "show_pv_diagram": true,
+    "show_work_area": true,
+    "show_equations": true,
+    "show_energy_values": false
+  },
+  "didactics": {
+    "model_note_it": "Il rettangolo p/p₀-V/V₀ è un ciclo rappresentativo normalizzato, non un insieme di dati del quesito. Serve soltanto a mostrare chiusura del percorso, area orientata e conseguenza del fatto che U è funzione di stato: sul ciclo completo ΔU=0.",
+    "learning_action_it": "percorri il ciclo chiuso e osserva che, tornando allo stato A, la variazione totale di energia interna è nulla e quindi il calore netto coincide con il lavoro netto.",
+    "slider_label_it": "Avanzamento lungo il ciclo rappresentativo"
+  }
+}
