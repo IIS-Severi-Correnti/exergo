@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "engine": "ray_optics",
+  "model": "snell_refraction",
+  "parameters": {
+    "refractive_index_1": 1.0,
+    "incidence_angle_final_deg": 63,
+    "refraction_angle_final_deg": 47,
+    "vacuum_speed_m_s": 300000000
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 6},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "L'indice del secondo mezzo è ricavato una volta dai due angoli reali del problema con la legge di Snell. Il cursore varia poi l'angolo di incidenza tra 0° e 63° mantenendo fissi i due mezzi; il punto finale coincide con i dati dell'esercizio.",
+    "learning_action_it": "porta l'angolo di incidenza fino a 63° e verifica che il raggio rifratto raggiunga 47°, con n₂ circa 1,218 e velocità circa 2,46×10⁸ m/s.",
+    "slider_label_it": "Angolo di incidenza nel sistema dei due mezzi"
+  }
+}
