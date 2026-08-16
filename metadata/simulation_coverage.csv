@@ -44,11 +44,11 @@ FIS-TER-CAL-002,implemented,calorimetry,heating_power,P1,"Potenza, tempo, massa 
 FIS-TER-DIL-001,planned,thermal_expansion,linear_expansion_hole,P3,Una semplice geometria espandibile chiarisce che anche il foro aumenta di dimensione.
 FIS-TER-EQ-001,implemented,calorimetry,thermal_mixing,P1,Masse e temperature iniziali possono convergere visivamente alla temperatura di equilibrio.
 FIS-TER-EQ-002,implemented,calorimetry,ice_water_balance,P1,"Il modello deve distinguere riscaldamento, fusione e successivo equilibrio termico."
-FIS-TER-GAS-001,extension,ideal_gas_process,process_comparison,P1,"Il motore esistente può essere esteso a isocora, isobara e isoterma con grafici p-V coerenti."
-FIS-TER-GAS-002,extension,ideal_gas_process,piecewise_isobaric_isothermal,P1,Richiede due trasformazioni consecutive nello stesso spazio di stato.
+FIS-TER-GAS-001,implemented,ideal_gas_process,process_comparison,P1,"Il motore esistente può essere esteso a isocora, isobara e isoterma con grafici p-V coerenti."
+FIS-TER-GAS-002,implemented,ideal_gas_process,piecewise_isobaric_isothermal,P1,Richiede due trasformazioni consecutive nello stesso spazio di stato.
 FIS-TER-GAS-003,implemented,ideal_gas_process,reversible_isothermal,P0,Pilot già pubblicato e verificato.
-FIS-TER-GAS-004,extension,ideal_gas_process,thermodynamic_cycle,P2,Un ciclo chiuso nel piano p-V è una naturale estensione del motore termodinamico.
-FIS-TER-GAS-005,extension,ideal_gas_process,isochoric_monoatomic,P1,"Il modello isocoro permette di collegare pressione, temperatura, calore ed energia interna."
+FIS-TER-GAS-004,implemented,ideal_gas_process,thermodynamic_cycle,P2,Un ciclo chiuso nel piano p-V è una naturale estensione del motore termodinamico.
+FIS-TER-GAS-005,implemented,ideal_gas_process,isochoric_monoatomic,P1,"Il modello isocoro permette di collegare pressione, temperatura, calore ed energia interna."
 FIS-TER-GAS-006,implemented,ideal_gas_process,reversible_isothermal,P0,"Seconda configurazione reale dello stesso motore, già pubblicata e verificata."
 FIS-TER-MAC-001,planned,heat_engine,carnot_efficiency,P3,Un diagramma tra sorgente calda e fredda può rendere interattivo il limite di Carnot.
 FIS-TER-PAS-001,implemented,calorimetry,phase_change_balance,P1,Il bilancio tra raffreddamento/solidificazione e vaporizzazione è adatto a una timeline energetica.
