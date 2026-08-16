@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "engine": "ray_optics",
+  "model": "parallel_slab",
+  "parameters": {
+    "refractive_index_outside": 1.0,
+    "refractive_index_slab": 1.52,
+    "incidence_angle_final_deg": 30,
+    "slab_thickness_m": 0.006
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 6},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "La lastra ha facce parallele e il mezzo esterno è aria con n≈1, come assunto nella soluzione. Il cursore varia l'angolo di incidenza fino ai 30,0° reali del problema; spessore e indice del vetro restano quelli forniti. Il raggio emergente è costruito parallelo all'incidente.",
+    "learning_action_it": "aumenta l'angolo fino a 30° e osserva la rifrazione interna e lo spostamento laterale finale di circa 1,19 mm.",
+    "slider_label_it": "Angolo di incidenza sulla lastra"
+  }
+}

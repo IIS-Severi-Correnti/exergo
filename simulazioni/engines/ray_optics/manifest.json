@@ -1,0 +1,80 @@
+{
+  "manifest_version": 1,
+  "engine": "ray_optics",
+  "label": "Ottica geometrica",
+  "entry_points": {"engine": "engine.js", "view": "view.js", "style": "style.css"},
+  "supported_schema_versions": [1],
+  "supported_models": [
+    "single_interface_refraction",
+    "snell_refraction",
+    "parallel_slab",
+    "total_internal_reflection",
+    "concave_mirror"
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["schema_version", "engine", "model", "parameters", "interaction", "display", "didactics"],
+    "properties": {
+      "schema_version": {"type": "integer", "const": 1},
+      "engine": {"type": "string", "const": "ray_optics"},
+      "model": {"type": "string", "enum": ["single_interface_refraction", "snell_refraction", "parallel_slab", "total_internal_reflection", "concave_mirror"]},
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "vacuum_speed_m_s": {"type": "number", "exclusiveMinimum": 0},
+          "speed_reduction_fraction_final": {"type": "number", "exclusiveMinimum": 0},
+          "refractive_index_1": {"type": "number", "exclusiveMinimum": 0},
+          "refractive_index_2": {"type": "number", "exclusiveMinimum": 0},
+          "refractive_index_outside": {"type": "number", "exclusiveMinimum": 0},
+          "refractive_index_slab": {"type": "number", "exclusiveMinimum": 0},
+          "incidence_angle_final_deg": {"type": "number", "minimum": 0, "exclusiveMaximum": 90},
+          "refraction_angle_final_deg": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 90},
+          "incidence_angle_deg": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 90},
+          "slab_thickness_m": {"type": "number", "exclusiveMinimum": 0},
+          "focal_length_m": {"type": "number", "exclusiveMinimum": 0},
+          "magnification": {"type": "number", "exclusiveMinimum": 1}
+        }
+      },
+      "interaction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["allow_play", "allow_pause", "allow_reset", "allow_scrub", "playback_duration_s"],
+        "properties": {
+          "allow_play": {"type": "boolean"},
+          "allow_pause": {"type": "boolean"},
+          "allow_reset": {"type": "boolean"},
+          "allow_scrub": {"type": "boolean"},
+          "playback_duration_s": {"type": "number", "exclusiveMinimum": 0}
+        }
+      },
+      "display": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["show_equations", "show_values"],
+        "properties": {
+          "show_equations": {"type": "boolean"},
+          "show_values": {"type": "boolean"}
+        }
+      },
+      "didactics": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["model_note_it", "learning_action_it", "slider_label_it"],
+        "properties": {
+          "model_note_it": {"type": "string", "minLength": 1},
+          "learning_action_it": {"type": "string", "minLength": 1},
+          "slider_label_it": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "oneOf": [
+      {"properties": {"model": {"const": "single_interface_refraction"}, "parameters": {"required": ["vacuum_speed_m_s", "speed_reduction_fraction_final"], "additionalProperties": false, "properties": {"vacuum_speed_m_s": {}, "speed_reduction_fraction_final": {}}}}},
+      {"properties": {"model": {"const": "snell_refraction"}, "parameters": {"required": ["refractive_index_1", "incidence_angle_final_deg", "refraction_angle_final_deg", "vacuum_speed_m_s"], "additionalProperties": false, "properties": {"refractive_index_1": {}, "incidence_angle_final_deg": {}, "refraction_angle_final_deg": {}, "vacuum_speed_m_s": {}}}}},
+      {"properties": {"model": {"const": "parallel_slab"}, "parameters": {"required": ["refractive_index_outside", "refractive_index_slab", "incidence_angle_final_deg", "slab_thickness_m"], "additionalProperties": false, "properties": {"refractive_index_outside": {}, "refractive_index_slab": {}, "incidence_angle_final_deg": {}, "slab_thickness_m": {}}}}},
+      {"properties": {"model": {"const": "total_internal_reflection"}, "parameters": {"required": ["refractive_index_1", "incidence_angle_deg"], "additionalProperties": false, "properties": {"refractive_index_1": {}, "incidence_angle_deg": {}}}}},
+      {"properties": {"model": {"const": "concave_mirror"}, "parameters": {"required": ["focal_length_m", "magnification"], "additionalProperties": false, "properties": {"focal_length_m": {}, "magnification": {}}}}}
+    ]
+  }
+}

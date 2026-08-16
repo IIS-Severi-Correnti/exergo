@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo ray optics smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/ray_optics/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell"><div id="speed" data-exergo-simulation data-simulation-engine="ray_optics" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OTT-RIF-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="snell" data-exergo-simulation data-simulation-engine="ray_optics" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OTT-RIF-002.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="slab" data-exergo-simulation data-simulation-engine="ray_optics" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OTT-RIF-003.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="tir" data-exergo-simulation data-simulation-engine="ray_optics" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OTT-RFL-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="mirror" data-exergo-simulation data-simulation-engine="ray_optics" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OTT-SPE-001.json"><p data-simulation-error hidden></p></div></section>
+  </main>
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector('#result');
+    const sims = ['speed', 'snell', 'slab', 'tir', 'mirror'].map(id => document.querySelector('#' + id));
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function finish(status, details) {
+      result.textContent = status + ': ' + details;
+      result.dataset.status = status;
+      document.title = status + ' - Exergo ray optics smoke test';
+    }
+    function close(actual, expected, tolerance, label) {
+      if (Math.abs(actual - expected) > tolerance) throw new Error(`${label}: atteso ${expected}, trovato ${actual}`);
+    }
+    function scrub(sim, value) {
+      const input = sim.querySelector('[data-simulation-action="set_progress"]');
+      input.value = String(value);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    function motion(sim, label) {
+      const play = sim.querySelector('[data-simulation-action="play"]');
+      const pause = sim.querySelector('[data-simulation-action="pause"]');
+      if (play.disabled !== reducedMotion) throw new Error(label + ': Play/reduced-motion');
+      if (!pause.disabled) throw new Error(label + ': Pausa iniziale');
+    }
+    const deadline = Date.now() + 7000;
+    const timer = setInterval(() => {
+      if (sims.some(sim => sim.dataset.simulationReady !== 'true')) {
+        if (Date.now() > deadline) { clearInterval(timer); finish('FAIL', 'inizializzazione scaduta'); }
+        return;
+      }
+      clearInterval(timer);
+      try {
+        sims.forEach((sim, index) => {
+          motion(sim, String(index));
+          if (!sim.querySelector('[data-model-note]').textContent.trim()) throw new Error('nota modello mancante');
+          if (!sim.querySelector('[data-ray-scene]').innerHTML.trim()) throw new Error('scena SVG mancante');
+        });
+
+        const [speed, snell, slab, tir, mirror] = sims;
+        scrub(speed, 1000);
+        close(Number(speed.dataset.refractiveIndex), 1 / 0.67, 1e-10, 'indice da velocità');
+        close(Number(speed.dataset.mediumSpeedMS), 2.01e8, 1e-3, 'velocità mezzo');
+
+        scrub(snell, 1000);
+        close(Number(snell.dataset.incidenceAngleDeg), 63, 1e-9, 'Snell i');
+        close(Number(snell.dataset.refractionAngleDeg), 47, 1e-8, 'Snell r');
+        close(Number(snell.dataset.refractiveIndex2), Math.sin(63*Math.PI/180)/Math.sin(47*Math.PI/180), 1e-10, 'Snell n2');
+
+        scrub(slab, 1000);
+        close(Number(slab.dataset.incidenceAngleDeg), 30, 1e-9, 'lastra i');
+        close(Number(slab.dataset.lateralDisplacementM), 0.0011900102485351782, 1e-12, 'lastra d');
+        if (!slab.querySelector('.ray-construction')) throw new Error('lastra: continuazione non deviata mancante');
+
+        scrub(tir, 300);
+        if (tir.querySelector('.ray-reflected')) throw new Error('TIR: riflesso mostrato troppo presto');
+        scrub(tir, 1000);
+        close(Number(tir.dataset.refractiveIndex2Max), 1.333*Math.sin(75*Math.PI/180), 1e-10, 'TIR n2max');
+        if (!tir.querySelector('.ray-limit') || !tir.querySelector('.ray-reflected')) throw new Error('TIR: costruzione finale incompleta');
+
+        scrub(mirror, 500);
+        if (!mirror.querySelector('.ray-construction')) throw new Error('specchio: raggi non rivelati');
+        scrub(mirror, 1000);
+        close(Number(mirror.dataset.objectDistanceM), 0.08, 1e-12, 'specchio p');
+        close(Number(mirror.dataset.imageDistanceM), -0.24, 1e-12, 'specchio q');
+        close(Number(mirror.dataset.magnification), 3, 1e-12, 'specchio M');
+        if (!mirror.querySelector('.ray-image')) throw new Error('specchio: immagine virtuale non mostrata');
+
+        if (document.documentElement.scrollWidth > innerWidth + 1) throw new Error(`overflow ${document.documentElement.scrollWidth}px su ${innerWidth}px`);
+        finish('PASS', `cinque modelli ottici, reduced motion=${reducedMotion}`);
+      } catch (error) { finish('FAIL', error.message); }
+    }, 25);
+  </script>
+</body>
+</html>

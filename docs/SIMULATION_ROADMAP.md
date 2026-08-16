@@ -21,8 +21,8 @@ L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 27 | Simulazione collegata all'esercizio e coperta dalla CI |
-| `planned` | 26 | Copribile direttamente da un engine/modello pianificato |
+| `implemented` | 32 | Simulazione collegata all'esercizio e coperta dalla CI |
+| `planned` | 21 | Copribile direttamente da un engine/modello pianificato |
 | `extension` | 1 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
@@ -37,7 +37,8 @@ Gli engine attivi sono:
 - `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
 - `fluid_statics` — 8 esercizi, 6 modelli;
 - `dc_circuit` — 5 esercizi, 3 modelli;
-- `calorimetry` — 5 esercizi, 5 modelli.
+- `calorimetry` — 5 esercizi, 5 modelli;
+- `ray_optics` — 5 esercizi, 5 modelli.
 
 Il completamento del dominio `ideal_gas_process` porta il catalogo simulato da
 23 a **27 esercizi** senza aggiungere un nuovo engine: quattro casi prima
@@ -56,22 +57,21 @@ dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5
 Il punteggio ordina l'investimento, ma non sostituisce revisione fisica,
 architetturale o didattica.
 
-## Backlog dopo il completamento dei gas perfetti
+## Backlog dopo il completamento dell'ottica geometrica
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
-| 2 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
-| 3 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
-| 4 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
-| 5 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
-| 6 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
-| 7 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
-| 8 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
-| 9 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
-| 10 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
-| 11 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
-| 12 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
+| 1 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
+| 2 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
+| 3 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
+| 4 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
+| 5 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
+| 6 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
+| 7 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
+| 8 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
+| 9 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
+| 10 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
+| 11 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
 
 ## `ideal_gas_process`: copertura corrente
 
@@ -144,6 +144,18 @@ Q = 252 J
 
 `p_i`, `T_i` e `n` non sono noti e non vengono creati dalla simulazione. La
 vista mostra quindi `Delta p`, non una pressione assoluta fittizia.
+
+## `ray_optics`: copertura corrente
+
+L'engine serve tutti i cinque esercizi di ottica geometrica con cinque modelli indipendenti ma una sola infrastruttura SVG.
+
+- `single_interface_refraction` — `FIS-OTT-RIF-001`: da una velocità ridotta del 33% ricava `v=0,67c` e `n≈1,493`, senza introdurre un angolo di incidenza assente dal testo.
+- `snell_refraction` — `FIS-OTT-RIF-002`: dagli angoli reali `63°` e `47°` ricava `n2≈1,218` e `v≈2,46×10^8 m/s`; lo sweep dell'angolo mantiene fissi i due mezzi.
+- `parallel_slab` — `FIS-OTT-RIF-003`: usa `i=30°`, `n=1,52` e `s=6,00 mm`, ottenendo `r≈19,2°` e spostamento laterale `d≈1,19 mm`; il raggio emergente resta parallelo all'incidente.
+- `total_internal_reflection` — `FIS-OTT-RFL-001`: con acqua `n1=1,333` e `i=75°` ricava il limite `n2,max≈1,288`. Al valore massimo il rifratto è radente; per valori inferiori si ha riflessione totale.
+- `concave_mirror` — `FIS-OTT-SPE-001`: nel regime paraassiale, `f=12 cm` e `M=+3` danno `p=8 cm` e `q=-24 cm`; il playback rivela i raggi principali e le estensioni che individuano l'immagine virtuale diritta.
+
+Nessuno dei cinque modelli usa dati numerici inventati per ottenere il risultato dell'esercizio. Dove il cursore rappresenta una costruzione, la nota didattica lo dichiara esplicitamente come ordine di visualizzazione e non come tempo di propagazione.
 
 ## `fluid_statics`: copertura corrente
 
@@ -270,14 +282,14 @@ Completati:
 - `fluid_statics` strettamente idrostatico;
 - `dc_circuit`;
 - `calorimetry`;
-- `ideal_gas_process` per tutti i sei esercizi attuali.
+- `ideal_gas_process` per tutti i sei esercizi attuali;
+- `ray_optics` per tutti i cinque esercizi di ottica attuali.
 
 Prossimi:
 
-1. `ray_optics`;
-2. `wave_1d`;
-3. `newtonian_particle`;
-4. completare `fluid_statics` con `orifice_outflow`.
+1. `wave_1d`;
+2. `newtonian_particle`;
+3. completare `fluid_statics` con `orifice_outflow`.
 
 ### Fase B — elettromagnetismo
 
@@ -349,6 +361,4 @@ La roadmap può dirsi matura quando:
 - browser review, reduced-motion, mobile, test numerici e validazione archivio restano verdi;
 - i problemi compositi sono costruiti per composizione e non con hardcoding per esercizio.
 
-Il traguardo **27/58** non conclude la roadmap: chiude però l'intero dominio dei
-gas perfetti presente oggi nell'archivio e sposta la priorità di Fase A verso
-ottica geometrica, onde e dinamica newtoniana.
+Il traguardo **32/58** non conclude la roadmap: chiude però sia il dominio dei gas perfetti sia l'intero dominio di ottica geometrica presente oggi nell'archivio e sposta la priorità di Fase A verso onde e dinamica newtoniana.

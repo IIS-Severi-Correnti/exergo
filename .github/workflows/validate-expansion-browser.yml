@@ -35,7 +35,7 @@ jobs:
             sleep 0.25
           done
 
-          for smoke in expansion_smoke gas_expansion_smoke; do
+          for smoke in expansion_smoke gas_expansion_smoke ray_optics_smoke; do
             google-chrome --headless=new --no-sandbox --disable-gpu \
               --virtual-time-budget=10000 --dump-dom \
               "http://127.0.0.1:8765/tests/browser/${smoke}.html" \
@@ -49,7 +49,7 @@ jobs:
             grep -q 'data-status="PASS"' "expansion-browser-artifacts/${smoke}-reduced-motion-dom.html"
 
             google-chrome --headless=new --no-sandbox --disable-gpu \
-              --window-size=430,9000 --virtual-time-budget=10000 --dump-dom \
+              --window-size=430,12000 --virtual-time-budget=10000 --dump-dom \
               "http://127.0.0.1:8765/tests/browser/${smoke}.html" \
               > "expansion-browser-artifacts/${smoke}-mobile-dom.html"
             grep -q 'data-status="PASS"' "expansion-browser-artifacts/${smoke}-mobile-dom.html"
@@ -105,6 +105,21 @@ jobs:
             --virtual-time-budget=2500 --window-size=430,3200 \
             --screenshot=expansion-browser-artifacts/gas-isochoric-mobile.png \
             http://127.0.0.1:8765/_site/esercizi/fis-ter-gas-005/
+
+          for route in fis-ott-rif-001 fis-ott-rif-002 fis-ott-rif-003 fis-ott-rfl-001 fis-ott-spe-001; do
+            google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --virtual-time-budget=2500 --window-size=1440,2500 \
+              --screenshot="expansion-browser-artifacts/${route}-desktop.png" \
+              "http://127.0.0.1:8765/_site/esercizi/${route}/"
+          done
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+            --virtual-time-budget=2500 --window-size=430,3300 \
+            --screenshot=expansion-browser-artifacts/fis-ott-rif-003-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-ott-rif-003/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+            --virtual-time-budget=2500 --window-size=430,3300 \
+            --screenshot=expansion-browser-artifacts/fis-ott-spe-001-mobile.png \
+            http://127.0.0.1:8765/_site/esercizi/fis-ott-spe-001/
       - name: Upload expansion browser artifacts
         if: always()
         uses: actions/upload-artifact@v4

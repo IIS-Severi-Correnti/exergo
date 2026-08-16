@@ -36,7 +36,8 @@ simulazioni/
 |   |-- one_dimensional_collision/
 |   |-- fluid_statics/
 |   |-- dc_circuit/
-|   -- calorimetry/
+|   |-- calorimetry/
+|   -- ray_optics/
 |-- config/
 |   -- <EXERCISE-ID>.json
 -- README.md
@@ -177,6 +178,18 @@ La coordinata interattiva rappresenta tempo soltanto quando il modello lo
 consente esplicitamente (`heating_power` a potenza costante); negli altri casi e
 una frazione di energia trasferita o una coordinata didattica.
 
+### `ray_optics`
+
+Serve tutti i cinque esercizi di ottica geometrica presenti nell'archivio con cinque modelli:
+
+- `single_interface_refraction`: indice ricavato dalla velocità della luce nel mezzo;
+- `snell_refraction`: legge di Snell e velocità nel secondo mezzo;
+- `parallel_slab`: rifrazione in una lastra a facce parallele e spostamento laterale;
+- `total_internal_reflection`: condizione limite e massimo indice compatibile con riflessione totale;
+- `concave_mirror`: costruzione paraassiale dei raggi e immagine virtuale in uno specchio concavo.
+
+Il motore distingue sweep fisici e costruzioni geometriche. Nei primi tre modelli il cursore varia una grandezza fisica fino ai dati reali dell'esercizio; per riflessione totale e specchio il cursore rivela invece una costruzione, senza fingere che rappresenti il tempo. Il caso limite della riflessione totale è trattato esplicitamente: a `n2,max` il raggio rifratto è radente (`r=90°`); la riflessione totale vera si ha per indici inferiori.
+
 ## Associare una simulazione a un esercizio
 
 Nel blocco iniziale del `.tex` aggiungere:
@@ -250,11 +263,11 @@ python scripts/genera_sito.py --output _site
 La CI aggiunge smoke test Chrome, `prefers-reduced-motion`, viewport mobile e
 screenshot di revisione. `validate-expansion-browser.yml` mantiene una matrice
 visuale dedicata ai domini aggiunti o estesi di recente, inclusi circuiti,
-calorimetria e i cinque modelli del motore gas.
+calorimetria, gas perfetti e ottica geometrica.
 
 ## Stato del catalogo simulato
 
-Con il completamento del dominio gas, Exergo pubblica **27 esercizi di Fisica
-con simulazione** attraverso **6 engine**. La fonte machine-readable per la
+Con il completamento del dominio gas, Exergo pubblica **32 esercizi di Fisica
+con simulazione** attraverso **7 engine**. La fonte machine-readable per la
 copertura resta `metadata/simulation_coverage.csv`; la roadmap e mantenuta in
 `docs/SIMULATION_ROADMAP.md`.
