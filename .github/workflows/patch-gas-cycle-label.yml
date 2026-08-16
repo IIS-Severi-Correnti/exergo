@@ -1,0 +1,42 @@
+name: Patch gas cycle labels
+
+on:
+  push:
+    branches:
+      - feature/ideal-gas-process-expansion
+    paths:
+      - .github/workflows/patch-gas-cycle-label.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feature/ideal-gas-process-expansion
+      - name: Fix cycle segment labels
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('simulazioni/engines/ideal_gas_process/engine.js')
+          text = path.read_text(encoding='utf-8')
+          old_path = '  const path = parameters.orientation === "clockwise" ? [A, B, C, D, A] : [A, D, C, B, A];\n'
+          new_path = old_path + '  const segmentLabels = parameters.orientation === "clockwise"\n    ? ["A→B", "B→C", "C→D", "D→A"]\n    : ["A→D", "D→C", "C→B", "B→A"];\n'
+          old_phase = '      phase: `${String.fromCharCode(65 + segment)}→${String.fromCharCode(66 + segment)}`,\n'
+          new_phase = '      phase: segmentLabels[segment],\n'
+          if old_path not in text or old_phase not in text:
+              raise SystemExit('Expected cycle code not found')
+          text = text.replace(old_path, new_path, 1).replace(old_phase, new_phase, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit patch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add simulazioni/engines/ideal_gas_process/engine.js
+          git commit -m 'fix: label thermodynamic cycle segments correctly'
+          git push origin HEAD:feature/ideal-gas-process-expansion
