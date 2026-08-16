@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "engine": "ideal_gas_process",
+  "model": "isochoric_monoatomic",
+  "parameters": {
+    "volume_m3": 0.0600,
+    "pressure_increase_final_Pa": 2800
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 5
+  },
+  "display": {
+    "show_piston": true,
+    "show_pv_diagram": true,
+    "show_work_area": false,
+    "show_equations": true,
+    "show_energy_values": true
+  },
+  "didactics": {
+    "model_note_it": "La bombola è rigida: V resta costante. Il testo fornisce soltanto l'aumento di pressione, non p_i, T_i o n; per questo il grafico mostra Δp e il motore calcola ΔU=(3/2)VΔp senza inventare uno stato assoluto.",
+    "learning_action_it": "aumenta Δp fino a 2800 Pa e verifica che il lavoro resti nullo mentre Q e ΔU crescano insieme fino a 252 J.",
+    "slider_label_it": "Aumento di pressione nella bombola rigida"
+  }
+}

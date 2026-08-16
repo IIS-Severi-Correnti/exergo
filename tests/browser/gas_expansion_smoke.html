@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo ideal gas expansion smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/ideal_gas_process/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+
+    <section class="simulation-shell">
+      <h2>Confronto trasformazioni</h2>
+      <div id="gas-comparison" data-exergo-simulation
+        data-simulation-engine="ideal_gas_process"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-GAS-001.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+
+    <section class="simulation-shell">
+      <h2>Percorso A-B-C</h2>
+      <div id="gas-piecewise" data-exergo-simulation
+        data-simulation-engine="ideal_gas_process"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-GAS-002.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+
+    <section class="simulation-shell">
+      <h2>Ciclo termodinamico</h2>
+      <div id="gas-cycle" data-exergo-simulation
+        data-simulation-engine="ideal_gas_process"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-GAS-004.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+
+    <section class="simulation-shell">
+      <h2>Bombola rigida</h2>
+      <div id="gas-isochoric" data-exergo-simulation
+        data-simulation-engine="ideal_gas_process"
+        data-simulation-config="../../_site/assets/simulazioni/config/FIS-TER-GAS-005.json">
+        <p data-simulation-error hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector("#result");
+    const comparison = document.querySelector("#gas-comparison");
+    const piecewise = document.querySelector("#gas-piecewise");
+    const cycle = document.querySelector("#gas-cycle");
+    const isochoric = document.querySelector("#gas-isochoric");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function finish(status, details) {
+      result.textContent = status + ": " + details;
+      result.dataset.status = status;
+      document.title = status + " - Exergo ideal gas expansion smoke test";
+    }
+
+    function close(actual, expected, tolerance, label) {
+      if (Math.abs(actual - expected) > tolerance) {
+        throw new Error(`${label}: atteso ${expected}, trovato ${actual}`);
+      }
+    }
+
+    function scrub(simulation, value) {
+      const slider = simulation.querySelector('[data-simulation-action="set_progress"]');
+      slider.value = String(value);
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+      return slider;
+    }
+
+    function checkMotionControls(simulation, name) {
+      const play = simulation.querySelector('[data-simulation-action="play"]');
+      const pause = simulation.querySelector('[data-simulation-action="pause"]');
+      if (play.disabled !== reducedMotion) throw new Error(name + ": semantica Play/reduced-motion");
+      if (!pause.disabled) throw new Error(name + ": Pausa iniziale");
+    }
+
+    const deadline = Date.now() + 6000;
+    const ready = window.setInterval(() => {
+      const simulations = [comparison, piecewise, cycle, isochoric];
+      if (simulations.some((simulation) => simulation?.dataset.simulationReady !== "true")) {
+        if (Date.now() > deadline) {
+          window.clearInterval(ready);
+          finish("FAIL", "inizializzazione scaduta");
+        }
+        return;
+      }
+
+      window.clearInterval(ready);
+      try {
+        for (const [simulation, name] of [
+          [comparison, "confronto"],
+          [piecewise, "A-B-C"],
+          [cycle, "ciclo"],
+          [isochoric, "isocora monoatomica"],
+        ]) {
+          checkMotionControls(simulation, name);
+          if (!simulation.querySelector("[data-model-note]").textContent.trim()) {
+            throw new Error(name + ": nota modello mancante");
+          }
+        }
+
+        const selector = comparison.querySelector("[data-process-selector]");
+        if (selector.hidden) throw new Error("confronto: selettore nascosto");
+        if (comparison.dataset.selectedProcess !== "isochoric") throw new Error("confronto: processo iniziale");
+        scrub(comparison, 1000);
+        close(Number(comparison.dataset.volumeM3), 0.010, 1e-12, "confronto isocora V");
+        close(Number(comparison.dataset.temperatureK), 540, 1e-9, "confronto isocora T");
+
+        const isobaric = comparison.querySelector('[data-process="isobaric"]');
+        isobaric.click();
+        if (comparison.dataset.selectedProcess !== "isobaric") throw new Error("confronto: switch isobara");
+        close(Number(comparison.dataset.volumeM3), 0.018, 1e-12, "confronto isobara V");
+        close(Number(comparison.dataset.temperatureK), 540, 1e-9, "confronto isobara T");
+        const isobaricPressure = Number(comparison.dataset.pressurePa);
+
+        const isothermal = comparison.querySelector('[data-process="isothermal"]');
+        isothermal.click();
+        if (comparison.dataset.selectedProcess !== "isothermal") throw new Error("confronto: switch isoterma");
+        close(Number(comparison.dataset.volumeM3), 0.018, 1e-12, "confronto isoterma V");
+        close(Number(comparison.dataset.temperatureK), 300, 1e-9, "confronto isoterma T");
+        if (!(Number(comparison.dataset.pressurePa) < isobaricPressure)) throw new Error("confronto: pressione isoterma");
+
+        comparison.querySelector('[data-simulation-action="reset"]').click();
+        if (comparison.dataset.selectedProcess !== "isochoric") throw new Error("confronto: reset processo");
+        if (comparison.dataset.progress !== "0") throw new Error("confronto: reset avanzamento");
+
+        scrub(piecewise, 500);
+        close(Number(piecewise.dataset.volumeM3), 0.0013, 1e-12, "A-B-C V_B");
+        close(Number(piecewise.dataset.temperatureK), 187.2, 1e-9, "A-B-C T_B");
+        close(Number(piecewise.dataset.pressureRatio), 1, 1e-12, "A-B-C p_B/p_A");
+        if (piecewise.dataset.pressurePa !== "") throw new Error("A-B-C: pressione assoluta inventata in B");
+        scrub(piecewise, 1000);
+        close(Number(piecewise.dataset.volumeM3), 0.0026, 1e-12, "A-B-C V_C");
+        close(Number(piecewise.dataset.pressureRatio), 0.5, 1e-12, "A-B-C p_C/p_A");
+        if (piecewise.dataset.phase !== "C") throw new Error("A-B-C: stato finale C");
+
+        if (!cycle.querySelector('[data-display="piston"]').hidden) throw new Error("ciclo: pistone non dovrebbe essere mostrato");
+        scrub(cycle, 1000);
+        if (!cycle.dataset.phase.includes("ciclo completo")) throw new Error("ciclo: chiusura non dichiarata");
+        if (cycle.querySelector('[data-value="cycle-work"]').textContent.trim() !== "1") {
+          throw new Error("ciclo: area orientata normalizzata");
+        }
+        if (!cycle.querySelector("[data-work-area]").getAttribute("d")) throw new Error("ciclo: area non disegnata");
+        if (!cycle.querySelector('[data-display="equations"]').textContent.includes("Q")) throw new Error("ciclo: primo principio non mostrato");
+
+        scrub(isochoric, 1000);
+        close(Number(isochoric.dataset.pressureChangePa), 2800, 1e-9, "isocora Δp");
+        close(Number(isochoric.dataset.heatJ), 252, 1e-9, "isocora Q");
+        close(Number(isochoric.dataset.deltaUJ), 252, 1e-9, "isocora ΔU");
+        if (isochoric.dataset.pressurePa !== "") throw new Error("isocora: pressione assoluta inventata");
+        if (isochoric.querySelector('[data-value="work"]').textContent.trim() !== "0") throw new Error("isocora: lavoro non nullo");
+
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          throw new Error(`layout: overflow orizzontale ${document.documentElement.scrollWidth}px su viewport ${window.innerWidth}px`);
+        }
+
+        finish("PASS", `quattro modelli gas aggiuntivi, reduced motion=${reducedMotion}`);
+      } catch (error) {
+        finish("FAIL", error.message);
+      }
+    }, 25);
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "engine": "ideal_gas_process",
+  "model": "process_comparison",
+  "parameters": {
+    "amount_mol": 1.0,
+    "temperature_initial_K": 300,
+    "volume_initial_m3": 0.010,
+    "expansion_ratio": 1.8,
+    "default_process": "isochoric"
+  },
+  "interaction": {
+    "allow_play": true,
+    "allow_pause": true,
+    "allow_reset": true,
+    "allow_scrub": true,
+    "playback_duration_s": 6
+  },
+  "display": {
+    "show_piston": true,
+    "show_pv_diagram": true,
+    "show_work_area": false,
+    "show_equations": true,
+    "show_energy_values": false,
+    "show_process_selector": true
+  },
+  "didactics": {
+    "model_note_it": "Il quesito non fornisce uno stato numerico: n=1,00 mol, T_A=300 K, V_A=0,010 m³ e il rapporto di espansione 1,8 costituiscono una scala didattica dichiarata. Le tre trasformazioni partono dallo stesso stato A. Il cursore non rappresenta tempo fisico e non vengono assunti calori specifici del gas.",
+    "learning_action_it": "seleziona isocora, isobara e isoterma e confronta forma del percorso p-V, grandezza mantenuta costante e relazioni tra Q, L e ΔU.",
+    "slider_label_it": "Avanzamento lungo la trasformazione selezionata"
+  }
+}

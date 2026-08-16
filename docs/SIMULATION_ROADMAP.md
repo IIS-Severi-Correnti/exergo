@@ -21,9 +21,9 @@ L'indice contiene **58 esercizi di Fisica**.
 
 | Stato | Numero | Significato |
 |---|---:|---|
-| `implemented` | 23 | Simulazione collegata all'esercizio e coperta dalla CI |
+| `implemented` | 27 | Simulazione collegata all'esercizio e coperta dalla CI |
 | `planned` | 26 | Copribile direttamente da un engine/modello pianificato |
-| `extension` | 5 | Copribile estendendo un engine già esistente |
+| `extension` | 1 | Copribile estendendo un engine già esistente |
 | `composite` | 2 | Richiede più fasi/modelli coordinati |
 | `not_required` | 2 | Simulazione completa non giustificata didatticamente |
 
@@ -33,15 +33,16 @@ L'indice contiene **58 esercizi di Fisica**.
 Gli engine attivi sono:
 
 - `rotational_platform` — 2 esercizi, modello `textbook_reduced_system`;
-- `ideal_gas_process` — 2 esercizi, modello `reversible_isothermal`;
+- `ideal_gas_process` — 6 esercizi, 5 modelli;
 - `one_dimensional_collision` — 1 esercizio, modello `elastic_1d`;
 - `fluid_statics` — 8 esercizi, 6 modelli;
 - `dc_circuit` — 5 esercizi, 3 modelli;
 - `calorimetry` — 5 esercizi, 5 modelli.
 
-L'espansione `dc_circuit` + `calorimetry` porta il catalogo simulato da 13 a
-**23 esercizi**, aggiungendo due domini completi e dieci esempi pubblicati senza
-creare implementazioni one-off.
+Il completamento del dominio `ideal_gas_process` porta il catalogo simulato da
+23 a **27 esercizi** senza aggiungere un nuovo engine: quattro casi prima
+classificati come `extension` diventano quattro modelli reali dello stesso
+dominio termodinamico.
 
 ## Regola di priorità
 
@@ -55,23 +56,94 @@ dove `didactic_value` e `implementation_complexity` sono valutati su scala 1–5
 Il punteggio ordina l'investimento, ma non sostituisce revisione fisica,
 architetturale o didattica.
 
-## Backlog dopo l'espansione circuiti + calorimetria
+## Backlog dopo il completamento dei gas perfetti
 
 | # | Engine | Tipo | Esercizi incrementali | Valore didattico | Complessità | Score | Ambito |
 |---:|---|---|---:|---:|---:|---:|---|
-| 1 | `ideal_gas_process` | estensione engine esistente | 4 | 5 | 3 | 6.67 | Isocora, isobara, trasformazioni composte e cicli |
-| 2 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
-| 3 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
-| 4 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
-| 5 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
-| 6 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
-| 7 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
-| 8 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
-| 9 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
-| 10 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
-| 11 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
-| 12 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
-| 13 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
+| 1 | `ray_optics` | nuovo engine | 5 | 5 | 4 | 6.25 | Snell, riflessione totale, lastra parallela e specchio concavo |
+| 2 | `wave_1d` | nuovo engine | 5 | 5 | 4 | 6.25 | Doppler, onde su corde, energia ed eco/sonar |
+| 3 | `newtonian_particle` | nuovo engine | 4 | 5 | 4 | 5.00 | Forze costanti 2D e piano inclinato con attrito |
+| 4 | `electrostatics_2d` | nuovo engine | 3 | 5 | 4 | 3.75 | Campo puntiforme, Coulomb e confronto inverse-square |
+| 5 | `magnetic_interaction_2d` | nuovo engine | 3 | 4 | 4 | 3.00 | Oersted, fili paralleli e forza di Lorentz |
+| 6 | `electromagnetic_induction` | nuovo engine | 2 | 5 | 4 | 2.50 | Faraday-Lenz e variazione di flusso |
+| 7 | `one_dimensional_collision` | estensione engine esistente | 1 | 5 | 2 | 2.50 | Urti elastici successivi tra più corpi |
+| 8 | `piecewise_mechanics` | orchestrazione composita | 2 | 5 | 5 | 2.00 | Problemi a fasi: dinamica/urto/molla |
+| 9 | `fluid_statics` | estensione engine attivo | 1 | 5 | 3 | 1.67 | Getti da fori a diversa profondità |
+| 10 | `thermal_expansion` | nuovo engine | 1 | 3 | 2 | 1.50 | Dilatazione termica dei solidi |
+| 11 | `momentum_system` | nuovo engine | 1 | 4 | 3 | 1.33 | Rinculo e sequenze di lanci |
+| 12 | `heat_engine` | nuovo engine | 1 | 4 | 3 | 1.33 | Rendimento e macchina di Carnot |
+
+## `ideal_gas_process`: copertura corrente
+
+L'engine serve l'intero gruppo di sei esercizi sui gas perfetti con cinque
+modelli.
+
+### `reversible_isothermal`
+
+Copre `FIS-TER-GAS-003` e `FIS-TER-GAS-006`:
+
+```text
+pV = nRT
+Delta U = 0
+Q = L = nRT ln(V/Vi)
+```
+
+I due esercizi restano la regressione storica del motore e dimostrano riuso
+numerico dello stesso modello.
+
+### `process_comparison`
+
+Copre `FIS-TER-GAS-001`. Il quesito è teorico e non fornisce uno stato
+numerico: la configurazione usa una scala esplicitamente didattica per partire
+dallo stesso stato A e confrontare isocora, isobara e isoterma. Per isocora e
+isobara non vengono inventati calori specifici, quindi `Q` e `Delta U` restano
+simbolici; per l'isoterma di gas perfetto vale invece `Delta U=0` e `Q=L`.
+
+### `piecewise_isobaric_isothermal`
+
+Copre `FIS-TER-GAS-002` e coordina due fasi nello stesso spazio di stato:
+
+```text
+A -> B: p = costante
+V_B = 1.30 L
+T_B = 187.2 K
+
+B -> C: T = costante
+p_C / p_B = 0.5
+V_C = 2.60 L
+```
+
+Il testo non fornisce pressione assoluta né numero di moli, quindi il diagramma
+usa `p/p_A`: la normalizzazione conserva tutta l'informazione necessaria senza
+inventare pascal.
+
+### `thermodynamic_cycle`
+
+Copre `FIS-TER-GAS-004`. Un rettangolo normalizzato e dichiaratamente
+rappresentativo rende visibili chiusura del ciclo e area orientata. Le coordinate
+non sono dati dell'esercizio. Sul ciclo completo:
+
+```text
+Delta U_ciclo = 0
+Q_netto = L_netto
+```
+
+Il verso del percorso determina il segno del lavoro netto normalizzato.
+
+### `isochoric_monoatomic`
+
+Copre `FIS-TER-GAS-005` usando esclusivamente i dati realmente disponibili:
+
+```text
+V = 0.0600 m^3
+Delta p = 2800 Pa
+L = 0
+Delta U = (3/2) V Delta p = 252 J
+Q = 252 J
+```
+
+`p_i`, `T_i` e `n` non sono noti e non vengono creati dalla simulazione. La
+vista mostra quindi `Delta p`, non una pressione assoluta fittizia.
 
 ## `fluid_statics`: copertura corrente
 
@@ -197,15 +269,15 @@ Completati:
 
 - `fluid_statics` strettamente idrostatico;
 - `dc_circuit`;
-- `calorimetry`.
+- `calorimetry`;
+- `ideal_gas_process` per tutti i sei esercizi attuali.
 
 Prossimi:
 
-1. estendere `ideal_gas_process`;
-2. `ray_optics`;
-3. `wave_1d`;
-4. `newtonian_particle`;
-5. completare `fluid_statics` con `orifice_outflow`.
+1. `ray_optics`;
+2. `wave_1d`;
+3. `newtonian_particle`;
+4. completare `fluid_statics` con `orifice_outflow`.
 
 ### Fase B — elettromagnetismo
 
@@ -277,6 +349,6 @@ La roadmap può dirsi matura quando:
 - browser review, reduced-motion, mobile, test numerici e validazione archivio restano verdi;
 - i problemi compositi sono costruiti per composizione e non con hardcoding per esercizio.
 
-Il traguardo **23/58** non conclude la roadmap, ma costituisce un checkpoint
-sufficientemente ricco per una revisione didattica del sito prima della
-successiva espansione.
+Il traguardo **27/58** non conclude la roadmap: chiude però l'intero dominio dei
+gas perfetti presente oggi nell'archivio e sposta la priorità di Fase A verso
+ottica geometrica, onde e dinamica newtoniana.

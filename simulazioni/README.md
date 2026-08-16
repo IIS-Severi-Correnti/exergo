@@ -88,18 +88,30 @@ reale che porterebbe via momento angolare.
 
 ### `ideal_gas_process`
 
-Modello `reversible_isothermal`, riusato da `FIS-TER-GAS-003` e
-`FIS-TER-GAS-006`:
+Serve **tutti i sei esercizi sui gas perfetti** attraverso cinque modelli:
 
-~~~text
-pV = nRT
-Delta U = 0
-Q = L = nRT ln(V/Vi)
-~~~
+- `reversible_isothermal` — `FIS-TER-GAS-003` e `FIS-TER-GAS-006`, con
+  `pV=nRT`, `Delta U=0` e `Q=L=nRT ln(V/Vi)`;
+- `process_comparison` — `FIS-TER-GAS-001`, per confrontare isocora, isobara e
+  isoterma a partire dallo stesso stato;
+- `piecewise_isobaric_isothermal` — `FIS-TER-GAS-002`, percorso A→B isobaro e
+  B→C isoterma;
+- `thermodynamic_cycle` — `FIS-TER-GAS-004`, ciclo chiuso normalizzato per
+  rendere visibili `Delta U_ciclo=0` e `Q_netto=L_netto`;
+- `isochoric_monoatomic` — `FIS-TER-GAS-005`, bombola rigida con
+  `L=0` e `Delta U=(3/2)V Delta p`.
 
-Rappresenta una successione di stati di equilibrio; il playback non e tempo
-fisico. Dinamica del pistone, attriti, inerzia, scambio termico finito e
-irreversibilita restano fuori dal modello corrente.
+Il motore distingue deliberatamente grandezze assolute, rapporti e variazioni.
+In `FIS-TER-GAS-002` la pressione assoluta non e fornita, quindi la vista usa
+`p/p_A`; in `FIS-TER-GAS-005` sono noti soltanto volume e aumento di pressione,
+quindi mostra `Delta p` senza inventare `p_i`, `T_i` o `n`. Il quesito teorico
+`FIS-TER-GAS-001` usa invece una scala numerica esplicitamente dichiarata
+**didattica** per confrontare le forme delle tre trasformazioni.
+
+Tutti i modelli rappresentano stati di equilibrio o percorsi didattici: il
+playback non e tempo fisico. Dinamica del pistone, attriti, inerzia,
+irreversibilita e velocita finite di scambio termico restano fuori dal dominio
+corrente.
 
 ### `one_dimensional_collision`
 
@@ -237,12 +249,12 @@ python scripts/genera_sito.py --output _site
 
 La CI aggiunge smoke test Chrome, `prefers-reduced-motion`, viewport mobile e
 screenshot di revisione. `validate-expansion-browser.yml` mantiene una matrice
-visuale dedicata ai nuovi domini circuiti/calorimetria senza rendere ancora piu
-monolitico lo smoke storico.
+visuale dedicata ai domini aggiunti o estesi di recente, inclusi circuiti,
+calorimetria e i cinque modelli del motore gas.
 
 ## Stato del catalogo simulato
 
-Dopo l'espansione circuiti + calorimetria, Exergo pubblica **23 esercizi di
-Fisica con simulazione** attraverso **6 engine**. La fonte machine-readable per
-la copertura resta `metadata/simulation_coverage.csv`; la roadmap e mantenuta in
+Con il completamento del dominio gas, Exergo pubblica **27 esercizi di Fisica
+con simulazione** attraverso **6 engine**. La fonte machine-readable per la
+copertura resta `metadata/simulation_coverage.csv`; la roadmap e mantenuta in
 `docs/SIMULATION_ROADMAP.md`.

@@ -11,6 +11,13 @@ PILOT_ID = "FIS-ROT-ANG-001"
 REUSE_ID = "FIS-ROT-ANG-002"
 GAS_PILOT_ID = "FIS-TER-GAS-003"
 GAS_REUSE_ID = "FIS-TER-GAS-006"
+GAS_EXPANSION_IDS = (
+    "FIS-TER-GAS-001",
+    "FIS-TER-GAS-002",
+    "FIS-TER-GAS-004",
+    "FIS-TER-GAS-005",
+)
+ALL_GAS_IDS = (GAS_PILOT_ID, GAS_REUSE_ID, *GAS_EXPANSION_IDS)
 COLLISION_PILOT_ID = "FIS-URT-COM-001"
 FLUID_HYDRO_PILOT_ID = "FIS-FLU-PID-001"
 FLUID_HYDRO_REUSE_ID = "FIS-FLU-PID-002"
@@ -43,8 +50,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
         by_id = {exercise.exercise_id: exercise for exercise in cls.exercises}
         cls.pilot = by_id[PILOT_ID]
         cls.reuse = by_id[REUSE_ID]
-        cls.gas_pilot = by_id[GAS_PILOT_ID]
-        cls.gas_reuse = by_id[GAS_REUSE_ID]
+        cls.gas_exercises = tuple(by_id[exercise_id] for exercise_id in ALL_GAS_IDS)
         cls.collision_pilot = by_id[COLLISION_PILOT_ID]
         cls.fluid_hydro_pilot = by_id[FLUID_HYDRO_PILOT_ID]
         cls.fluid_hydro_reuse = by_id[FLUID_HYDRO_REUSE_ID]
@@ -78,8 +84,8 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 self.assertIn("simulation.css", page)
                 self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))
 
-    def test_gas_exercises_reuse_second_engine_before_solution(self) -> None:
-        for exercise in (self.gas_pilot, self.gas_reuse):
+    def test_all_six_gas_exercises_share_one_engine_across_five_models(self) -> None:
+        for exercise in self.gas_exercises:
             with self.subTest(exercise=exercise.exercise_id):
                 page = genera_sito.render_exercise_page(exercise)
                 self.assertIn('data-simulation-engine="ideal_gas_process"', page)
@@ -126,7 +132,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 self.assertIn("engines/calorimetry/style.css", page)
                 self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))
 
-    def test_site_contains_six_engines_and_twenty_three_configs(self) -> None:
+    def test_site_contains_six_engines_and_twenty_seven_configs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             genera_sito.write_site(self.exercises, output)
@@ -163,11 +169,10 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 "engines/calorimetry/view.js",
                 "engines/calorimetry/style.css",
             }
-            for exercise_id in (
+            simulated_ids = (
                 PILOT_ID,
                 REUSE_ID,
-                GAS_PILOT_ID,
-                GAS_REUSE_ID,
+                *ALL_GAS_IDS,
                 COLLISION_PILOT_ID,
                 FLUID_HYDRO_PILOT_ID,
                 FLUID_HYDRO_REUSE_ID,
@@ -179,7 +184,8 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 FLUID_COMMUNICATING_VESSELS_ID,
                 *DC_EXPANSION_IDS,
                 *CALORIMETRY_EXPANSION_IDS,
-            ):
+            )
+            for exercise_id in simulated_ids:
                 expected_assets.add(f"config/{exercise_id}.json")
 
             asset_root = output / "assets" / "simulazioni"
@@ -190,23 +196,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
             }
             self.assertEqual(actual_assets, expected_assets)
             self.assertTrue((output / "index.html").is_file())
-            for exercise_id in (
-                PILOT_ID,
-                REUSE_ID,
-                GAS_PILOT_ID,
-                GAS_REUSE_ID,
-                COLLISION_PILOT_ID,
-                FLUID_HYDRO_PILOT_ID,
-                FLUID_HYDRO_REUSE_ID,
-                FLUID_FLOATING_PILOT_ID,
-                FLUID_FLOATING_REUSE_ID,
-                FLUID_APPARENT_WEIGHT_ID,
-                FLUID_PRESSURE_POINTS_ID,
-                FLUID_HYDRAULIC_PRESS_ID,
-                FLUID_COMMUNICATING_VESSELS_ID,
-                *DC_EXPANSION_IDS,
-                *CALORIMETRY_EXPANSION_IDS,
-            ):
+            for exercise_id in simulated_ids:
                 with self.subTest(exercise=exercise_id):
                     self.assertTrue((output / "esercizi" / exercise_id.casefold() / "index.html").is_file())
 
@@ -222,12 +212,19 @@ class StaticSiteGenerationTests(unittest.TestCase):
             if path.is_file()
         }
 
-    def test_gas_subset_copies_only_ideal_gas_engine(self) -> None:
-        actual_assets = self._asset_set([self.gas_pilot, self.gas_reuse])
-        self.assertIn("engines/ideal_gas_process/engine.js", actual_assets)
-        self.assertIn(f"config/{GAS_PILOT_ID}.json", actual_assets)
+    def test_gas_subset_copies_only_ideal_gas_engine_and_all_six_configs(self) -> None:
+        actual_assets = self._asset_set(self.gas_exercises)
+        for asset in (
+            "engines/ideal_gas_process/engine.js",
+            "engines/ideal_gas_process/view.js",
+            "engines/ideal_gas_process/style.css",
+        ):
+            self.assertIn(asset, actual_assets)
+        for exercise_id in ALL_GAS_IDS:
+            self.assertIn(f"config/{exercise_id}.json", actual_assets)
         self.assertFalse(any(path.startswith("engines/dc_circuit/") for path in actual_assets))
         self.assertFalse(any(path.startswith("engines/calorimetry/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/fluid_statics/") for path in actual_assets))
 
     def test_collision_subset_copies_only_collision_engine(self) -> None:
         actual_assets = self._asset_set([self.collision_pilot])
