@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "engine": "ray_optics",
+  "model": "single_interface_refraction",
+  "parameters": {
+    "vacuum_speed_m_s": 300000000,
+    "speed_reduction_fraction_final": 0.33
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 5},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "Il cursore applica progressivamente la riduzione di velocità misurata, dal 0% al 33%, per rendere visibile la definizione n=c/v. Non rappresenta il moto del raggio nel tempo né introduce un angolo di incidenza non fornito dal testo.",
+    "learning_action_it": "aumenta la riduzione di velocità fino al 33% e osserva come l'indice passi da 1 al valore finale circa 1,49.",
+    "slider_label_it": "Frazione della riduzione di velocità misurata"
+  }
+}
