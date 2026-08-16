@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "engine": "wave_1d",
+  "model": "doppler_observer_moving",
+  "parameters": {
+    "emitted_frequency_Hz": 960,
+    "frequency_increase_Hz": 95,
+    "wave_speed_m_s": 343
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 6},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "La sorgente e l'aria sono ferme; il cursore varia la velocità dell'osservatore verso la sorgente da 0 al valore richiesto. I fronti d'onda restano quelli prodotti dalla sorgente ferma: cambia la frequenza con cui l'osservatore li incontra.",
+    "learning_action_it": "aumenta la velocità dell'osservatore finché la frequenza passa da 960 Hz a 1055 Hz e verifica che il valore richiesto sia circa 33,94 m/s.",
+    "slider_label_it": "Velocità dell'osservatore verso la sorgente"
+  }
+}

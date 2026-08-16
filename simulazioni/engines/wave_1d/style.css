@@ -1,0 +1,73 @@
+.wave-figure {
+  margin: 0 0 16px;
+  padding: 10px;
+  border: 1px solid rgb(var(--teal-rgb) / 0.22);
+  border-radius: 8px;
+  background: rgb(var(--teal-rgb) / 0.045);
+}
+
+.wave-svg { display: block; width: 100%; height: auto; min-height: 250px; overflow: visible; }
+.wave-figure figcaption { margin: 6px 4px 2px; color: var(--muted); font-size: 0.84rem; }
+.wave-label, .wave-note {
+  fill: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+.wave-label { font-size: 14px; font-weight: 750; }
+.wave-label-light { fill: var(--paper); }
+.wave-note { fill: var(--muted); font-size: 13px; }
+.wave-source { fill: var(--amber); stroke: var(--ink); stroke-width: 3; }
+.wave-observer circle { fill: rgb(var(--teal-rgb) / 0.18); stroke: var(--teal); stroke-width: 3; }
+.wave-front { fill: none; stroke: rgb(var(--teal-rgb) / 0.26); stroke-width: 2; }
+.wave-front-line { stroke-width: 2.5; }
+.wave-front-ahead { stroke: rgb(var(--amber-rgb) / 0.52); }
+.wave-front-behind { stroke: rgb(var(--teal-rgb) / 0.42); }
+.wave-velocity { stroke: #a0442d; stroke-width: 5; fill: #a0442d; stroke-linecap: round; }
+.wave-arrow-head { stroke: none; }
+.wave-string-axis { stroke: rgb(var(--ink-rgb) / 0.20); stroke-width: 2; stroke-dasharray: 7 6; }
+.wave-string { fill: none; stroke: var(--teal); stroke-linecap: round; }
+.wave-support { fill: var(--ink); }
+.wave-water { fill: none; stroke: var(--teal); stroke-width: 5; stroke-linecap: round; }
+.wave-spring { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 5 4; }
+.wave-sensor { fill: var(--ink); }
+.wave-float { fill: var(--amber); stroke: var(--ink); stroke-width: 2.5; }
+.wave-energy-track { fill: rgb(var(--ink-rgb) / 0.08); stroke: rgb(var(--ink-rgb) / 0.25); }
+.wave-energy-bar { fill: var(--teal); }
+.wave-water-bg { fill: rgb(var(--teal-rgb) / 0.10); stroke: rgb(var(--teal-rgb) / 0.32); stroke-width: 2; }
+.wave-sonar { fill: var(--ink); }
+.wave-target { fill: #5e4a3d; }
+.wave-sonar-path { stroke: rgb(var(--ink-rgb) / 0.26); stroke-width: 3; stroke-dasharray: 8 6; }
+.wave-pulse { fill: var(--amber); stroke: var(--ink); stroke-width: 2; }
+.wave-pulse-return { fill: var(--teal); }
+
+.wave-panel {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.82fr) minmax(330px, 1.18fr);
+  gap: 14px;
+  align-items: start;
+}
+.wave-scrubber, .wave-panel .simulation-controls { grid-column: 1; }
+.wave-values, .wave-panel .simulation-equations, .wave-panel .simulation-status,
+.wave-panel .simulation-model-note, .wave-panel .simulation-error { grid-column: 2; }
+.wave-scrubber {
+  padding: 12px;
+  background: rgb(var(--paper-rgb) / 0.84);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.wave-scrubber label, .wave-slider-scale { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.wave-scrubber label { margin-bottom: 8px; font-weight: 800; }
+.wave-scrubber output { color: var(--teal); font-family: "SFMono-Regular", Consolas, monospace; }
+.wave-scrubber input[type="range"] { min-height: 34px; padding: 0; accent-color: var(--teal); cursor: ew-resize; }
+.wave-slider-scale { color: var(--muted); font-size: 0.76rem; }
+
+@media (max-width: 860px) {
+  .wave-panel { grid-template-columns: 1fr; }
+  .wave-scrubber, .wave-panel .simulation-controls, .wave-values, .wave-panel .simulation-equations,
+  .wave-panel .simulation-status, .wave-panel .simulation-model-note, .wave-panel .simulation-error { grid-column: 1; }
+}
+
+@media (max-width: 480px) {
+  .wave-figure { padding: 5px; }
+  .wave-svg { min-height: 205px; }
+  .wave-note { font-size: 12px; }
+}

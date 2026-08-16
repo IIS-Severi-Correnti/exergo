@@ -1,0 +1,89 @@
+name: Integrate wave QA
+
+on:
+  push:
+    branches:
+      - feature/wave-1d-engine-v1
+    paths:
+      - .github/workflows/integrate-wave-qa.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feature/wave-1d-engine-v1
+      - name: Extend static-site and browser QA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tests/test_site_generation.py')
+          text = path.read_text(encoding='utf-8')
+
+          optics_ids = '''OPTICS_IDS = (\n    "FIS-OTT-RFL-001",\n    "FIS-OTT-RIF-001",\n    "FIS-OTT-RIF-002",\n    "FIS-OTT-RIF-003",\n    "FIS-OTT-SPE-001",\n)\n'''
+          wave_ids = optics_ids + '''WAVE_IDS = (\n    "FIS-OND-DOP-001",\n    "FIS-OND-DOP-002",\n    "FIS-OND-COR-001",\n    "FIS-OND-MEC-001",\n    "FIS-OND-SUO-001",\n)\n'''
+          if optics_ids not in text:
+              raise SystemExit('OPTICS_IDS anchor missing')
+          text = text.replace(optics_ids, wave_ids, 1)
+
+          setup_anchor = '        cls.optics_exercises = tuple(by_id[exercise_id] for exercise_id in OPTICS_IDS)\n'
+          if setup_anchor not in text:
+              raise SystemExit('optics setUp anchor missing')
+          text = text.replace(setup_anchor, setup_anchor + '        cls.wave_exercises = tuple(by_id[exercise_id] for exercise_id in WAVE_IDS)\n', 1)
+
+          optics_page_test = '''    def test_all_five_optics_exercises_share_ray_optics_engine(self) -> None:\n        for exercise in self.optics_exercises:\n            with self.subTest(exercise=exercise.exercise_id):\n                page = genera_sito.render_exercise_page(exercise)\n                self.assertIn('data-simulation-engine="ray_optics"', page)\n                self.assertIn("engines/ray_optics/style.css", page)\n                self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))\n\n'''
+          wave_page_test = optics_page_test + '''    def test_all_five_wave_exercises_share_wave_engine(self) -> None:\n        for exercise in self.wave_exercises:\n            with self.subTest(exercise=exercise.exercise_id):\n                page = genera_sito.render_exercise_page(exercise)\n                self.assertIn('data-simulation-engine="wave_1d"', page)\n                self.assertIn("engines/wave_1d/style.css", page)\n                self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))\n\n'''
+          if optics_page_test not in text:
+              raise SystemExit('optics page test anchor missing')
+          text = text.replace(optics_page_test, wave_page_test, 1)
+
+          old_test_name = 'def test_site_contains_seven_engines_and_thirty_two_configs'
+          if old_test_name not in text:
+              raise SystemExit('site count test name missing')
+          text = text.replace(old_test_name, 'def test_site_contains_eight_engines_and_thirty_seven_configs', 1)
+
+          ray_asset = '                "engines/ray_optics/engine.js", "engines/ray_optics/view.js", "engines/ray_optics/style.css",\n'
+          if ray_asset not in text:
+              raise SystemExit('ray asset anchor missing')
+          text = text.replace(ray_asset, ray_asset + '                "engines/wave_1d/engine.js", "engines/wave_1d/view.js", "engines/wave_1d/style.css",\n', 1)
+
+          simulated_ids = '                *DC_EXPANSION_IDS, *CALORIMETRY_EXPANSION_IDS, *OPTICS_IDS,\n'
+          if simulated_ids not in text:
+              raise SystemExit('simulated ids anchor missing')
+          text = text.replace(simulated_ids, '                *DC_EXPANSION_IDS, *CALORIMETRY_EXPANSION_IDS, *OPTICS_IDS, *WAVE_IDS,\n', 1)
+
+          ray_exclusion = '        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision"):\n            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))\n\n\nif __name__ == "__main__":\n'
+          wave_subset = '''        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision", "wave_1d"):\n            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))\n\n    def test_wave_subset_is_self_contained(self) -> None:\n        actual_assets = self._asset_set(self.wave_exercises)\n        for asset in ("engines/wave_1d/engine.js", "engines/wave_1d/view.js", "engines/wave_1d/style.css"):\n            self.assertIn(asset, actual_assets)\n        for exercise_id in WAVE_IDS:\n            self.assertIn(f"config/{exercise_id}.json", actual_assets)\n        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision", "ray_optics"):\n            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))\n\n\nif __name__ == "__main__":\n'''
+          if ray_exclusion not in text:
+              raise SystemExit('ray subset tail anchor missing')
+          text = text.replace(ray_exclusion, wave_subset, 1)
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('.github/workflows/validate-expansion-browser.yml')
+          text = path.read_text(encoding='utf-8')
+          smoke_loop = '          for smoke in expansion_smoke gas_expansion_smoke ray_optics_smoke; do\n'
+          if smoke_loop not in text:
+              raise SystemExit('browser smoke loop anchor missing')
+          text = text.replace(smoke_loop, '          for smoke in expansion_smoke gas_expansion_smoke ray_optics_smoke wave_smoke; do\n', 1)
+
+          optics_mobile = '''          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \\\n            --virtual-time-budget=2500 --window-size=430,3300 \\\n            --screenshot=expansion-browser-artifacts/fis-ott-spe-001-mobile.png \\\n            http://127.0.0.1:8765/_site/esercizi/fis-ott-spe-001/\n'''
+          wave_screenshots = optics_mobile + '''\n          for route in fis-ond-dop-001 fis-ond-dop-002 fis-ond-cor-001 fis-ond-mec-001 fis-ond-suo-001; do\n            google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \\\n              --virtual-time-budget=2500 --window-size=1440,2500 \\\n              --screenshot="expansion-browser-artifacts/${route}-desktop.png" \\\n              "http://127.0.0.1:8765/_site/esercizi/${route}/"\n          done\n          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \\\n            --virtual-time-budget=2500 --window-size=430,3300 \\\n            --screenshot=expansion-browser-artifacts/fis-ond-dop-002-mobile.png \\\n            http://127.0.0.1:8765/_site/esercizi/fis-ond-dop-002/\n          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \\\n            --virtual-time-budget=2500 --window-size=430,3300 \\\n            --screenshot=expansion-browser-artifacts/fis-ond-suo-001-mobile.png \\\n            http://127.0.0.1:8765/_site/esercizi/fis-ond-suo-001/\n'''
+          if optics_mobile not in text:
+              raise SystemExit('optics screenshot anchor missing')
+          text = text.replace(optics_mobile, wave_screenshots, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Remove workflow and commit
+        run: |
+          set -euo pipefail
+          rm .github/workflows/integrate-wave-qa.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Integrate wave engine into static and browser QA'
+          git push origin HEAD:feature/wave-1d-engine-v1

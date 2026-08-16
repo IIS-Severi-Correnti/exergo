@@ -48,6 +48,13 @@ OPTICS_IDS = (
     "FIS-OTT-RIF-003",
     "FIS-OTT-SPE-001",
 )
+WAVE_IDS = (
+    "FIS-OND-DOP-001",
+    "FIS-OND-DOP-002",
+    "FIS-OND-COR-001",
+    "FIS-OND-MEC-001",
+    "FIS-OND-SUO-001",
+)
 
 
 class StaticSiteGenerationTests(unittest.TestCase):
@@ -70,6 +77,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
         cls.dc_exercises = tuple(by_id[exercise_id] for exercise_id in DC_EXPANSION_IDS)
         cls.calorimetry_exercises = tuple(by_id[exercise_id] for exercise_id in CALORIMETRY_EXPANSION_IDS)
         cls.optics_exercises = tuple(by_id[exercise_id] for exercise_id in OPTICS_IDS)
+        cls.wave_exercises = tuple(by_id[exercise_id] for exercise_id in WAVE_IDS)
         cls.normal = next(exercise for exercise in cls.exercises if exercise.simulation_config is None)
 
     def test_normal_exercise_does_not_load_simulation_assets(self) -> None:
@@ -144,7 +152,15 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 self.assertIn("engines/ray_optics/style.css", page)
                 self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))
 
-    def test_site_contains_seven_engines_and_thirty_two_configs(self) -> None:
+    def test_all_five_wave_exercises_share_wave_engine(self) -> None:
+        for exercise in self.wave_exercises:
+            with self.subTest(exercise=exercise.exercise_id):
+                page = genera_sito.render_exercise_page(exercise)
+                self.assertIn('data-simulation-engine="wave_1d"', page)
+                self.assertIn("engines/wave_1d/style.css", page)
+                self.assertLess(page.index(">Simulazione</h2>"), page.index("<summary>Soluzione</summary>"))
+
+    def test_site_contains_eight_engines_and_thirty_seven_configs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             output = Path(temporary_directory) / "site"
             genera_sito.write_site(self.exercises, output)
@@ -160,13 +176,14 @@ class StaticSiteGenerationTests(unittest.TestCase):
                 "engines/dc_circuit/engine.js", "engines/dc_circuit/view.js", "engines/dc_circuit/style.css",
                 "engines/calorimetry/engine.js", "engines/calorimetry/view.js", "engines/calorimetry/style.css",
                 "engines/ray_optics/engine.js", "engines/ray_optics/view.js", "engines/ray_optics/style.css",
+                "engines/wave_1d/engine.js", "engines/wave_1d/view.js", "engines/wave_1d/style.css",
             }
             simulated_ids = (
                 PILOT_ID, REUSE_ID, *ALL_GAS_IDS, COLLISION_PILOT_ID,
                 FLUID_HYDRO_PILOT_ID, FLUID_HYDRO_REUSE_ID, FLUID_FLOATING_PILOT_ID,
                 FLUID_FLOATING_REUSE_ID, FLUID_APPARENT_WEIGHT_ID, FLUID_PRESSURE_POINTS_ID,
                 FLUID_HYDRAULIC_PRESS_ID, FLUID_COMMUNICATING_VESSELS_ID,
-                *DC_EXPANSION_IDS, *CALORIMETRY_EXPANSION_IDS, *OPTICS_IDS,
+                *DC_EXPANSION_IDS, *CALORIMETRY_EXPANSION_IDS, *OPTICS_IDS, *WAVE_IDS,
             )
             for exercise_id in simulated_ids:
                 expected_assets.add(f"config/{exercise_id}.json")
@@ -196,12 +213,14 @@ class StaticSiteGenerationTests(unittest.TestCase):
         self.assertFalse(any(path.startswith("engines/calorimetry/") for path in actual_assets))
         self.assertFalse(any(path.startswith("engines/fluid_statics/") for path in actual_assets))
         self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/wave_1d/") for path in actual_assets))
 
     def test_collision_subset_copies_only_collision_engine(self) -> None:
         actual_assets = self._asset_set([self.collision_pilot])
         self.assertIn("engines/one_dimensional_collision/engine.js", actual_assets)
         self.assertIn(f"config/{COLLISION_PILOT_ID}.json", actual_assets)
         self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/wave_1d/") for path in actual_assets))
 
     def test_fluid_subset_copies_one_engine_and_six_models(self) -> None:
         actual_assets = self._asset_set([
@@ -212,6 +231,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
         self.assertIn("engines/fluid_statics/multi_engine.js", actual_assets)
         self.assertIn("engines/fluid_statics/communicating_vessels_view.js", actual_assets)
         self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/wave_1d/") for path in actual_assets))
 
     def test_dc_subset_is_self_contained(self) -> None:
         actual_assets = self._asset_set(self.dc_exercises)
@@ -220,6 +240,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
         for exercise_id in DC_EXPANSION_IDS:
             self.assertIn(f"config/{exercise_id}.json", actual_assets)
         self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/wave_1d/") for path in actual_assets))
 
     def test_calorimetry_subset_is_self_contained(self) -> None:
         actual_assets = self._asset_set(self.calorimetry_exercises)
@@ -228,6 +249,7 @@ class StaticSiteGenerationTests(unittest.TestCase):
         for exercise_id in CALORIMETRY_EXPANSION_IDS:
             self.assertIn(f"config/{exercise_id}.json", actual_assets)
         self.assertFalse(any(path.startswith("engines/ray_optics/") for path in actual_assets))
+        self.assertFalse(any(path.startswith("engines/wave_1d/") for path in actual_assets))
 
     def test_ray_optics_subset_is_self_contained(self) -> None:
         actual_assets = self._asset_set(self.optics_exercises)
@@ -235,7 +257,16 @@ class StaticSiteGenerationTests(unittest.TestCase):
             self.assertIn(asset, actual_assets)
         for exercise_id in OPTICS_IDS:
             self.assertIn(f"config/{exercise_id}.json", actual_assets)
-        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision"):
+        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision", "wave_1d"):
+            self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))
+
+    def test_wave_subset_is_self_contained(self) -> None:
+        actual_assets = self._asset_set(self.wave_exercises)
+        for asset in ("engines/wave_1d/engine.js", "engines/wave_1d/view.js", "engines/wave_1d/style.css"):
+            self.assertIn(asset, actual_assets)
+        for exercise_id in WAVE_IDS:
+            self.assertIn(f"config/{exercise_id}.json", actual_assets)
+        for other_engine in ("ideal_gas_process", "fluid_statics", "dc_circuit", "calorimetry", "rotational_platform", "one_dimensional_collision", "ray_optics"):
             self.assertFalse(any(path.startswith(f"engines/{other_engine}/") for path in actual_assets))
 
 

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Exergo wave smoke test</title>
+  <link rel="stylesheet" href="../../_site/assets/style.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/core/simulation.css">
+  <link rel="stylesheet" href="../../_site/assets/simulazioni/engines/wave_1d/style.css">
+</head>
+<body>
+  <main class="page">
+    <p id="result">RUNNING</p>
+    <section class="simulation-shell"><div id="observer" data-exergo-simulation data-simulation-engine="wave_1d" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OND-DOP-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="source" data-exergo-simulation data-simulation-engine="wave_1d" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OND-DOP-002.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="string" data-exergo-simulation data-simulation-engine="wave_1d" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OND-COR-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="energy" data-exergo-simulation data-simulation-engine="wave_1d" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OND-MEC-001.json"><p data-simulation-error hidden></p></div></section>
+    <section class="simulation-shell"><div id="sonar" data-exergo-simulation data-simulation-engine="wave_1d" data-simulation-config="../../_site/assets/simulazioni/config/FIS-OND-SUO-001.json"><p data-simulation-error hidden></p></div></section>
+  </main>
+  <script type="module" src="../../_site/assets/simulazioni/core/runtime.js"></script>
+  <script>
+    const result = document.querySelector('#result');
+    const simulations = ['observer','source','string','energy','sonar'].map(id => document.querySelector('#' + id));
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function finish(status, details) {
+      result.textContent = status + ': ' + details;
+      result.dataset.status = status;
+      document.title = status + ' - Exergo wave smoke test';
+    }
+    function close(actual, expected, tolerance, label) {
+      if (Math.abs(actual - expected) > tolerance) throw new Error(`${label}: atteso ${expected}, trovato ${actual}`);
+    }
+    function scrub(simulation, value) {
+      const slider = simulation.querySelector('[data-simulation-action="set_progress"]');
+      slider.value = String(value);
+      slider.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    function checkMotion(simulation, label) {
+      const play = simulation.querySelector('[data-simulation-action="play"]');
+      const pause = simulation.querySelector('[data-simulation-action="pause"]');
+      if (play.disabled !== reducedMotion) throw new Error(label + ': Play/reduced-motion');
+      if (!pause.disabled) throw new Error(label + ': Pausa iniziale');
+    }
+    const deadline = Date.now() + 7000;
+    const timer = setInterval(() => {
+      if (simulations.some(sim => sim.dataset.simulationReady !== 'true')) {
+        if (Date.now() > deadline) { clearInterval(timer); finish('FAIL', 'inizializzazione scaduta'); }
+        return;
+      }
+      clearInterval(timer);
+      try {
+        simulations.forEach((sim, index) => {
+          checkMotion(sim, String(index));
+          if (!sim.querySelector('[data-model-note]').textContent.trim()) throw new Error('nota modello mancante');
+          if (!sim.querySelector('[data-wave-scene]').innerHTML.trim()) throw new Error('scena SVG mancante');
+        });
+        const [observer, source, string, energy, sonar] = simulations;
+
+        scrub(observer, 1000);
+        close(Number(observer.dataset.observedFrequencyHz), 1055, 1e-8, 'Doppler osservatore frequenza');
+        close(Number(observer.dataset.observerSpeedMS), 343*(1055/960-1), 1e-10, 'Doppler osservatore velocita');
+        if (!observer.querySelector('.wave-observer')) throw new Error('Doppler osservatore: figura mancante');
+
+        scrub(source, 1000);
+        close(Number(source.dataset.sourceSpeedOverWaveSpeed), 0.5, 1e-12, 'Doppler sorgente beta');
+        close(Number(source.dataset.frequencyRatio), 2, 1e-12, 'Doppler sorgente rapporto frequenza');
+        if (!source.querySelector('.wave-front-ahead') || !source.querySelector('.wave-front-behind')) throw new Error('Doppler sorgente: fronti mancanti');
+
+        scrub(string, 1000);
+        close(Number(string.dataset.linearDensityRatio), 4, 1e-12, 'corda mu');
+        close(Number(string.dataset.frequencyRatio), 0.5, 1e-12, 'corda frequenza');
+        if (!string.querySelector('.wave-string')) throw new Error('corda: profilo mancante');
+
+        scrub(energy, 500);
+        close(Number(energy.dataset.elasticEnergyRatio), 0.25, 1e-12, 'energia quadratica a meta ampiezza');
+        scrub(energy, 1000);
+        close(Number(energy.dataset.elasticEnergyRatio), 1, 1e-12, 'energia normalizzata finale');
+        if (!energy.querySelector('.wave-energy-bar')) throw new Error('energia: barra mancante');
+
+        scrub(sonar, 500);
+        close(Number(sonar.dataset.pulsePositionRatio), 1, 1e-12, 'sonar ostacolo');
+        if (sonar.dataset.phase !== "riflessione sull'ostacolo") throw new Error('sonar: fase di riflessione');
+        scrub(sonar, 1000);
+        close(Number(sonar.dataset.pulsePositionRatio), 0, 1e-12, 'sonar ritorno');
+        close(Number(sonar.dataset.normalizedTime), 1, 1e-12, 'sonar tempo normalizzato');
+        if (sonar.dataset.phase !== 'eco ricevuto') throw new Error('sonar: eco finale');
+
+        if (document.documentElement.scrollWidth > innerWidth + 1) throw new Error(`overflow ${document.documentElement.scrollWidth}px su ${innerWidth}px`);
+        finish('PASS', `cinque modelli wave_1d, reduced motion=${reducedMotion}`);
+      } catch (error) { finish('FAIL', error.message); }
+    }, 25);
+  </script>
+</body>
+</html>

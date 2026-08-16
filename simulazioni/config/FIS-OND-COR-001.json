@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "engine": "wave_1d",
+  "model": "string_mode",
+  "parameters": {
+    "linear_density_ratio_final": 4
+  },
+  "interaction": {"allow_play": true, "allow_pause": true, "allow_reset": true, "allow_scrub": true, "playback_duration_s": 6},
+  "display": {"show_equations": true, "show_values": true},
+  "didactics": {
+    "model_note_it": "Il testo non assegna diametri, tensione, lunghezza o densità lineare numerici. Per visualizzare la dipendenza si usa una scala didattica μ/μ₀ da 1 a 4, mantenendo L e T costanti. Il rapporto finale 4 non è un dato della corda del quesito e non implica un particolare rapporto tra diametri.",
+    "learning_action_it": "aumenta la densità lineare relativa e osserva che, a lunghezza e tensione costanti, velocità e frequenza fondamentale diminuiscono come 1/√μ.",
+    "slider_label_it": "Rapporto illustrativo di densità lineare μ/μ₀"
+  }
+}
