@@ -1,0 +1,35 @@
+name: Sync ideal gas index
+
+on:
+  push:
+    branches:
+      - feature/ideal-gas-process-expansion
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.event.head_commit.message != 'chore: sync exercise index for gas expansion'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feature/ideal-gas-process-expansion
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Regenerate index
+        run: python scripts/genera_indice.py
+      - name: Commit generated index when needed
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- metadata/indice_esercizi.csv; then
+            echo 'Index already synchronized'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add metadata/indice_esercizi.csv
+          git commit -m 'chore: sync exercise index for gas expansion'
+          git push origin HEAD:feature/ideal-gas-process-expansion
