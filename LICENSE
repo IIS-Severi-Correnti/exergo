@@ -1,9 +1,29 @@
-Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+Exergo licensing notice
 
-This repository is being prepared for publication under the CC BY-SA 4.0
-license. Before final public release, confirm that all included materials can be
-distributed under this license and replace this placeholder with the official
-license text or a clear reference to:
+Status: beta (0.1.x)
 
+Educational exercise files that explicitly declare
+
+    % Licenza: CC-BY-SA-4.0
+
+are presented as materials intended for distribution under the Creative Commons
+Attribution-ShareAlike 4.0 International license (CC BY-SA 4.0), subject to the
+provenance and redistribution rights of the underlying material.
+
+Official license information and legal code:
 https://creativecommons.org/licenses/by-sa/4.0/
 
+This repository contains more than educational exercise text. Files that do not
+carry an explicit license declaration, including software, scripts, simulation
+engines, tests, CI configuration and other infrastructure, MUST NOT be assumed
+to be licensed under CC BY-SA 4.0 solely because they are stored in this
+repository. A software license has not yet been adopted for those files.
+
+For material imported or adapted from external sources, a license declaration in
+metadata does not replace a provenance check. Before redistribution, confirm
+that the author/source and applicable rights permit publication under the stated
+terms. If provenance is uncertain, do not reuse or redistribute the material
+until the question is resolved.
+
+The project intends to complete the code-license and provenance review before
+the first stable release.
