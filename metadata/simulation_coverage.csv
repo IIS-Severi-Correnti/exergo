@@ -1,9 +1,12 @@
 id,status,engine,model,priority,rationale
+FIS-CIN-MUA-001,planned,newtonian_particle,constant_acceleration_1d,P1,"Frenata, accelerazione costante, spazio e tempo possono essere visualizzati con lo stesso dominio cinematico del futuro engine newtoniano."
 FIS-CIR-BAS-001,implemented,dc_circuit,single_loop_topology,P1,"La struttura di un circuito chiuso si presta a una rappresentazione interattiva di generatore, conduttori e utilizzatore."
 FIS-CIR-COR-001,implemented,dc_circuit,charge_flow,P2,"Un flusso di carica controllabile rende visibile la relazione tra carica trasferita, tempo e intensità di corrente."
 FIS-CIR-OHM-001,implemented,dc_circuit,ohmic_resistor,P1,Slider per tensione e resistenza possono mostrare direttamente la relazione V=RI.
 FIS-CIR-OHM-002,implemented,dc_circuit,ohmic_resistor,P1,Il problema numerico è un caso naturale dello stesso modello ohmico.
 FIS-CIR-RES-001,implemented,dc_circuit,ohmic_resistor,P2,La definizione R=V/I acquista valore didattico se collegata allo stesso modello di circuito semplice.
+FIS-CIR-SER-001,extension,dc_circuit,series_parallel_resistors,P1,"Serie e parallelo sono un'estensione naturale del motore esistente per confrontare resistenza equivalente e corrente totale."
+FIS-DIN-ATT-001,planned,newtonian_particle,horizontal_kinetic_friction,P1,"Forza applicata, attrito dinamico e moto accelerato possono condividere il futuro engine newtoniano con un modello orizzontale dedicato."
 FIS-DIN-NEW-001,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
 FIS-DIN-NEW-002,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
 FIS-DIN-NEW-003,planned,newtonian_particle,constant_force_2d,P1,"Forze vettoriali costanti, accelerazione e traiettoria possono essere rappresentate dallo stesso modello newtoniano 2D."
@@ -13,6 +16,7 @@ FIS-ELE-CAR-001,not_required,,,P3,Quesito prevalentemente definitorio sulle prop
 FIS-ELE-CON-001,not_required,,,P3,Quesito concettuale e classificatorio sui materiali; meglio eventuale illustrazione statica che un engine dedicato.
 FIS-ELE-COU-001,planned,electrostatics_2d,torsion_balance,P2,La dipendenza della forza da cariche e distanza può essere esplorata con una bilancia di torsione schematica.
 FIS-ELE-COU-002,planned,electrostatics_2d,inverse_square_compare,P2,Un confronto interattivo tra due leggi a inverso del quadrato rende evidenti analogie e differenze.
+FIS-ELE-POT-001,planned,electrostatics_2d,point_charge_potential,P1,"Potenziale, distanza e lavoro su una carica di prova si prestano allo stesso dominio elettrostatico bidimensionale pianificato."
 FIS-FLU-ARC-001,implemented,fluid_statics,floating_body,P0,"Percentuale immersa, densità e equilibrio peso-spinta sono direttamente visualizzabili."
 FIS-FLU-ARC-002,implemented,fluid_statics,buoyancy_apparent_weight,P0,Peso apparente e spinta di Archimede sono adatti a vettori di forza e volume immerso.
 FIS-FLU-ARC-003,implemented,fluid_statics,floating_body,P1,Lo stesso modello permette di mostrare qualitativamente l'equilibrio tra peso e spinta.
@@ -22,6 +26,7 @@ FIS-FLU-PID-002,implemented,fluid_statics,hydrostatic_column,P1,La legge p=p0+ρ
 FIS-FLU-PID-003,implemented,fluid_statics,hydrostatic_pressure_points,P1,Punti mobili a quote diverse permettono un confronto qualitativo immediato.
 FIS-FLU-PID-004,planned,fluid_statics,orifice_outflow,P1,Fori a diverse profondità possono collegare pressione idrostatica e velocità di uscita in una vista coerente.
 FIS-FLU-VAS-001,implemented,fluid_statics,communicating_vessels,P1,I livelli e l'uguaglianza della pressione alla stessa quota sono naturalmente interattivi.
+FIS-LEN-CEN-001,planned,newtonian_particle,vertical_motion_energy,P2,"Quota, velocità ed energia meccanica possono essere collegate in una vista del moto verticale basata sul futuro engine newtoniano."
 FIS-MAG-FAR-001,planned,electromagnetic_induction,lenz_direction,P2,Una variazione controllabile del flusso può mostrare il verso della corrente indotta e il significato del segno meno.
 FIS-MAG-FAR-002,planned,electromagnetic_induction,faraday_loop,P1,"Flusso, variazione temporale e f.e.m. indotta possono essere collegati nella stessa vista."
 FIS-MAG-FIL-001,planned,magnetic_interaction_2d,parallel_wires,P1,Campo di un filo e forza tra correnti parallele sono altamente visualizzabili.
@@ -32,6 +37,7 @@ FIS-OND-DOP-001,implemented,wave_1d,doppler_observer_moving,P1,Fronti d'onda e o
 FIS-OND-DOP-002,implemented,wave_1d,doppler_source_moving,P1,La sorgente mobile può usare lo stesso motore con un modello Doppler complementare.
 FIS-OND-MEC-001,implemented,wave_1d,mechanical_wave_energy,P2,"Ampiezza, lavoro/potenza e propagazione possono sostenere la modellizzazione sperimentale proposta."
 FIS-OND-SUO-001,implemented,wave_1d,echo_time_of_flight,P1,"Emissione, riflessione e tempo di volo permettono di visualizzare il principio del sonar."
+FIS-OTT-LEN-001,extension,ray_optics,thin_lens,P1,"Il diagramma dei raggi di una lente convergente estende naturalmente il motore ottico esistente con posizione e ingrandimento dell'immagine."
 FIS-OTT-RFL-001,implemented,ray_optics,total_internal_reflection,P0,Angolo di incidenza e indici di rifrazione possono mostrare direttamente la soglia di riflessione totale.
 FIS-OTT-RIF-001,implemented,ray_optics,single_interface_refraction,P1,Indice e velocità della luce possono essere collegati nello stesso modello di mezzo trasparente.
 FIS-OTT-RIF-002,implemented,ray_optics,snell_refraction,P0,Un raggio manipolabile rende immediata la legge di Snell e il calcolo della velocità nel mezzo.
