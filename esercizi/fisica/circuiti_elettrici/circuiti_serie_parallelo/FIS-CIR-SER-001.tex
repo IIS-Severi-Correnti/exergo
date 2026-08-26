@@ -1,0 +1,63 @@
+% ID: FIS-CIR-SER-001
+% Titolo: Due resistenze collegate in serie e in parallelo
+% Disciplina: Fisica
+% Area: Circuiti elettrici
+% Argomento: Circuiti serie parallelo
+% Sottoargomento: Resistenza equivalente e corrente totale
+% Classe: Prima istituto professionale
+% Difficolta: 3
+% Tipo: problema_numerico
+% Risultato: R_s = 18 Ohm; I_s circa 0,67 A; R_p = 4 Ohm; I_p = 3,0 A
+% Tempo_stimato: 9 min
+% Competenze: calcolo della resistenza equivalente, applicazione della legge di Ohm, confronto tra configurazioni
+% Prerequisiti: resistenza elettrica, legge di Ohm, circuiti semplici
+% Tag: fisica, circuiti_elettrici, serie, parallelo, legge_ohm
+% Fonte: esempio_originale
+% Autore: OpenAI Codex
+% Licenza: CC-BY-SA-4.0
+
+\begin{esercizio}
+Due resistenze, \(R_1=6\,\Omega\) e \(R_2=12\,\Omega\), vengono collegate
+a un generatore da \(12\,\mathrm{V}\).
+
+Calcola la resistenza equivalente e la corrente totale se le due resistenze
+sono collegate prima in serie e poi in parallelo.
+\end{esercizio}
+
+\begin{soluzione}
+Nel collegamento in serie la resistenza equivalente e la somma delle due
+resistenze:
+\[
+R_s=R_1+R_2=6\,\Omega+12\,\Omega=18\,\Omega.
+\]
+
+La corrente totale si trova con la legge di Ohm:
+\[
+I_s=\frac{V}{R_s}=\frac{12}{18}\,\mathrm{A}\simeq 0{,}67\,\mathrm{A}.
+\]
+
+Nel collegamento in parallelo vale:
+\[
+\frac{1}{R_p}=\frac{1}{R_1}+\frac{1}{R_2}.
+\]
+
+Quindi:
+\[
+\frac{1}{R_p}=\frac{1}{6}+\frac{1}{12}
+=\frac{2}{12}+\frac{1}{12}
+=\frac{3}{12}
+=\frac{1}{4}.
+\]
+
+\[
+R_p=4\,\Omega.
+\]
+
+La corrente totale in parallelo e:
+\[
+I_p=\frac{V}{R_p}=\frac{12}{4}=3{,}0\,\mathrm{A}.
+\]
+
+A parita di tensione, il collegamento in parallelo ha resistenza equivalente
+minore e quindi corrente totale maggiore.
+\end{soluzione}

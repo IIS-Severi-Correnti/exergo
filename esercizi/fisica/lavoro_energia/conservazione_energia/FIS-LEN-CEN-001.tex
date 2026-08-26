@@ -1,0 +1,74 @@
+% ID: FIS-LEN-CEN-001
+% Titolo: Oggetto lanciato verso l'alto da una quota iniziale
+% Disciplina: Fisica
+% Area: Lavoro ed energia
+% Argomento: Conservazione energia
+% Sottoargomento: Energia meccanica nel campo gravitazionale
+% Classe: Terza liceo scientifico
+% Difficolta: 3
+% Tipo: problema_numerico
+% Risultato: h_max circa 4,8 m; v circa 5,9 m/s
+% Tempo_stimato: 8 min
+% Competenze: conservazione dell'energia meccanica, interpretazione della quota, calcolo algebrico
+% Prerequisiti: energia cinetica, energia potenziale gravitazionale, velocita
+% Tag: fisica, lavoro_energia, conservazione_energia, energia_meccanica, gravita
+% Fonte: esempio_originale
+% Autore: OpenAI Codex
+% Licenza: CC-BY-SA-4.0
+
+\begin{esercizio}
+Un oggetto viene lanciato verticalmente verso l'alto da una quota iniziale
+\(h_0=1{,}5\,\mathrm{m}\) rispetto al suolo, con velocita iniziale
+\(v_0=8{,}0\,\mathrm{m/s}\). Trascuriamo la resistenza dell'aria.
+
+Determina la quota massima raggiunta dall'oggetto e la sua velocita quando
+si trova alla quota \(h=3{,}0\,\mathrm{m}\). Usa
+\(g=9{,}8\,\mathrm{m/s^2}\).
+\end{esercizio}
+
+\begin{soluzione}
+L'energia meccanica si conserva:
+\[
+\frac{1}{2}mv^2+mgh=\text{costante}.
+\]
+
+Alla quota massima la velocita e nulla. Confrontiamo lo stato iniziale con
+quello alla quota massima:
+\[
+\frac{1}{2}mv_0^2+mgh_0=mgh_\text{max}.
+\]
+
+La massa si semplifica:
+\[
+h_\text{max}=h_0+\frac{v_0^2}{2g}.
+\]
+
+Sostituendo i dati:
+\[
+h_\text{max}=1{,}5+\frac{(8{,}0)^2}{2\cdot 9{,}8}
+\simeq 1{,}5+3{,}3
+=4{,}8\,\mathrm{m}.
+\]
+
+Alla quota \(3{,}0\,\mathrm{m}\) vale ancora:
+\[
+\frac{1}{2}mv_0^2+mgh_0=\frac{1}{2}mv^2+mgh.
+\]
+
+Quindi:
+\[
+v^2=v_0^2+2g(h_0-h).
+\]
+
+\[
+v^2=(8{,}0)^2+2\cdot 9{,}8\cdot (1{,}5-3{,}0)
+=64-29{,}4=34{,}6.
+\]
+
+\[
+v=\sqrt{34{,}6}\simeq 5{,}9\,\mathrm{m/s}.
+\]
+
+Il valore trovato e il modulo della velocita; alla quota indicata l'oggetto
+puo avere quel modulo sia in salita sia in discesa.
+\end{soluzione}
