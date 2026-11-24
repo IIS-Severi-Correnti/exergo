@@ -30,6 +30,9 @@ Le classi dei metadati indicano un livello didattico generale.
   forniti dal docente per questa importazione, ma i file non documentano in modo
   completo l'origine editoriale dei singoli quesiti. Questa nota non certifica
   diritti ulteriori né modifica il gate di provenienza per una release stabile.
+- Non redistribuita la scansione di una pagina di esercizi editoriali presente
+  tra gli allegati: non contiene indicazioni che ne consentano la pubblicazione
+  nell'archivio. Le verifiche rielaborate dal docente sono invece catalogate.
 
 ## Catalogo dell'importazione
 
@@ -95,3 +98,20 @@ Le classi dei metadati indicano un livello didattico generale.
 | MAT-STA-MMM-001 | laboratorio_dati_anonimizzato | Statistiche di una serie di dati simulati |
 | MAT-STA-GRA-001 | laboratorio_dati_approfondimento_anonimizzato | Differenze e anomalie in una serie temporale |
 | MAT-GAN-RET-002 | laboratorio_modello_lineare_anonimizzato | Modello lineare e scarti su dati simulati |
+| MAT-ALG-INT-010 | appunti_matematica_anonimizzati | Espressione con prodotti e potenze di interi |
+| MAT-ALG-INT-011 | appunti_matematica_anonimizzati | Espressione con esponente zero |
+| MAT-ALG-INT-012 | appunti_matematica_anonimizzati | Espressione con potenze dispari e basi negative |
+| MAT-ALG-INT-013 | appunti_matematica_anonimizzati | Espressione con quozienti e basi negative |
+| MAT-ALG-INT-014 | appunti_matematica_anonimizzati | Differenze e opposti |
+| MAT-ALG-INT-015 | appunti_matematica_anonimizzati | Completare uguaglianze con potenze |
+| MAT-GEU-POL-001 | appunti_matematica_anonimizzati | Ottagono e volume di un cubo |
+
+## Appunti presenti come immagini
+
+Recuperati altri sette quesiti dagli appunti manoscritti nel progetto
+Assistente Matematico; le immagini di dettaglio ripetono porzioni della stessa
+pagina e non sono trattate come fonti di esercizi distinti.
+Trascrizione controllata visivamente sui dettagli: 45 nel primo quesito,
+moltiplicazione fra le due potenze nella parentesi quadra del terzo.
+Corretto il refuso dimensionale nel volume del cubo: centimetri cubi.
+Per il poligono aggiunto poligoni_regolari nell'area Geometria euclidea.

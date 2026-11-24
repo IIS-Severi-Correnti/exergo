@@ -137,6 +137,7 @@ matematica:
   geometria_euclidea:
     label: "Geometria euclidea"
     argomenti:
+      - poligoni_regolari
       - triangoli
       - parallelogrammi
       - circonferenza
