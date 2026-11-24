@@ -1,0 +1,29 @@
+% ID: MAT-STA-GRA-001
+% Titolo: Differenze e anomalie in una serie temporale
+% Disciplina: Matematica
+% Area: statistica
+% Argomento: grafici_statistici
+% Classe: Prima secondaria di secondo grado
+% Difficolta: 3
+% Tipo: laboratorio
+% Tag: matematica, statistica, grafici_statistici
+% Fonte: laboratorio_dati_approfondimento_anonimizzato
+% Provenienza: materiale fornito dal docente; testo anonimizzato; soluzione redatta per Exergo
+
+\begin{esercizio}
+Ai tempi $0,2,4,6,8,10$ minuti sono associati i dati simulati $68,61,55,50,46,43$ gradi Celsius.
+Calcola differenze successive e diminuzione media per minuto; traccia quest'ultima rispetto al tempo finale di ogni intervallo.
+Classifica come ALTA una temperatura di almeno 50 e conta tali valori.
+Ripeti l'ultimo intervallo sostituendo 43 con 51: che cosa segnala?
+\end{esercizio}
+
+\begin{soluzione}
+Le differenze sono $-7,-6,-5,-4,-3$; dividendo gli opposti per 2 si ottengono
+$3{,}5;3;2{,}5;2;1{,}5$ gradi al minuto, associati ai tempi $2,4,6,8,10$.
+I valori almeno 50 sono quattro, incluso 50.
+Con 51 l'ultima differenza è $51-46=+5$ e la diminuzione per minuto è $-2{,}5$:
+l'ultimo intervallo descrive un aumento, quindi il dato va verificato.
+Non è necessariamente un errore di formula. In Excel si possono usare
+\texttt{=B6-B5}, \texttt{=-C6/(A6-A5)}, \texttt{=SE(B5>=50;"ALTA";"BASSA")}
+e \texttt{=CONTA.SE(B5:B10;">=50")}.
+\end{soluzione}

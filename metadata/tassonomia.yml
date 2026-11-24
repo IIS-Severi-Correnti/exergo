@@ -118,6 +118,9 @@ matematica:
   algebra:
     label: "Algebra"
     argomenti:
+      - numeri_interi
+      - numeri_razionali
+      - percentuali
       - monomi
       - polinomi
       - prodotti_notevoli
