@@ -118,6 +118,9 @@ matematica:
   algebra:
     label: "Algebra"
     argomenti:
+      - numeri_interi
+      - numeri_razionali
+      - percentuali
       - monomi
       - polinomi
       - prodotti_notevoli
@@ -134,6 +137,7 @@ matematica:
   geometria_euclidea:
     label: "Geometria euclidea"
     argomenti:
+      - poligoni_regolari
       - triangoli
       - parallelogrammi
       - circonferenza

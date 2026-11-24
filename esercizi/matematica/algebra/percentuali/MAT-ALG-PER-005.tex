@@ -1,0 +1,34 @@
+% ID: MAT-ALG-PER-005
+% Titolo: Sconti e percentuale complessiva
+% Disciplina: Matematica
+% Area: Algebra
+% Argomento: Percentuali
+% Classe: Prima secondaria di secondo grado
+% Difficolta: 3
+% Tipo: laboratorio
+% Tag: matematica, algebra, percentuali
+% Fonte: laboratorio_percentuali_anonimizzato
+% Provenienza: materiale fornito dal docente; testo anonimizzato; soluzione redatta per Exergo
+
+\begin{esercizio}
+In un foglio di calcolo inserisci i prezzi e gli sconti:
+\[
+\begin{array}{c|rr}
+\text{Articolo}&\text{Prezzo (euro)}&\text{Sconto}\\\hline
+\text{Quaderno}&4&10\%\\\text{Zaino}&50&20\%\\
+\text{Calcolatrice}&24&15\%\\\text{Cuffie}&36&25\%\\\text{Mouse}&20&5\%
+\end{array}
+\]
+Calcola risparmio e prezzo finale di ciascun articolo, i totali e lo sconto complessivo.
+Confronta l'articolo con lo sconto percentuale maggiore e quello con il risparmio maggiore in euro.
+\end{esercizio}
+
+\begin{soluzione}
+I risparmi sono $0{,}40;10;3{,}60;9;1$ euro; i prezzi finali $3{,}60;40;20{,}40;27;19$ euro.
+Totali: prezzo iniziale 134 euro, risparmio 24 euro, prezzo finale 110 euro.
+Lo sconto complessivo è $(24/134)100\%\simeq17{,}91\%$.
+In Excel, prezzi in B2:B6 e sconti in C2:C6: D2 = \texttt{=B2*C2}, E2 = \texttt{=B2-D2}, poi copia in basso.
+La percentuale complessiva è \texttt{=SOMMA(D2:D6)/SOMMA(B2:B6)}.
+Le cuffie hanno lo sconto percentuale maggiore, lo zaino il risparmio in euro maggiore.
+I prezzi diversi impediscono di usare la media aritmetica degli sconti.
+\end{soluzione}
