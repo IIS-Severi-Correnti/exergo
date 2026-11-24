@@ -5,6 +5,8 @@ Sono stati letti i sorgenti delle verifiche e le schede didattiche pertinenti;
 le fonti originali restano private. Sono rimossi intestazioni, date, punteggi,
 classi identificabili e istruzioni di accesso agli account.
 Le classi dei metadati indicano un livello didattico generale.
+Le etichette di area e argomento seguono quelle esistenti, evitando
+voci duplicate nei filtri del sito dovute a maiuscole o underscore.
 
 ## Criteri
 
